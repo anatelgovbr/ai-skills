@@ -1,0 +1,28 @@
+{
+    "chat.useAgentsMdFile": true,
+    "chat.useNestedAgentsMdFiles": false,
+    "chat.agentSkillsLocations": {
+        ".agents/skills": true,
+        ".github/skills": false,
+        ".claude/skills": false,
+        "~/.copilot/skills": false,
+        "~/.agents/skills": false,
+        "~/.claude/skills": false
+    },
+    "files.eol": "auto",
+    "[markdown]": {
+        "files.encoding": "utf8"
+    },
+    "[shellscript]": {
+        "files.eol": "\n"
+    },
+    "[makefile]": {
+        "files.eol": "\n"
+    },
+    "[dockerfile]": {
+        "files.eol": "\n"
+    },
+    "[yaml]": {
+        "files.eol": "\n"
+    }
+}

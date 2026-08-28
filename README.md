@@ -14,4 +14,5 @@ Copie a pasta da skill desejada para o diretório de skills do seu projeto.
 
 | Skill | Descrição |
 |---|---|
-|[`dicionario-dados-db-scan-codebase-docs`](./skills/dicionario-dados-db-scan-codebase-docs/README.md) | Cria, atualiza e verifica dicionários de dados e changelogs estruturais de banco de dados, escrevendo apenas o que a codebase, scripts de banco e documentação comprovam. Veja o README da skill para uso. |
+| [`stack-ai-init`](./skills/stack-ai-init/README.md) | Instala a estrutura mínima da stack de IA na raiz de um repositório: `AGENTS.md`, `CLAUDE.md`, `.agents/` com skills e references, o SpecKit em `.specify/` e as integrações de Claude Code, GitHub Copilot, OpenCode e VS Code. Preserva o que o destino já tem e pode ser rodada quantas vezes for preciso. Veja o README da skill para uso. |
+| [`dicionario-dados-db-scan-codebase-docs`](./skills/dicionario-dados-db-scan-codebase-docs/README.md) | Cria, atualiza e verifica dicionários de dados e changelogs estruturais de banco de dados, escrevendo apenas o que a codebase, scripts de banco e documentação comprovam. Veja o README da skill para uso. |

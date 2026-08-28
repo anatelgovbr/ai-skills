@@ -1,0 +1,10 @@
+# Claude Code: configuração local do desenvolvedor, não compartilhada com o time.
+.claude/settings.local.json
+
+# Spec Kit — configuracao de ferramenta de IA e por desenvolvedor.
+# Cada desenvolvedor configura a sua ferramenta localmente.
+# Nao versionar esses arquivos para nao criar dependencia implicita de uma ferramenta especifica.
+.specify/feature.json
+.specify/extensions/*/local-config.yml
+
+/specs
