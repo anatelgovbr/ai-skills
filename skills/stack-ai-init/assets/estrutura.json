@@ -1,14 +1,4 @@
 {
   "diretorios_vazios": [],
-  "symlinks": [
-    {
-      "caminho": ".claude/skills",
-      "alvo": "../.agents/skills"
-    }
-  ],
-  "manuais": {
-    ".vscode/settings.json": "f8d50aeaf645c0a333f21a9520941855278d1388583d96975bddcedee87971df",
-    ".agents/skills/README.md": "fae021feb76996141df2d90e437bb2bf045389f15008bf497d84c2b3f4eef255",
-    "README.md": "ae7ffc5cf8776d819d6a4355b9f62d63fa7586bd9feab9c2274fdc268ccbebf7"
-  }
+  "symlinks": []
 }

@@ -8,8 +8,9 @@ Subcomandos:
 
 O script nao le a codebase de destino e nao decide nada sobre ela: copia os
 artefatos da carga, cria os diretorios e symlinks declarados em
-assets/estrutura.json e mescla os dois arquivos que pertencem ao destino
-(.gitignore e .vscode/settings.json). Arquivo que ja existe e preservado.
+assets/estrutura.json e mescla os tres arquivos que pertencem ao destino
+(.gitignore, .vscode/settings.json e .claude/settings.json). Arquivo que ja
+existe e preservado.
 """
 
 from __future__ import annotations
@@ -19,6 +20,7 @@ import hashlib
 import json
 import os
 import posixpath
+import re
 import shutil
 import sys
 from pathlib import Path
@@ -34,11 +36,28 @@ PROTEGIDOS = ("README.md", "AGENTS.md", "CLAUDE.md")
 # Arquivo do destino que recebe acrescimo linha a linha.
 MESCLA_LINHAS = ".gitignore"
 CABECALHO_GITIGNORE = "# Stack de IA"
+# Linha que so entra quando o destino ainda nao tem `specs/`. A stack e spec
+# first e trata a spec como descartavel, entao o destino novo nasce ignorando a
+# pasta. Destino que ja tem `specs/` fica como esta: se ja ignorava, continua
+# ignorando; se versionava, a stack nao muda isso por ele.
+LINHA_CONDICIONAL_SPECS = "/specs"
 
-# Arquivo do destino que recebe acrescimo de chaves.
-MESCLA_JSON = ".vscode/settings.json"
+# Arquivos do destino que recebem acrescimo de chaves.
+MESCLA_JSON = (".vscode/settings.json", ".claude/settings.json")
 # Chaves cujo valor e objeto e cujas subchaves ausentes tambem sao acrescentadas.
-CHAVES_OBJETO = ("chat.agentSkillsLocations", "chat.promptFilesRecommendations")
+CHAVES_OBJETO = (
+    "chat.agentSkillsLocations",
+    "chat.promptFilesRecommendations",
+    "extraKnownMarketplaces",
+    "enabledPlugins",
+)
+
+# Nome do marketplace: precisa ser unico por repositorio, porque o Claude Code
+# guarda um caminho so por nome no registro da maquina. Deriva do diretorio de
+# destino, e os arquivos abaixo trazem o placeholder no lugar do nome.
+PREFIXO_MARKETPLACE = "stack-ai-"
+PLACEHOLDER_MARKETPLACE = "{{MARKETPLACE}}"
+SUBSTITUIVEIS = (".claude-plugin/marketplace.json", ".claude/settings.json")
 
 NOMES_IGNORADOS = {"__pycache__", ".DS_Store"}
 
@@ -59,6 +78,37 @@ def hash_arquivo(caminho: Path) -> str:
         for bloco in iter(lambda: f.read(65536), b""):
             h.update(bloco)
     return h.hexdigest()
+
+
+def hash_texto(texto: str) -> str:
+    return hashlib.sha256(texto.encode("utf-8")).hexdigest()
+
+
+def nome_do_marketplace(destino: Path) -> str:
+    """stack-ai-<diretorio de destino>, reduzido a [a-z0-9-]."""
+    sigla = re.sub(r"[^a-z0-9]+", "-", destino.name.lower()).strip("-")
+    return PREFIXO_MARKETPLACE + (sigla or "repo")
+
+
+def texto_da_carga(rel: str, fonte: Path, destino: Path) -> str | None:
+    """Conteudo com o nome do marketplace resolvido, ou None quando o arquivo
+    nao depende do destino e pode ser copiado byte a byte."""
+    if rel not in SUBSTITUIVEIS:
+        return None
+    bruto = fonte.read_text(encoding="utf-8")
+    return bruto.replace(PLACEHOLDER_MARKETPLACE, nome_do_marketplace(destino))
+
+
+def hash_da_carga(fonte: Path, rendido: str | None) -> str:
+    return hash_arquivo(fonte) if rendido is None else hash_texto(rendido)
+
+
+def escrever_da_carga(p: Path, fonte: Path, rendido: str | None) -> None:
+    p.parent.mkdir(parents=True, exist_ok=True)
+    if rendido is None:
+        shutil.copy2(fonte, p)
+    else:
+        p.write_text(rendido, encoding="utf-8")
 
 
 def arquivos_da_carga() -> dict[str, Path]:
@@ -82,11 +132,18 @@ def carregar_estrutura() -> dict:
     }
 
 
-def mesclar_linhas(atual: str, carga: str) -> tuple[str, list[str]]:
-    """Acrescenta ao final as linhas da carga que faltam. Idempotente."""
+def mesclar_linhas(atual: str, carga: str, tem_specs: bool = False) -> tuple[str, list[str]]:
+    """Acrescenta ao final as linhas da carga que faltam. Idempotente.
+
+    Com `tem_specs`, a linha que ignora `specs/` fica de fora. Quem ja tem a
+    pasta decide sozinho se a versiona: se ela ja estava no `.gitignore`,
+    continua; se nao estava, a stack nao coloca.
+    """
     presentes = {l.strip() for l in atual.splitlines() if l.strip()}
     faltando = []
     for linha in carga.splitlines():
+        if tem_specs and linha.strip() == LINHA_CONDICIONAL_SPECS:
+            continue
         if linha.strip() and linha.strip() not in presentes and linha.strip() not in {f.strip() for f in faltando}:
             faltando.append(linha)
     if not faltando:
@@ -152,6 +209,7 @@ def instalar(destino: Path, sobrescrever: bool, aplicar: bool) -> list[dict]:
     for rel, fonte in carga.items():
         p = destino / rel
         existe = p.exists()
+        rendido = texto_da_carga(rel, fonte, destino)
 
         if rel == MESCLA_LINHAS:
             if not existe:
@@ -160,7 +218,7 @@ def instalar(destino: Path, sobrescrever: bool, aplicar: bool) -> list[dict]:
                     shutil.copy2(fonte, p)
                 registrar(rel, "arquivo", "criado")
                 continue
-            conteudo, faltando = mesclar_linhas(p.read_text(encoding="utf-8"), fonte.read_text(encoding="utf-8"))
+            conteudo, faltando = mesclar_linhas(p.read_text(encoding="utf-8"), fonte.read_text(encoding="utf-8"), (destino / "specs").is_dir())
             if not faltando:
                 registrar(rel, "arquivo", "ignorado-igual", "todas as linhas ja presentes")
             else:
@@ -169,16 +227,16 @@ def instalar(destino: Path, sobrescrever: bool, aplicar: bool) -> list[dict]:
                 registrar(rel, "arquivo", "mesclado", f"{len(faltando)} linha(s) acrescentada(s)")
             continue
 
-        if rel == MESCLA_JSON:
+        if rel in MESCLA_JSON:
+            carga_texto = rendido if rendido is not None else fonte.read_text(encoding="utf-8")
             if not existe:
                 if aplicar:
-                    p.parent.mkdir(parents=True, exist_ok=True)
-                    shutil.copy2(fonte, p)
+                    escrever_da_carga(p, fonte, rendido)
                 registrar(rel, "arquivo", "criado")
                 continue
-            conteudo, chaves, erro = mesclar_json(p.read_text(encoding="utf-8"), fonte.read_text(encoding="utf-8"))
+            conteudo, chaves, erro = mesclar_json(p.read_text(encoding="utf-8"), carga_texto)
             if erro:
-                registrar(rel, "arquivo", "manual", f"{erro}; acrescente a mao: {', '.join(json.loads(fonte.read_text(encoding='utf-8')))}")
+                registrar(rel, "arquivo", "manual", f"{erro}; acrescente a mao: {', '.join(json.loads(carga_texto))}")
             elif not chaves:
                 registrar(rel, "arquivo", "ignorado-igual", "todas as chaves ja presentes")
             else:
@@ -199,14 +257,13 @@ def instalar(destino: Path, sobrescrever: bool, aplicar: bool) -> list[dict]:
                 registrar(rel, "arquivo", "ignorado-protegido", "conteudo do destino, nunca substituido")
             continue
 
-        if existe and hash_arquivo(p) == hash_arquivo(fonte):
+        if existe and hash_arquivo(p) == hash_da_carga(fonte, rendido):
             registrar(rel, "arquivo", "ignorado-igual")
         elif existe and not sobrescrever:
             registrar(rel, "arquivo", "ignorado-existe", "difere da carga; use --sobrescrever para atualizar")
         else:
             if aplicar:
-                p.parent.mkdir(parents=True, exist_ok=True)
-                shutil.copy2(fonte, p)
+                escrever_da_carga(p, fonte, rendido)
             registrar(rel, "arquivo", "substituido" if existe else "criado")
 
     for link in estrutura["symlinks"]:
@@ -241,7 +298,8 @@ def instalar(destino: Path, sobrescrever: bool, aplicar: bool) -> list[dict]:
         for acao in acoes:
             if acao["tipo"] == "arquivo" and acao["acao"] in ("criado", "substituido"):
                 p, fonte = destino / acao["caminho"], carga[acao["caminho"]]
-                if not p.is_file() or hash_arquivo(p) != hash_arquivo(fonte):
+                rendido = texto_da_carga(acao["caminho"], fonte, destino)
+                if not p.is_file() or hash_arquivo(p) != hash_da_carga(fonte, rendido):
                     acao["acao"], acao["detalhe"] = "erro", "conteudo nao confere apos a copia"
 
     return acoes
@@ -260,21 +318,23 @@ def verificar(destino: Path) -> list[dict]:
 
     for rel, fonte in carga.items():
         p = destino / rel
+        rendido = texto_da_carga(rel, fonte, destino)
         if not p.exists():
             registrar(rel, "arquivo", "ausente")
             continue
         if rel in PROTEGIDOS:
             registrar(rel, "arquivo", "proprio-do-destino")
         elif rel == MESCLA_LINHAS:
-            _, faltando = mesclar_linhas(p.read_text(encoding="utf-8"), fonte.read_text(encoding="utf-8"))
+            _, faltando = mesclar_linhas(p.read_text(encoding="utf-8"), fonte.read_text(encoding="utf-8"), (destino / "specs").is_dir())
             registrar(rel, "arquivo", "igual" if not faltando else "divergente", f"{len(faltando)} linha(s) da carga faltando" if faltando else "")
-        elif rel == MESCLA_JSON:
-            _, chaves, erro = mesclar_json(p.read_text(encoding="utf-8"), fonte.read_text(encoding="utf-8"))
+        elif rel in MESCLA_JSON:
+            carga_texto = rendido if rendido is not None else fonte.read_text(encoding="utf-8")
+            _, chaves, erro = mesclar_json(p.read_text(encoding="utf-8"), carga_texto)
             if erro:
                 registrar(rel, "arquivo", "manual", erro)
             else:
                 registrar(rel, "arquivo", "igual" if not chaves else "divergente", ", ".join(chaves))
-        elif hash_arquivo(p) == hash_arquivo(fonte):
+        elif hash_arquivo(p) == hash_da_carga(fonte, rendido):
             registrar(rel, "arquivo", "igual")
         else:
             registrar(rel, "arquivo", "divergente")
@@ -329,8 +389,8 @@ def main(argv=None) -> int:
     if not destino.is_dir():
         print(f"destino inexistente: {destino}", file=sys.stderr)
         return 2
-    if destino == SKILL.parents[2]:
-        print("destino e a propria raiz que hospeda a skill; informe outro repositorio", file=sys.stderr)
+    if destino == SKILL or destino in SKILL.parents:
+        print("destino hospeda a propria skill; informe outro repositorio", file=sys.stderr)
         return 2
 
     if args.comando == "verificar":

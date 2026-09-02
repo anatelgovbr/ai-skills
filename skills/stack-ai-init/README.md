@@ -2,26 +2,26 @@
 
 A skill `stack-ai-init` prepara um repositório para trabalhar com agentes de IA. Ela leva para a raiz do repositório de destino a estrutura mínima da stack: os arquivos que os agentes leem, as skills que eles usam e as integrações das ferramentas suportadas.
 
-Ela é simples de propósito. Não lê o código do destino, não tenta entender o projeto, não preenche o `AGENTS.md` e não adapta nenhum arquivo ao caso: copia os artefatos da stack para o lugar certo. Descrever o sistema dentro da stack é trabalho da skill `stack-ai-creator`, em um pedido separado, depois que a estrutura já existe.
+Ela é simples de propósito. Não lê o código do destino, não tenta entender o projeto, não preenche o `AGENTS.md` e não adapta nenhum arquivo ao caso: copia os artefatos da stack para o lugar certo. Descrever o sistema dentro da stack é trabalho da skill `stack-ai-build-project-context`, em um pedido separado, depois que a estrutura já existe.
 
 ## O que chega no repositório
 
 | Onde | Conteúdo |
 |---|---|
-| Raiz | `AGENTS.md`, `CLAUDE.md`, `README.md` e as linhas da stack no `.gitignore` |
-| `.agents/skills/` | a `skill-creator`, as 9 fases do SpecKit e 10 skills de apoio |
+| Raiz | `AGENTS.md`, `CLAUDE.md` e as linhas da stack no `.gitignore` |
+| `.agents/skills/` | a `skill-creator`, as 10 fases do SpecKit e 10 skills de apoio |
 | `.agents/references/` | a regra de manutenção das fases do SpecKit |
 | `.specify/` | o SpecKit em si: scripts, templates, workflows e a constituição do projeto |
-| `.claude/`, `.github/`, `.opencode/`, `.vscode/` | as integrações de Claude Code, GitHub Copilot, OpenCode e VS Code |
+| `.claude/`, `.claude-plugin/`, `.github/`, `.opencode/`, `.vscode/` | as integrações de Claude Code, GitHub Copilot, OpenCode e VS Code |
 
 O inventário completo está em [`references/payload.md`](references/payload.md).
 
 ## O que ela garante
 
 - **Mostra o plano antes de escrever.** A skill primeiro simula a instalação e apresenta o que pretende criar, o que vai preservar e o que vai mesclar. Só escreve depois do seu aval.
-- **Não passa por cima do que já existe.** Arquivo que já está no destino é mantido como está e aparece no relatório final. `AGENTS.md`, `CLAUDE.md` e `README.md` pertencem ao projeto de destino: esses três a skill nunca substitui, mesmo quando você autoriza a substituição dos demais.
-- **Soma, em vez de trocar,** nos dois arquivos que são do destino: no `.gitignore` acrescenta só as linhas que faltam, e no `.vscode/settings.json` só as chaves que faltam. Valor que você já definiu continua como está.
-- **Deixa os symlinks e as permissões prontos.** O symlink `.claude/skills`, que faz o Claude Code enxergar as skills de `.agents/skills`, é recriado, e os scripts do SpecKit chegam com permissão de execução. Onde o sistema não aceita symlink, entra uma cópia de verdade, e o relatório avisa.
+- **Não passa por cima do que já existe.** Arquivo que já está no destino é mantido como está e aparece no relatório final. `AGENTS.md` e `CLAUDE.md` pertencem ao projeto de destino: esses dois a skill nunca substitui, mesmo quando você autoriza a substituição dos demais. A skill também não leva `README.md`: documentação do projeto é do destino.
+- **Soma, em vez de trocar,** nos três arquivos que são do destino: no `.gitignore` acrescenta só as linhas que faltam, e no `.vscode/settings.json` e no `.claude/settings.json` só as chaves que faltam. Valor que você já definiu continua como está.
+- **Deixa as três ferramentas enxergando as skills.** Copilot, OpenCode e Claude Code chegam em `.agents/skills/` por configuração, sem symlink, então a instalação funciona igual em Windows, macOS e Linux. Os scripts do SpecKit chegam com permissão de execução.
 - **Pode ser rodada quantas vezes você quiser.** Instalar de novo no mesmo repositório não muda nada: a skill confere, avisa que está tudo no lugar e não escreve.
 - **Confere o que escreveu.** Cada arquivo copiado é comparado com o original logo depois da cópia. Em uma instalação antiga, a skill refaz essa conferência e diz o que ficou diferente e o que está faltando, sem escrever nada.
 - **Diz o que sobrou para você.** No fim, aponta o que ficou pendente e os dois passos manuais: preencher o `AGENTS.md` com o contexto do projeto e instalar uma das ferramentas suportadas, se você ainda não usa nenhuma.
@@ -63,4 +63,4 @@ Autorizo substituir os arquivos da stack que divergirem da versão distribuída 
 
 Esta seção é para quem mantém a skill, não para quem a usa.
 
-Os arquivos que a skill entrega são uma cópia dos artefatos da raiz deste repositório e envelhecem sempre que a raiz muda. O procedimento para conferir e atualizar essa cópia e o motivo de cada exclusão estão em [`references/payload.md`](references/payload.md).
+Os arquivos que a skill entrega ficam em `assets/stack/` e são editados ali mesmo: é neles que a stack vive. O passo a passo de uma alteração, o inventário completo e o motivo de cada exclusão estão em [`references/payload.md`](references/payload.md).

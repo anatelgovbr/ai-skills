@@ -1,0 +1,6 @@
+{
+    "extraKnownMarketplaces": {
+        "{{MARKETPLACE}}": { "source": { "source": "directory", "path": "." } }
+    },
+    "enabledPlugins": { "stack-ai@{{MARKETPLACE}}": true }
+}

@@ -4,15 +4,15 @@ Os fluxos padrao do SpecKit neste repositorio vivem em um lugar so:
 
 - `.agents/skills/speckit-<fase>/SKILL.md`
 
-Sao as 9 fases: `specify`, `clarify`, `plan`, `tasks`, `analyze`, `implement`, `checklist`, `taskstoissues` e `constitution`.
+Sao as 10 fases: `specify`, `clarify`, `plan`, `tasks`, `analyze`, `implement`, `checklist`, `taskstoissues`, `constitution` e `converge`.
 
 ## Como as fases ficam visiveis
 
-Ferramenta descobre skill em diretorios configurados no formato `<local>/<nome>/SKILL.md`, um nivel abaixo do diretorio configurado. As fases ficam nesse nivel, lado a lado com as demais skills do repositorio, entao as tres ferramentas as encontram sem configuracao extra e sem symlink.
+Ferramenta descobre skill em diretorios configurados no formato `<local>/<nome>/SKILL.md`, um nivel abaixo do diretorio configurado. As fases ficam nesse nivel, lado a lado com as demais skills do repositorio, entao as tres ferramentas as encontram sem symlink e sem copia, cada uma pelo seu proprio caminho de configuracao.
 
 | Ferramenta | Como chega em `.agents/skills/` |
 |---|---|
-| Claude Code | `.claude/skills`, symlink para `../.agents/skills` |
+| Claude Code | plugin local `stack-ai`, do marketplace `stack-ai-<repositorio>`, declarado em `.claude-plugin/marketplace.json` e ligado em `.claude/settings.json` |
 | Copilot | `chat.agentSkillsLocations` em `.vscode/settings.json` |
 | OpenCode | `skills.paths` em `.opencode/opencode.json` |
 
@@ -31,9 +31,11 @@ Os scripts que as fases executam ficam em `.specify/scripts/`, na raiz do reposi
 | Linux, macOS ou WSL | `.specify/scripts/bash/` | `.sh` |
 | Windows PowerShell | `.specify/scripts/powershell/` | `.ps1` |
 
-As duas pastas tem os mesmos 7 scripts: `common`, `check-prerequisites`, `setup-plan`, `setup-tasks`, `create-new-feature`, `resolve-template` e `update-agent-context`. Cada par imprime o mesmo JSON, entao a fase funciona igual nos dois ambientes.
+As duas pastas tem os mesmos 6 scripts: `common`, `check-prerequisites`, `setup-plan`, `setup-tasks`, `create-new-feature` e `resolve-template`. Cada par imprime o mesmo JSON, entao a fase funciona igual nos dois ambientes.
 
-O `SKILL.md` declara os dois caminhos no frontmatter, em `scripts` (e em `agent_scripts`, no `speckit-plan`). A secao `Script Selection` do corpo diz ao agente qual entrada usar conforme o shell. Ao editar um script bash, edite tambem o `.ps1` correspondente.
+O `SKILL.md` declara os dois caminhos no frontmatter, em `scripts`. A secao `Script Selection` do corpo diz ao agente qual entrada usar conforme o shell. Ao editar um script bash, edite tambem o `.ps1` correspondente.
+
+Nenhuma fase escreve no arquivo de contexto do projeto. O `update-agent-context` do SpecKit, que reescreve `AGENTS.md`, `CLAUDE.md` ou `copilot-instructions.md` a partir do plano, nao entra na carga: esses arquivos sao do time.
 
 ## Regra de manutencao
 

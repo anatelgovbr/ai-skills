@@ -24,7 +24,29 @@ SETTINGS_CARGA = {
     "chat.promptFilesRecommendations": {"speckit.plan": True},
 }
 
-GITIGNORE_CARGA = "# Claude Code\n.claude/settings.local.json\n\n.specify/feature.json\n"
+# O destino de teste chama-se "destino", entao o nome derivado e este.
+MARKETPLACE = "stack-ai-destino"
+PLACEHOLDER = inst.PLACEHOLDER_MARKETPLACE
+
+CLAUDE_SETTINGS_CARGA = {
+    "extraKnownMarketplaces": {PLACEHOLDER: {"source": {"source": "directory", "path": "."}}},
+    "enabledPlugins": {f"stack-ai@{PLACEHOLDER}": True},
+}
+
+CLAUDE_SETTINGS_RENDERIZADO = {
+    "extraKnownMarketplaces": {MARKETPLACE: {"source": {"source": "directory", "path": "."}}},
+    "enabledPlugins": {f"stack-ai@{MARKETPLACE}": True},
+}
+
+MARKETPLACE_CARGA = {
+    "name": PLACEHOLDER,
+    "owner": {"name": "Equipe do repositorio"},
+    "plugins": [{"name": "stack-ai", "source": "./.agents", "version": "1.0.0"}],
+}
+
+MARKETPLACE_RENDERIZADO = dict(MARKETPLACE_CARGA, name=MARKETPLACE)
+
+GITIGNORE_CARGA = "# Claude Code\n.claude/settings.local.json\n\n.specify/feature.json\n/specs\n"
 
 
 def escrever(caminho: Path, conteudo: str = "conteudo\n") -> Path:
@@ -52,6 +74,8 @@ class Base(unittest.TestCase):
         escrever(self.carga / "dot-agents" / "skills" / "skill-creator" / "SKILL.md", "# skill-creator\n")
         escrever(self.carga / "dot-claude" / "skills" / "speckit-plan" / "SKILL.md", "# plan\n")
         escrever(self.carga / "dot-vscode" / "settings.json", json.dumps(SETTINGS_CARGA, indent=4) + "\n")
+        escrever(self.carga / "dot-claude" / "settings.json", json.dumps(CLAUDE_SETTINGS_CARGA, indent=4) + "\n")
+        escrever(self.carga / "dot-claude-plugin" / "marketplace.json", json.dumps(MARKETPLACE_CARGA, indent=4) + "\n")
         script = escrever(self.carga / "dot-specify" / "scripts" / "bash" / "common.sh", "#!/bin/sh\n")
         script.chmod(0o755)
         self.estrutura.write_text(json.dumps({
@@ -85,12 +109,22 @@ class TesteMapeamentoDeNome(unittest.TestCase):
 
 class TesteInstalacaoLimpa(Base):
     def test_todos_os_arquivos_da_carga_chegam_iguais(self):
+        """Byte a byte, exceto os dois que recebem o nome do marketplace."""
         acoes = self.instalar()
         for rel, fonte in inst.arquivos_da_carga().items():
             alvo = self.destino / rel
             self.assertTrue(alvo.is_file(), rel)
-            self.assertEqual(inst.hash_arquivo(alvo), inst.hash_arquivo(fonte), rel)
+            rendido = inst.texto_da_carga(rel, fonte, self.destino)
+            self.assertEqual(inst.hash_arquivo(alvo), inst.hash_da_carga(fonte, rendido), rel)
         self.assertFalse([a for a in acoes if a["acao"] == "erro"])
+
+    def test_so_os_arquivos_declarados_sofrem_substituicao(self):
+        for rel, fonte in inst.arquivos_da_carga().items():
+            rendido = inst.texto_da_carga(rel, fonte, self.destino)
+            if rel in inst.SUBSTITUIVEIS:
+                self.assertIsNotNone(rendido, rel)
+            else:
+                self.assertIsNone(rendido, rel)
 
     def test_preserva_bit_de_execucao(self):
         self.instalar()
@@ -187,6 +221,31 @@ class TesteMesclagemDeGitignore(Base):
         self.assertEqual(self.acao_de(acoes, ".gitignore"), "ignorado-igual")
 
 
+class TesteRegraDeSpecs(Base):
+    """A stack nao decide sozinha ignorar `specs/` de quem ja versiona a pasta."""
+
+    def ler(self):
+        return (self.destino / ".gitignore").read_text(encoding="utf-8")
+
+    def test_destino_sem_specs_recebe_a_linha(self):
+        escrever(self.destino / ".gitignore", "vendor/\n")
+        self.instalar()
+        self.assertIn("/specs", self.ler())
+
+    def test_destino_com_specs_nao_recebe_a_linha(self):
+        escrever(self.destino / ".gitignore", "vendor/\n")
+        (self.destino / "specs").mkdir()
+        self.instalar()
+        self.assertNotIn("/specs", self.ler())
+
+    def test_o_resto_da_carga_entra_mesmo_com_specs(self):
+        escrever(self.destino / ".gitignore", "vendor/\n")
+        (self.destino / "specs").mkdir()
+        self.instalar()
+        self.assertIn(".claude/settings.local.json", self.ler())
+        self.assertIn(".specify/feature.json", self.ler())
+
+
 class TesteMesclagemDeSettings(Base):
     def ler(self):
         return json.loads((self.destino / ".vscode/settings.json").read_text(encoding="utf-8"))
@@ -224,6 +283,80 @@ class TesteMesclagemDeSettings(Base):
         acoes = self.instalar()
         self.assertEqual((self.destino / ".vscode/settings.json").read_text(encoding="utf-8"), primeiro)
         self.assertEqual(self.acao_de(acoes, ".vscode/settings.json"), "ignorado-igual")
+
+
+class TesteMesclagemDeSettingsDoClaude(Base):
+    def ler(self):
+        return json.loads((self.destino / ".claude/settings.json").read_text(encoding="utf-8"))
+
+    def test_criado_quando_ausente(self):
+        self.instalar()
+        self.assertEqual(self.ler(), CLAUDE_SETTINGS_RENDERIZADO)
+
+    def test_marketplace_recebe_o_nome_derivado_do_destino(self):
+        self.instalar()
+        bruto = (self.destino / ".claude-plugin/marketplace.json").read_text(encoding="utf-8")
+        self.assertNotIn(PLACEHOLDER, bruto)
+        self.assertEqual(json.loads(bruto), MARKETPLACE_RENDERIZADO)
+
+    def test_settings_nao_deixa_placeholder(self):
+        self.instalar()
+        bruto = (self.destino / ".claude/settings.json").read_text(encoding="utf-8")
+        self.assertNotIn(PLACEHOLDER, bruto)
+
+    def test_arquivos_substituidos_sao_idempotentes(self):
+        self.instalar()
+        acoes = self.instalar()
+        self.assertEqual(self.acao_de(acoes, ".claude-plugin/marketplace.json"), "ignorado-igual")
+        self.assertEqual(self.acao_de(acoes, ".claude/settings.json"), "ignorado-igual")
+
+    def test_verificar_nao_acusa_divergencia_no_marketplace(self):
+        self.instalar()
+        itens = inst.verificar(self.destino)
+        por_caminho = {i["caminho"]: i["acao"] for i in itens}
+        self.assertEqual(por_caminho[".claude-plugin/marketplace.json"], "igual")
+        self.assertEqual(por_caminho[".claude/settings.json"], "igual")
+
+    def test_preserva_o_do_time_e_acrescenta_o_da_stack(self):
+        escrever(self.destino / ".claude/settings.json", json.dumps({
+            "extraKnownMarketplaces": {"outro": {"source": {"source": "directory", "path": "./outro"}}},
+            "enabledPlugins": {"outro@outro": True},
+        }, indent=4))
+        acoes = self.instalar()
+        dados = self.ler()
+        self.assertIn("outro", dados["extraKnownMarketplaces"])
+        self.assertIn(MARKETPLACE, dados["extraKnownMarketplaces"])
+        self.assertTrue(dados["enabledPlugins"]["outro@outro"])
+        self.assertTrue(dados["enabledPlugins"][f"stack-ai@{MARKETPLACE}"])
+        self.assertEqual(self.acao_de(acoes, ".claude/settings.json"), "mesclado")
+
+    def test_valor_ja_definido_pelo_time_nao_muda(self):
+        escrever(self.destino / ".claude/settings.json", json.dumps({
+            "enabledPlugins": {f"stack-ai@{MARKETPLACE}": False},
+        }, indent=4))
+        self.instalar()
+        self.assertFalse(self.ler()["enabledPlugins"][f"stack-ai@{MARKETPLACE}"])
+
+    def test_idempotente(self):
+        escrever(self.destino / ".claude/settings.json", json.dumps({"permissions": {"allow": []}}, indent=4))
+        self.instalar()
+        primeiro = (self.destino / ".claude/settings.json").read_text(encoding="utf-8")
+        acoes = self.instalar()
+        self.assertEqual((self.destino / ".claude/settings.json").read_text(encoding="utf-8"), primeiro)
+        self.assertEqual(self.acao_de(acoes, ".claude/settings.json"), "ignorado-igual")
+
+
+class TesteNomeDoMarketplace(unittest.TestCase):
+    def test_deriva_do_nome_do_diretorio(self):
+        self.assertEqual(inst.nome_do_marketplace(Path("/x/sei-sdd")), "stack-ai-sei-sdd")
+        self.assertEqual(inst.nome_do_marketplace(Path("/x/sdta")), "stack-ai-sdta")
+
+    def test_reduz_caracteres_fora_de_a_z0_9(self):
+        self.assertEqual(inst.nome_do_marketplace(Path("/x/Meu Repo!")), "stack-ai-meu-repo")
+        self.assertEqual(inst.nome_do_marketplace(Path("/x/.oculto")), "stack-ai-oculto")
+
+    def test_sem_nome_utilizavel_cai_no_padrao(self):
+        self.assertEqual(inst.nome_do_marketplace(Path("/")), "stack-ai-repo")
 
 
 class TesteSymlink(Base):
@@ -286,8 +419,10 @@ class TesteLinhaDeComando(Base):
     def test_destino_inexistente(self):
         self.assertEqual(self.rodar(["instalar", "--destino", str(self.destino / "nao-existe")]), 2)
 
-    def test_recusa_a_propria_raiz_da_skill(self):
-        self.assertEqual(self.rodar(["instalar", "--destino", str(inst.SKILL.parents[2])]), 2)
+    def test_recusa_destino_que_hospeda_a_skill(self):
+        for destino in (inst.SKILL, inst.SKILL.parents[0], inst.SKILL.parents[1]):
+            with self.subTest(destino=str(destino)):
+                self.assertEqual(self.rodar(["instalar", "--destino", str(destino)]), 2)
 
     def test_codigo_zero_em_instalacao_limpa(self):
         self.assertEqual(self.rodar(["instalar", "--destino", str(self.destino)]), 0)
