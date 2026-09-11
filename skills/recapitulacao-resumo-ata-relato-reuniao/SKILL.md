@@ -1,7 +1,7 @@
 ---
 name: recapitulacao-resumo-ata-relato-reuniao
 description: >
-  Produz a Recapitulação da Reunião e a Lista de Ações da Reunião a partir de transcrição, gravação, anotações ou URL de "Assistir no Navegador" da gravação no Microsoft Teams. Use esta skill sempre que o usuário pedir recapitulação, resumo, ata, relato, principais decisões, ações ou próximos passos de uma reunião, mesmo sem usar esses nomes, desde que forneça ou indique o conteúdo da reunião.
+  Transforma conteúdo de reunião em Recapitulação da Reunião e Lista de Ações. Use esta skill quando o usuário pedir recapitulação, resumo, ata, memória de reunião, relato, síntese, consolidação, registro, principais decisões, deliberações, encaminhamentos, pendências, responsáveis ou próximos passos, inclusive em formulações como “o que foi decidido” ou “o que ficou combinado”. Acione-a quando houver transcrição, gravação, anotações ou URL acessível de "Assistir no Navegador" do Microsoft Teams.
 compatibility: Requer conteúdo legível da reunião em texto, gravação, anotações ou URL acessível do Microsoft Teams.
 ---
 
@@ -49,7 +49,7 @@ Quando houver conteúdo suficiente, responda **somente** com o texto abaixo, pre
 *   [Ação]: **[Responsável]** [ação subsequente definida].
 ```
 
-Substitua `dd/mm/aaaa` pela data atual. Crie blocos temáticos somente quando houver conteúdo correspondente e mantenha cada ação apenas se a fonte trouxer a ação e seu responsável. Mantenha a ordem dos blocos e dos subitens exatamente na sequência em que aparecem na fonte.
+Substitua `dd/mm/aaaa` pela data explicitamente registrada na fonte. Se a fonte não indicar a data, use `não informada`. Crie blocos temáticos somente quando houver conteúdo correspondente e mantenha cada ação apenas se a fonte trouxer a ação e seu responsável. Mantenha a ordem dos blocos e dos subitens exatamente na sequência em que aparecem na fonte.
 
 Para cada seção, inicie cada bloco com subtítulo em negrito seguido de dois pontos e uma explicação clara dos subitens daquele bloco. Inclua múltiplos subitens independentes quando a fonte fornecer conteúdo suficiente para isso. Inicie cada subitem em linha própria com `* `, usando uma descrição curta, dois pontos e uma explicação clara. Faça uma frase direta e curta por subitem, sem conectá-los por transições como "além disso", "também", "por fim", "em seguida", "na sequência".
 
@@ -57,13 +57,13 @@ Para cada seção, inicie cada bloco com subtítulo em negrito seguido de dois p
 
 Confirme que:
 
-- a resposta contém a data atual e somente as duas seções exigidas;
+- a resposta contém a data registrada na fonte ou `não informada` quando ela não constar na fonte, e somente as duas seções exigidas;
 - todas as informações, inclusive decisões e ações, são sustentadas pela fonte;
 - as "Regras de Escrita" foram seguidas corretamente;
 - nenhum URL, referência à fonte ou referência à gravação aparece no texto;
 - cada responsável de ação está explicitamente indicado e em negrito;
 - a ordem segue a fonte, e os subitens são curtos, independentes e estão em linhas separadas;
-- todo trecho entre aspas foi transcrito integralmente, sem reescrita.
+- todo trecho entre aspas incluído no registro foi transcrito integralmente, sem reescrita.
 
 # Regras de Escrita
 - Sempre escreva com correção gramatical, ortográfica e técnica.

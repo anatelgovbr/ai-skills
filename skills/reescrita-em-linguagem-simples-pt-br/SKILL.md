@@ -1,14 +1,11 @@
 ---
 name: reescrita-em-linguagem-simples-pt-br
 description: >
-  Reescreve textos em português brasileiro em Linguagem Simples, com clareza, precisão e acessibilidade para o público-alvo informado ou para "Cidadão" por padrão. Use esta skill sempre que o usuário pedir para reescrever, reformular, simplificar, tornar claro, acessível, direto, compreensível, menos burocrático ou em linguagem simples/cidadã um texto, mesmo que ele esteja colado na conversa, em arquivo ou anexo, em uma URL, em várias URLs ou em páginas da internet e do domínio gov.br.
+  Reescreve conteúdo em português brasileiro em Linguagem Simples, com clareza, precisão e acessibilidade para o Público-alvo informado ou para Cidadão. Use esta skill quando o usuário pedir que um texto, documento, comunicado, orientação ou página seja reescrito, reformulado, simplificado, tornado claro, direto, acessível ou menos burocrático, inclusive em pedidos de Linguagem Simples ou linguagem cidadã. Aceita conteúdo colado, arquivos, anexos e URLs acessíveis.
 compatibility: Requer texto legível ou URLs acessíveis; para páginas HTML, identifique e obtenha o título e o conteúdo principal.
 ---
 
 # Reescrita em Linguagem Simples (pt-BR)
-
-# Persona
-Editor-chefe com mais de 20 anos de experiência na revisão de textos em português brasileiro, especialista em Linguagem Simples.
 
 # Tarefa/Objetivo
 Reescrever texto em Linguagem Simples, garantindo clareza, objetividade, precisão técnica e leitura fluida.
@@ -41,16 +38,12 @@ Para URL de página na Internet, identifique e obtenha o título e o conteúdo p
 # Passo a passo
 1. Antes de tudo, leia e analise atentamente todo o texto de cada 'Documento Referenciado'.
 2. Identifique o Público-alvo informado pelo usuário. Se não houver indicação expressa, considere o Público-alvo como 'Cidadão'.
-3. Tenha em mente:
-   - O que é Linguagem Simples no Brasil?
-   - Que "Linguagem Simples" é o conjunto de técnicas destinadas à transmissão clara e objetiva de informações, de modo que as palavras, a estrutura e o leiaute da mensagem permitam ao 'Público-alvo' facilmente encontrar a informação, compreendê-la e usá-la.
-   - Não confunda Linguagem Simples com linguagem fácil, leitura fácil ou simplificação excessiva.
-   - Estruture o texto para reduzir esforço cognitivo e permitir consulta rápida.
-   - Mantenha a exatidão técnica necessária ao 'Público-alvo'.
-4. Reserve o tempo necessário para pensar bem e seja cuidadoso, sem pressa.
-5. Isso é muito importante para mim!
-6. Reescreva cada 'Documento Referenciado' seguindo as 'Regras de Escrita' abaixo.
-7. Preserve informações, condições, datas, valores, responsáveis, requisitos, exceções e relações de causa e efeito presentes na fonte. Não omita conteúdo material nem acrescente interpretação, aconselhamento ou informação externa.
+3. Aplique Linguagem Simples:
+   - Use palavras, estrutura e leiaute que permitam ao Público-alvo encontrar, compreender e usar a informação.
+   - Diferencie-a de linguagem fácil, leitura fácil e simplificação excessiva.
+   - Reduza o esforço cognitivo, permita consulta rápida e preserve a exatidão técnica necessária.
+4. Reescreva cada 'Documento Referenciado' seguindo as 'Regras de Escrita' abaixo.
+5. Preserve informações, condições, datas, valores, responsáveis, requisitos, exceções e relações de causa e efeito presentes na fonte. Não omita conteúdo material nem acrescente interpretação, aconselhamento ou informação externa.
 
 # Regras de Escrita
 - Sempre escreva com correção gramatical, ortográfica e técnica.
