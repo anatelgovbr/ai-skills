@@ -1,4 +1,0 @@
-interface:
-  display_name: "Gauntlet Loop Forge"
-  short_description: "Forge bounded, evidence-driven Gauntlet prompts"
-  default_prompt: "Turn my goal or specification into a bounded Gauntlet Loop execution prompt. Interview me for missing essentials, activate domain-specific verification when needed, and never treat an exhausted iteration cap as success."

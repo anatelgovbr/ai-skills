@@ -11,6 +11,7 @@ Sempre crie uma branch dedicada e abra um Pull Request para revisão antes de in
 - [Como o SpecKit está organizado](#como-o-speckit-está-organizado)
 - [Mapa de atualização](#mapa-de-atualização)
 - [Como atualizar o SpecKit](#como-atualizar-o-speckit)
+- [Como atualizar o OWASP Secure Agent Playbook](#como-atualizar-o-owasp-secure-agent-playbook)
 - [Como atualizar os demais arquivos da stack](#como-atualizar-os-demais-arquivos-da-stack)
 
 ---
@@ -85,6 +86,9 @@ Os arquivos de configuração pessoal do SpecKit ficam no `.gitignore` e não s�
 | Pasta `.agents/`, fora de `skills/speckit-*/` | Não se aplica | Ciclo normal do projeto |
 | Arquivos `AGENTS.md` e `.github/copilot-instructions.md` | Não se aplica | Ciclo normal do projeto |
 | Pasta `docs/stack-ai/` | Atualizar a versão citada em `speckit.md` e em `stack-de-ia.md` | Espelhar toda alteração na skill `stack-ai-init`, na mesma entrega |
+| Pasta `.agents/skills/owasp-playbook/upstream/` | Não se aplica | Nunca editar o conteúdo; a versão nova chega pela `stack-ai-init`, conforme a seção [Como atualizar o OWASP Secure Agent Playbook](#como-atualizar-o-owasp-secure-agent-playbook) |
+| Arquivo `.agents/skills/owasp-playbook/SKILL.md` | Não se aplica | Nunca receber ajuste do projeto; é o mesmo arquivo em todo repositório, e o que é do projeto vai para a ponte |
+| Arquivo `.agents/security/mapa-cwe-guia.md` | Não se aplica | A tabela de tradução chega da stack; as demais seções são do projeto e são preservadas na atualização |
 
 ---
 
@@ -97,6 +101,27 @@ Os arquivos de configuração pessoal do SpecKit ficam no `.gitignore` e não s�
 5. Mantenha `.specify/memory/constitution.md` vazio. As regras de governança vivem nas próprias skills de fase, então não incorpore o conteúdo do novo `constitution-template.md`.
 6. Teste o fluxo ponta a ponta (`specify`, `plan`, `tasks`, `implement`) em uma funcionalidade de exemplo.
 7. Atualize a versão registrada na nota de [`speckit.md`](speckit.md) e na tabela de skills de [`stack-de-ia.md`](stack-de-ia.md), e abra um Pull Request descrevendo o que mudou.
+
+---
+
+## Como atualizar o OWASP Secure Agent Playbook
+
+A skill `owasp-playbook` tem três partes. O `SKILL.md` é agnóstico e idêntico em todo repositório. A pasta `upstream/` é cópia parcial e literal do repositório [OWASP/secure-agent-playbook](https://github.com/OWASP/secure-agent-playbook), com os 17 plays. A ponte `.agents/security/mapa-cwe-guia.md` é onde o projeto entra: tradução de CWE para tópico do guia, sinais, auditores, exceções, saídas e roteamento da correção.
+
+Regras:
+
+- Nunca edite arquivo dentro de `upstream/`. A atualização substitui a pasta inteira, e editar o conteúdo cria obra derivada sob a cláusula ShareAlike dos dados OWASP.
+- Nunca ajuste o `SKILL.md` para o projeto. Sinais, auditores e exceções do projeto vão para a ponte, nas seções que já existem lá com os títulos que a skill procura.
+- A varredura de travessão do projeto não se aplica a `upstream/`. O conteúdo é em inglês e não é nosso.
+- Correção no conteúdo do playbook vira Pull Request no repositório de origem.
+
+A versão nova não é baixada aqui: ela chega pela `stack-ai-init`, que distribui a cópia já preparada. O procedimento é o da seção [Como atualizar os demais arquivos da stack](#como-atualizar-os-demais-arquivos-da-stack), com um passo a mais, porque a `stack-ai-init` cria e substitui arquivos mas não apaga: play removido ou renomeado na versão nova ficaria órfão. Antes de autorizar a atualização, apague a pasta `upstream/` da skill; a instalação recria a pasta inteira a partir da versão distribuída.
+
+```bash
+rm -rf .agents/skills/owasp-playbook/upstream
+```
+
+Depois da atualização, confira se as seções da ponte que o projeto preencheu continuam lá. A `stack-ai-init` preserva arquivo que diverge da carga, então a ponte preenchida só muda com autorização explícita de substituição, e nesse caso o conteúdo do projeto precisa ser reaplicado à mão.
 
 ---
 

@@ -11,11 +11,12 @@ repetidas.
 | `AGENTS.md` na raiz | Contexto global carregado em toda tarefa | Sim |
 | `.agents/references/` | Conhecimento consultivo, carregado sob demanda | Sim |
 | `.agents/skills/` | Fluxos de implementacao e de verificacao | Sim |
+| `.agents/security/mapa-cwe-guia.md` | Ponte da `owasp-playbook`: traduz o achado do play para o controle local e registra o que o projeto tem de proprio. A skill preenche as quatro secoes de projeto | Nao |
 | Ponteiro de compatibilidade (`CLAUDE.md`, `.github/copilot-instructions.md` ou equivalente) | Faz a ferramenta local encontrar o `AGENTS.md` | Nao |
 | Indice de skills ou registro de auditoria | Lista as skills instaladas, origem e composicao | Nao |
-| Demais pastas da stack (`checklists/`, `security/`, `decisions/`, `memory/`) | Usos especificos do repositorio de destino | Nao |
+| Demais pastas da stack (`checklists/`, `decisions/`, `memory/` e o restante de `security/`) | Usos especificos do repositorio de destino | Nao |
 
-A skill escreve em `AGENTS.md`, `.agents/references/` e `.agents/skills/`. Nao escreve nas
+A skill escreve em `AGENTS.md`, `.agents/references/` e `.agents/skills/`, e preenche as quatro secoes de projeto de `.agents/security/mapa-cwe-guia.md` quando o arquivo existir no destino. Nao escreve nas
 demais pastas nem em `.claude/`. Quando um achado pertencer claramente a outra pasta da stack,
 ou a uma automacao da ferramenta, registre a recomendacao no relatorio final e deixe a decisao
 com o desenvolvedor.
@@ -48,9 +49,11 @@ contrato de conteudo, nao um espaco opcional, e cada uma tem regra propria:
 | `Dependencias Tecnicas do Projeto` | inventario | topicos `**<nome>**: <valor>` | runtime com versao, dados, componentes externos, bibliotecas com versao, ferramentas, ausencias |
 | `Escopo e Limites de Escrita` | regra | duas listas de caminhos, `Permitido` e `Proibido sem autorizacao` | caminhos com curinga, mais a condicao de excecao quando houver |
 | `Hierarquia de Autoridade` | regra | topicos, duas ou tres linhas | qual documento vale e o que fazer no conflito |
+| `Disciplina de Execucao Agentica` | regra fixa da stack | topicos `**<principio>**: <regra>` | texto que chega pronto da instalacao e vale igual em todo projeto; a rodada preserva o texto e nao acrescenta principio |
 | `Guardrails Universais` | alerta | topicos `**<assunto>**: <regra com o simbolo literal>` | convencoes transversais violaveis por implementacao nova |
 | `Qualidade Minima` | regra | topicos `**<assunto>**: <regra>` | o que verificar antes de entregar, com o comando quando existir |
 | `Regras de Decisao` | regra | topicos sem prefixo, imperativos | o que fazer diante de ambiguidade, conflito e pedido fora de escopo |
+| `Regras de Escrita` | regra fixa da stack | topicos sem prefixo, imperativos | texto que chega pronto da instalacao e vale igual em todo projeto; a rodada preserva o texto e nao acrescenta regra |
 
 Tres secoes nao vem no esqueleto e aparecem quando a rodada tem material para elas. Nao as crie
 vazias:
@@ -67,6 +70,21 @@ com o nome do padrao, tres ou quatro linhas e o ponteiro para a reference que gu
 As secoes de inventario **nao passam pelos criterios de admissao de regra**. Exigir delas
 transversalidade, frequencia ou busca por contraexemplo deixa a secao vazia ou vaga, e vago ali
 e falha da rodada: o censo tem os nomes e os numeros.
+
+## Contrato da ponte de seguranca
+
+`.agents/security/mapa-cwe-guia.md` chega da stack com a tabela `Traducao` pronta e as demais secoes com texto padrao. A skill `owasp-playbook` le o arquivo secao por secao e procura cada uma pelo titulo, entao os titulos nao mudam.
+
+| Secao | Quem escreve | Preenchida com |
+|---|---|---|
+| `Traducao` | a stack | tabela de CWE para topico do guia, severidade e secao ASVS. Nao e alterada |
+| `Sinais do projeto` | esta skill | tabela `Sinal no escopo \| Play \| Onde esta hoje`, um sinal por tipo de artefato que a investigacao encontrou, com o play da `owasp-playbook` que ele dispara |
+| `Auditores do projeto` | esta skill | bloco `bash` com comandos que existem no repositorio ou derivados dos guardrails do `AGENTS.md`, cada um executado uma vez antes de entrar |
+| `Excecoes` | esta skill | lista do que nao e achado neste repositorio, com o motivo e a evidencia |
+| `Saidas opcionais` | a stack | gerador de PDF, de issues ou outro formato. Nao e alterada |
+| `Correcao` | esta skill | a skill ou o procedimento do projeto que recebe a correcao, por tipo de artefato |
+
+Cada entrada das quatro secoes de projeto se apoia em evidencia do codigo, arquivo e linha ou saida de comando, pela mesma barra dos demais artefatos. Secao sem sinal ou auditor real mantem o texto padrao que veio da stack: a `owasp-playbook` tem comportamento fixo para secao vazia, e texto inventado ali dispara play que nao se aplica. O que preencher em cada secao esta na Fase 8 do `SKILL.md`; a forma esta em `formato-artefatos.md`.
 
 ## Custo de contexto por destino
 
