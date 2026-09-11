@@ -7,7 +7,7 @@ description: >
   base operacional para agentes: inventario e regras em AGENTS.md, skills de fluxo, references
   de detalhe e guardrails de coerencia, todos derivados de evidencia do proprio codigo.
 
-  Use quando o pedido envolver popular, enriquecer, customizar, atualizar ou rodar de novo a
+  Use quando o pedido envolver enriquecer, atualizar ou rodar de novo a
   stack de IA, o AGENTS.md, as references, os guardrails ou as skills de um repositorio;
   descobrir a arquitetura real, o padrao de construcao de pagina, de acesso a dados, de
   autenticacao, de permissao, de validacao ou de integracao de um sistema; registrar como se
@@ -66,7 +66,7 @@ Conhecimento de convencao externa pode ser usado para **formular hipotese** ("nu
 assim, a conexao costuma vir de X: aqui vem de onde?") e para nomear o que se encontrou.
 Nunca para decidir o que deveria existir, nem para entrar num artefato como regra.
 
-**Nao presuma separacao em camadas.** Se persistencia, validacao, regra de negocio e
+**Documente a separacao que o codigo tiver.** Se persistencia, validacao, regra de negocio e
 renderizacao vivem no mesmo arquivo, isso e a descoberta arquitetural, e e ela que se
 documenta.
 

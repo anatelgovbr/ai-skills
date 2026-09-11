@@ -114,13 +114,13 @@ class TesteInstalacaoLimpa(Base):
         for rel, fonte in inst.arquivos_da_carga().items():
             alvo = self.destino / rel
             self.assertTrue(alvo.is_file(), rel)
-            rendido = inst.texto_da_carga(rel, fonte, self.destino)
+            rendido = inst.texto_da_carga(rel, fonte, inst.nome_do_marketplace(self.destino))
             self.assertEqual(inst.hash_arquivo(alvo), inst.hash_da_carga(fonte, rendido), rel)
         self.assertFalse([a for a in acoes if a["acao"] == "erro"])
 
     def test_so_os_arquivos_declarados_sofrem_substituicao(self):
         for rel, fonte in inst.arquivos_da_carga().items():
-            rendido = inst.texto_da_carga(rel, fonte, self.destino)
+            rendido = inst.texto_da_carga(rel, fonte, inst.nome_do_marketplace(self.destino))
             if rel in inst.SUBSTITUIVEIS:
                 self.assertIsNotNone(rendido, rel)
             else:
@@ -357,6 +357,93 @@ class TesteNomeDoMarketplace(unittest.TestCase):
 
     def test_sem_nome_utilizavel_cai_no_padrao(self):
         self.assertEqual(inst.nome_do_marketplace(Path("/")), "stack-ai-repo")
+
+
+class TesteNomeJaDeclaradoPeloDestino(unittest.TestCase):
+    """O nome derivado e so o padrao de criacao: destino que ja tem o seu mantem."""
+
+    def setUp(self):
+        raiz = Path(tempfile.mkdtemp(prefix="stack-init-nome-"))
+        self.addCleanup(shutil.rmtree, raiz, ignore_errors=True)
+        self.destino = raiz / "destino"
+        self.destino.mkdir()
+
+    def test_sem_declaracao_nenhuma_usa_o_derivado(self):
+        self.assertIsNone(inst.nome_ja_declarado(self.destino))
+        self.assertEqual(inst.nome_do_marketplace(self.destino), "stack-ai-destino")
+
+    def test_marketplace_json_manda(self):
+        escrever(self.destino / ".claude-plugin/marketplace.json",
+                 json.dumps(dict(MARKETPLACE_CARGA, name="stack-ai-outro-nome")))
+        self.assertEqual(inst.nome_do_marketplace(self.destino), "stack-ai-outro-nome")
+
+    def test_settings_entra_como_reserva(self):
+        escrever(self.destino / ".claude/settings.json",
+                 json.dumps({"enabledPlugins": {"stack-ai@stack-ai-legado": True}}))
+        self.assertEqual(inst.nome_do_marketplace(self.destino), "stack-ai-legado")
+
+    def test_marketplace_de_outro_plugin_nao_e_adotado(self):
+        escrever(self.destino / ".claude/settings.json", json.dumps({
+            "extraKnownMarketplaces": {"outro": {"source": {"source": "directory", "path": "./outro"}}},
+            "enabledPlugins": {"outro@outro": True},
+        }))
+        self.assertIsNone(inst.nome_ja_declarado(self.destino))
+        self.assertEqual(inst.nome_do_marketplace(self.destino), "stack-ai-destino")
+
+    def test_placeholder_cru_nao_e_adotado(self):
+        escrever(self.destino / ".claude-plugin/marketplace.json",
+                 json.dumps(dict(MARKETPLACE_CARGA, name=PLACEHOLDER)))
+        self.assertEqual(inst.nome_do_marketplace(self.destino), "stack-ai-destino")
+
+    def test_json_quebrado_nao_derruba_a_resolucao(self):
+        escrever(self.destino / ".claude-plugin/marketplace.json", "{ nao e json,")
+        self.assertEqual(inst.nome_do_marketplace(self.destino), "stack-ai-destino")
+
+
+class TesteInstalacaoComNomeJaDeclarado(Base):
+    """Destino com nome proprio nao ganha um segundo marketplace ao lado."""
+
+    OUTRO = "stack-ai-nome-da-pasta-de-trabalho"
+
+    def declarar(self):
+        escrever(self.destino / ".claude-plugin/marketplace.json",
+                 json.dumps(dict(MARKETPLACE_CARGA, name=self.OUTRO), indent=4) + "\n")
+        escrever(self.destino / ".claude/settings.json", json.dumps({
+            "extraKnownMarketplaces": {self.OUTRO: {"source": {"source": "directory", "path": "."}}},
+            "enabledPlugins": {f"stack-ai@{self.OUTRO}": True},
+        }, indent=4) + "\n")
+
+    def test_settings_nao_ganha_chave_duplicada(self):
+        self.declarar()
+        acoes = self.instalar()
+        dados = json.loads((self.destino / ".claude/settings.json").read_text(encoding="utf-8"))
+        self.assertEqual(list(dados["extraKnownMarketplaces"]), [self.OUTRO])
+        self.assertEqual(list(dados["enabledPlugins"]), [f"stack-ai@{self.OUTRO}"])
+        self.assertEqual(self.acao_de(acoes, ".claude/settings.json"), "ignorado-igual")
+
+    def test_marketplace_json_do_destino_nao_e_divergencia(self):
+        self.declarar()
+        acoes = self.instalar()
+        self.assertEqual(self.acao_de(acoes, ".claude-plugin/marketplace.json"), "ignorado-igual")
+        self.assertEqual(
+            json.loads((self.destino / ".claude-plugin/marketplace.json").read_text(encoding="utf-8"))["name"],
+            self.OUTRO)
+
+    def test_verificar_sai_limpo(self):
+        self.declarar()
+        self.instalar()
+        por_caminho = {i["caminho"]: i["acao"] for i in inst.verificar(self.destino)}
+        self.assertEqual(por_caminho[".claude-plugin/marketplace.json"], "igual")
+        self.assertEqual(por_caminho[".claude/settings.json"], "igual")
+
+    def test_so_o_marketplace_json_ja_basta(self):
+        """settings.json ausente recebe o nome que o marketplace.json declara."""
+        escrever(self.destino / ".claude-plugin/marketplace.json",
+                 json.dumps(dict(MARKETPLACE_CARGA, name=self.OUTRO), indent=4) + "\n")
+        self.instalar()
+        dados = json.loads((self.destino / ".claude/settings.json").read_text(encoding="utf-8"))
+        self.assertEqual(list(dados["extraKnownMarketplaces"]), [self.OUTRO])
+        self.assertEqual(list(dados["enabledPlugins"]), [f"stack-ai@{self.OUTRO}"])
 
 
 class TesteSymlink(Base):

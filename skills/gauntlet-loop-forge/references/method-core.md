@@ -1,44 +1,38 @@
 # Gauntlet Loop Method Core
 
-Use this reference to preserve the method while adapting it to different domains and bounded execution.
+Read this when fidelity to the original method is uncertain. The operative rules are the invariants in `SKILL.md` and the loop in section 7. This file records what the method protects and the one deliberate adaptation.
 
-## Canonical invariants
+## What breaks the method
 
-1. Give the lead agent the **goal**, not a prematurely dictated implementation.
-2. Give it a **real bar** the agent can inspect or measure.
-3. Let the lead split the mission into the smallest parts that can be improved and judged independently.
-4. Separate **builder/executor** from **critic/verifier**; use fresh context for the critic where the harness supports it.
-5. The critic inspects the **real artifact**, not the builder's summary.
-6. When the artifact loses against the bar, identify the **largest meaningful remaining gap** and iterate.
-7. Use a live progress/evidence artifact for long work.
-8. Run an optional integration/smoothing review when separately optimized pieces may conflict.
+However the prompt is worded, these return judgment to the builder and void the method:
 
-## Bounded adaptation
+- the builder judging its own artifact, directly or through a critic that inherited its reasoning;
+- a critic reading the builder's summary instead of the artifact;
+- a bar the artifact cannot lose against;
+- rounds that polish everywhere instead of attacking the largest remaining gap;
+- a decomposition imposed on the lead, when splitting the work is itself part of the judgment.
 
-The original method rejects an arbitrary round count as a **definition of done**. That does not require infinite execution.
+## The bounded adaptation
 
-This Skill separates two questions:
+The original method rejects an arbitrary round count as a **definition of done**. That is not an argument for infinite execution.
 
-- **Did quality pass?** Determined only by evidence and the quality bar.
-- **May the system continue spending effort?** Determined by a finite safety envelope.
+Two questions stay separate here:
 
-Therefore:
+- **Did quality pass?** Decided only by evidence against the bar.
+- **May the system keep spending effort?** Decided by the finite safety envelope.
 
-- stop early on `PASS`;
-- if a hard limit is exhausted first, stop as `CAPPED`;
-- never report a cap as quality success;
-- only explicit human approval may establish a new continuation budget.
-
-This preserves the method's quality logic while preventing uncontrolled execution.
+So: stop early on `PASS`, stop as `CAPPED` when a limit is exhausted first, never report a cap as quality success, and never self-extend.
 
 ## Source lineage
 
 Primary method:
-- Matt Shumer, “How to Run a Gauntlet Loop”, Something Big Is Happening, 2026: https://somethingbig.ai/gauntlet-loop
+
+- Matt Shumer, "How to Run a Gauntlet Loop", Something Big Is Happening, 2026: https://somethingbig.ai/gauntlet-loop
 - Official prompt generator: https://somethingbig.ai/gauntlet-loop/generator
 
 Community implementations studied:
+
 - RoboNuggets / Jay E: https://github.com/robonuggets/gauntlet-loop
 - Nicholas Spisak: https://github.com/NicholasSpisak/gauntlet-loop
 
-The Skill intentionally synthesizes the method rather than copying either community Skill verbatim.
+This Skill synthesizes the method rather than copying either community implementation.

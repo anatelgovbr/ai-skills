@@ -54,7 +54,7 @@ Strong evidence may include:
 - length/format constraints;
 - one or more concrete published references for measurable qualities such as clarity, density, or organization.
 
-Do not require imitation of a living author's distinctive style.
+The bar measures qualities like clarity, density, and organization. A living author's distinctive style stays out of it.
 
 ## Visual / UX / product design
 

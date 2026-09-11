@@ -32,17 +32,17 @@ Each software workstream should have:
 - independent verifier criteria;
 - local safety budget inherited from the global envelope.
 
-Do not create tasks such as “improve backend” or “make code production-ready”. Create workstreams that a verifier can decide.
+Create workstreams a verifier can decide. A responsibility like “improve backend” or “make code production-ready” has no verdict, so give each one a bounded scope and an observable outcome.
 
 ## TDD is the default for behavior-changing implementation
 
 For new behavior and bug fixes, require the executor to use a Red–Green–Refactor style loop at the smallest useful increment:
 
-1. **Test list / next behavior** — identify the next observable behavior or defect case before changing production code.
-2. **Red** — add or select a focused automated test that fails for the expected reason against the pre-change behavior, when technically feasible.
-3. **Green** — make the smallest coherent production change needed to pass that test without breaking existing gates.
-4. **Refactor** — improve structure while keeping relevant tests green.
-5. **Broaden evidence** — run the appropriate higher-level regression/integration gates before handing to the verifier.
+1. **Test list or next behavior:** identify the next observable behavior or defect case before changing production code.
+2. **Red:** add or select a focused automated test that fails for the expected reason against the pre-change behavior, when technically feasible.
+3. **Green:** make the smallest coherent production change needed to pass that test without breaking existing gates.
+4. **Refactor:** improve structure while keeping relevant tests green.
+5. **Broaden evidence:** run the appropriate higher-level regression/integration gates before handing to the verifier.
 
 The Gauntlet executor→verifier cycle is not the same as the executor's internal Red–Green–Refactor micro-cycle. Both remain bounded: internal test/fix retries consume executor/turn budget.
 
@@ -82,7 +82,7 @@ The Gauntlet executor→verifier cycle is not the same as the executor's interna
 - Demonstrate the pre-change deficiency when safe and feasible.
 - Implement and prove the target threshold/control afterward.
 
-Do not create fake tests solely to claim TDD compliance. If strict red-first execution is infeasible, the executor must explain the reason in the evidence ledger and use the closest pre-change executable acceptance check.
+Every test earns its place by being able to fail for the behavior it names. When strict red-first execution is infeasible, the executor records the reason in the evidence ledger and uses the closest pre-change executable acceptance check.
 
 ## Executor evidence contract
 
@@ -99,7 +99,7 @@ Require, as relevant:
 - non-functional measurements;
 - unresolved risks.
 
-Do not accept “tests pass” without identifying what ran and against which artifact/version.
+Accept a test result together with what ran and the artifact version it ran against.
 
 ## Independent software verifier
 
@@ -116,7 +116,7 @@ The verifier should:
 
 ## Engineering gates by task risk
 
-Select proportionally; do not require every gate for every change.
+Select gates proportional to the risk of the change.
 
 Possible gates:
 

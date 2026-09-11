@@ -2,129 +2,115 @@
 
 ## Contents
 
-- Layer 0 — Extract supplied context
-- Layer 1 — Mission and artifact
-- Layer 2 — Scope and success
-- Layer 3 — Verification and domain specialization
-- Layer 4 — Action safety
-- Layer 5 — Bounded execution
+- Layer 0: extract supplied context
+- Asking order
+- Where each answer comes from
+- Domain routing
+- Action safety
+- Effort sizing
 - Interview behavior
 
 
-## Purpose
+Interrogate only what is missing, in layers, so a vague idea becomes a concrete Gauntlet input without forcing the user to design the implementation. `SKILL.md` section 3 holds the fields that must be resolved.
 
-Interrogate only what is missing, in layers, so a vague idea becomes a concrete Gauntlet input without forcing the user to design the implementation.
-
-## Layer 0 — Extract supplied context
+## Layer 0: extract supplied context
 
 Before asking anything:
 
-- read the user's idea, prompt, plan, PRD/spec, issue, file, repo context, or linked source;
+- read the user's idea, prompt, plan, PRD, specification, issue, file, repo context, or linked source;
 - extract explicit requirements, checklists, metrics, SLAs, constraints, forbidden actions, human gates, references, and existing quality criteria;
-- mark each datum as `USER`, `SOURCE`, or later `DERIVED`;
-- identify contradictions instead of silently choosing one.
+- read what the environment itself reveals: test suites, CI configuration, schemas, style guides, lint rules, prior prompts, conventions;
+- label each datum `USER`, `SOURCE`, or later `DERIVED`;
+- surface contradictions instead of silently choosing a side.
 
-## Layer 1 — Mission and artifact
+## Asking order
 
-Resolve:
+Ask in this order, one compact batch per layer, skipping whatever Layer 0 already settled:
 
-- desired outcome;
-- target audience/user/system;
-- artifact(s) that should exist at the end;
-- starting state;
-- source of truth;
-- harness/runtime.
+1. **Mission and artifact:** outcome, audience, artifacts, starting state, source of truth, harness. Resolve these before any verification question.
+2. **Scope and success:** in and out of scope, preserved behavior, acceptance criteria, quality dimensions, hard constraints versus preferences, candidate bars.
+3. **Verification and domain:** hard gates, comparative judging, and the specialization the mission triggers.
+4. **Action safety:** tools, access, permissions, irreversible actions, approvals.
+5. **Effort:** the single maximum-rounds question.
 
-If these are unclear, ask them before detailed verification questions.
+Acceptance criteria describe observable outcomes.
 
-## Layer 2 — Scope and success
+## Where each answer comes from
 
-Resolve:
+When a field is delegated to you, or the user is unsure, derive it from this order of evidence rather than inventing one:
 
-- in scope / out of scope;
-- preserved behavior/content;
-- acceptance criteria;
-- quality dimensions;
-- hard constraints vs preferences;
-- candidate quality bars.
+| Field | Look here first | Conservative fallback |
+|---|---|---|
+| Mission and artifacts | The user's own statement, the issue body, the spec's goal section | Ask. This one is not derivable |
+| Starting state and source of truth | An existing artifact, repo, draft, or prior version, and whichever document the material treats as authoritative | The largest existing artifact, stated as an assumption |
+| Scope boundaries | Explicit in and out lists, the acceptance section, adjacent components the material protects | Narrowest reading that still delivers the mission |
+| Harness or runtime | Configuration and instruction files present, the runtime the user is already using | An agentic runtime with subagents, plus the degraded note for plain chat |
+| Acceptance criteria | Requirements, checklists, existing tests, defect reports, SLAs | The mission restated as observable conditions, one per artifact |
+| Quality bar | Named exemplar, frozen test suite, benchmark, threshold, comparable deliverable, rubric already in use | Two or three concrete candidates offered to the user, or bar discovery as the first workstream |
+| Verification and gates | Commands the project already runs, CI steps, review rules, the domain profile | Deterministic gates for objective properties plus a rubric for the rest |
+| Quality dimensions | Non-functional requirements in the material, the domain profile | The domain default set, trimmed to what the mission can affect |
+| Hard constraints | Stated musts, platform and compatibility facts, policy and legal limits, style guides in the repo | Treat stated preferences as preferences, and invent no constraint |
+| Tools, data, permissions | Explicit grants, available credentials, the runtime's own permissions | Read-only. Anything not granted is forbidden |
+| Human gates | Stated approvals, irreversible or external actions the mission implies | Gate every irreversible, external, spending, or destructive action |
+| Maximum effort | An explicit limit in the material | The signal table in `bounded-execution.md` |
+| Observability | An existing progress or ledger convention in the project | A single ledger file such as `workbench.md` |
 
-Acceptance criteria should describe observable outcomes rather than implementation steps.
+Architecture, file layout, decomposition, and implementation sequence belong to the lead agent, and reach the prompt only where the material makes them genuine constraints.
 
-## Layer 3 — Verification and domain specialization
+## Domain routing
 
-Classify the mission and load only relevant references.
+Classify the mission, then load only what applies. A mixed mission combines profiles instead of choosing one label.
 
-### Software / engineering
+### Software and engineering
 
-Trigger if any material deliverable involves code, runtime behavior, technical configuration, infrastructure, APIs, databases, data pipelines, ML implementation, builds, migrations, debugging, refactoring, performance, or security engineering.
+Trigger when any material deliverable involves code, runtime behavior, technical configuration, infrastructure, APIs, databases, data pipelines, ML implementation, builds, migrations, debugging, refactoring, performance, or security engineering.
 
-Load:
-- `software-engineering.md`
-- `software-testing.md`
+Load `software-engineering.md` and `software-testing.md`.
 
-### Research / analysis
+### Research and analysis
 
-Prioritize source quality, coverage, reproducibility, citation/grounding requirements, methodological checks, and calculation verification.
+Prioritize source quality, coverage, reproducibility, citation and grounding requirements, methodological checks, and calculation verification.
 
-### Writing / editorial
+### Writing and editorial
 
-Prioritize factuality, audience comprehension, structure, clarity, evidence, length/format constraints, and concrete comparison pieces when useful.
+Prioritize factuality, audience comprehension, structure, clarity, evidence, length and format constraints, and a concrete comparison piece when one adds signal.
 
-### Design / visual / UX
+### Design, visual, and UX
 
-Prioritize inspectable references, matched states/viewports, interaction behavior, accessibility/usability, and reproducible captures.
+Prioritize inspectable references, matched states and viewports, interaction behavior, accessibility and usability, and reproducible captures.
 
-### Data / ML evaluation
+### Data and ML evaluation
 
-Prioritize frozen datasets/splits, metrics, baselines, robustness, seed/repetition control, leakage checks, resource limits, and real-world failure modes. If the work also includes implementation, activate software specialization too.
+Prioritize frozen datasets and splits, metrics, baselines, robustness, seed and repetition control, leakage checks, resource limits, and real-world failure modes. When the work also includes implementation, activate the software profile too.
 
-### Documents / business / operations / other
+### Documents, business, operations, and everything else
 
-Use explicit deliverable checklists, factuality/completeness, consistency, process/state evidence, compliance constraints, and a concrete exemplar/rubric when useful.
+Use explicit deliverable checklists, factuality and completeness, consistency, process and state evidence, compliance constraints, and a concrete exemplar or rubric when useful.
 
-For multi-domain missions, combine criteria rather than choosing one exclusive label.
+Quality-bar patterns for every profile live in `domain-bars.md`.
 
-## Layer 4 — Action safety
+## Action safety
 
-Resolve:
+Resolve, and fail closed on each:
 
 - tools and data access;
-- write/deploy/publish permissions;
-- secrets/credentials handling;
+- write, deploy, and publish permissions;
+- secrets and credential handling;
 - irreversible actions;
-- spending/external side effects;
-- required human approvals.
+- spending and external side effects;
+- required approvals.
 
-Fail closed when authorization is ambiguous.
+Ambiguous authorization is not authorization. The generated prompt forbids the action or routes it through a human gate.
 
-## Layer 5 — Bounded execution
+## Effort sizing
 
-Resolve a finite safety envelope internally. Read `bounded-execution.md`.
-
-Do not accept “keep going forever”, “unlimited”, or an omitted cap in the final prompt.
-
-Do not present the user with a list of internal variables or ask them to choose agent turns, executor/verifier invocations, integration cycles, delegation depth, concurrency, fan-out, tokens, or cost limits individually.
-
-Instead, after the mission and risk are understood, ask at most one compact, plain-language maximum-effort question when the user has not already supplied an applicable limit:
-
-> For each important part of this work, what is the maximum number of improve-and-check rounds the agents may use before they stop and report what remains? This is only a safety limit: they stop sooner as soon as the result is proven good enough.
-
-Offer a task-informed recommendation and concise choices such as:
-
-- **Up to 3 rounds** — a focused, low-risk task;
-- **Up to 5 rounds** — a typical task with meaningful checks;
-- **Up to 8 rounds** — a complex or high-risk task that needs more chances to address verified findings;
-- **You decide from the task** — derive a conservative finite value.
-
-Accept a whole number of rounds or a clearly equivalent plain-language answer. If the user delegates the choice, select 3, 5, or 8 from the task's size, risk, verification cost, and available runtime budget. A stronger quality bar does not by itself justify a larger number: it improves the decision rule, whereas the maximum only buys more attempts.
-
-Then derive all technical caps using the mapping in `bounded-execution.md`. Label those values `DERIVED` in the prompt's safety-envelope section, but explain the selected number of rounds in user-facing language.
+Ask the single maximum-rounds question and derive the technical envelope, both as specified in `bounded-execution.md`. Every effort answer resolves to a finite number before the prompt is written, and the internal limit names stay out of the questions.
 
 ## Interview behavior
 
-- Ask compact groups of related questions rather than one-at-a-time interrogation. The maximum-effort choice is one compact question, not a technical-budget questionnaire.
-- Recompute gaps after each answer.
-- Do not ask again for resolved information.
-- Avoid asking implementation questions that the lead agent should decide.
-- When ambiguity is low-risk and the user delegated judgment, derive instead of blocking.
-- When ambiguity changes the definition of success, permissions, or safety, resolve it before finalizing.
+- ask compact groups of related questions;
+- recompute the gap list after each answer;
+- ask only about what is still open;
+- avoid implementation questions the lead agent should decide;
+- derive instead of blocking when ambiguity is low-risk and the user delegated judgment;
+- resolve before finalizing when the ambiguity changes success, permissions, or safety.

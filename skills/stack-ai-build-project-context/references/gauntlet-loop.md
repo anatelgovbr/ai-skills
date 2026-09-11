@@ -218,5 +218,6 @@ termina.
 Rode ao menos uma rodada quando a decisao for: entrar em `AGENTS.md`, escrever guardrail,
 criar skill, contradizer artefato existente, ou declarar alcance de repositorio inteiro.
 
-Nao force numero fixo de iteracoes. Um loop bom e pequeno: uma rodada completa para a decisao
-relevante, e rodada nova apenas quando a critica muda o artefato ou bloqueia a conclusao.
+Um loop bom e pequeno: uma rodada completa para a decisao relevante, e rodada nova apenas
+quando a critica muda o artefato ou bloqueia a conclusao. O numero de iteracoes sai dai, nunca
+de uma meta fixa.

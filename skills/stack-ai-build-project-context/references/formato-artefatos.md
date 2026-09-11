@@ -57,8 +57,9 @@ codigo nao pega, porque o defeito aqui nasce entre os dois textos:
 | O vocabulario e o do sistema, nao o da arquitetura conhecida | "Camada de servico" e "repositorio" entram como se o codigo os usasse, e o agente procura o que nao existe |
 | Ressalva do achado sobreviveu ao corte | O "exceto em `X`" some porque atrapalhava a frase, e o guardrail passa a errar em `X` |
 
-Nao reabra a descoberta nesta passagem. Achado incompleto volta para a consolidacao ou entra
-reduzido ao que a evidencia sustenta, nunca completado com o que parece razoavel.
+Nesta passagem, trabalhe so com o que a descoberta ja entregou. Achado incompleto volta para a
+consolidacao ou entra reduzido ao que a evidencia sustenta, nunca completado com o que parece
+razoavel.
 
 ## O artefato descreve o sistema, nao a rodada
 
@@ -440,8 +441,9 @@ Nao e artefato escrito por esta skill: e uma linha no relatorio, com quatro camp
 - <hook | subagente | comando> | <o que faz> | gatilho: <evento ou pedido> | evidencia: <achado desta rodada, com caminho e contagem>
 ```
 
-Nao escreva configuracao, nao mostre JSON de exemplo e nao instale nada. Sintaxe de hook muda
-com a versao da ferramenta; o que nao envelhece e o tipo, o gatilho e o motivo.
+A linha do relatorio e a entrega inteira: configuracao, exemplo em JSON e instalacao ficam com
+o desenvolvedor. Sintaxe de hook muda com a versao da ferramenta, e o que nao envelhece e o
+tipo, o gatilho e o motivo.
 
 ## Verificacao antes de fechar
 

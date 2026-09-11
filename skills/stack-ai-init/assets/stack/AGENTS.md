@@ -15,6 +15,7 @@ Em caso de conflito, parar e solicitar decisão ao desenvolvedor.
 
 ## Guardrails Universais
 
+- Aplicar `.agents/security/guia-seguranca.md` em todo código novo ou alterado, e citar o identificador do tópico (S01 em diante) em cada achado de segurança.
 - Nunca incluir senhas, chaves, tokens, arquivos `.env` ou outras credenciais em commits.
 - Não concatenar entradas não confiáveis em SQL, HTML, JavaScript, shell ou URLs.
 - Confirmar antes de executar ações destrutivas ou difíceis de reverter.

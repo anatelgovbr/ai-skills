@@ -33,6 +33,7 @@ Se voce acha que a carga precisa mudar, o caminho e editar `assets/` desta skill
 |---|---|
 | Raiz | `AGENTS.md`, `CLAUDE.md`, `.gitignore` |
 | `.agents/references/` | `speckit.md`, a regra de manutencao das fases |
+| `.agents/security/` | `guia-seguranca.md`, 19 topicos de risco agnosticos de linguagem, com rastreio para OWASP Top 10:2025 e CWE |
 | `.agents/skills/` | a skill `skill-creator`, as 10 fases do SpecKit em `speckit-<fase>/` e 10 skills de apoio (`caveman`, `dicionario-dados-db-scan-codebase-docs`, `grill-me`, `grilling` e a familia `ponytail`) |
 | `.claude/` | `settings.json`, que registra o marketplace local e liga o plugin `stack-ai` |
 | `.claude-plugin/` | `marketplace.json`, o plugin local que aponta o Claude Code para `.agents/skills/`; o nome do marketplace sai do diretorio de destino |
@@ -40,6 +41,7 @@ Se voce acha que a carga precisa mudar, o caminho e editar `assets/` desta skill
 | `.opencode/` | `opencode.json` e `.gitignore` |
 | `.specify/` | scripts, templates, workflows, manifestos e `memory/constitution.md` |
 | `.vscode/` | as tres chaves `chat.*` que apontam o Copilot para `.agents/skills/` |
+| `docs/stack-ai/` | a documentacao da stack para quem usa: indice, conceito, SpecKit, manutencao e prompts genericos |
 
 Inventario completo, exclusoes e o motivo de cada uma: `references/payload.md`.
 
@@ -49,7 +51,7 @@ Nenhuma das tres usa symlink. Cada uma tem um caminho proprio de configuracao, t
 
 | Ferramenta | Caminho |
 |---|---|
-| Claude Code | plugin local `stack-ai`, do marketplace `stack-ai-<repositorio>`, declarado em `.claude-plugin/marketplace.json` e ligado em `.claude/settings.json` |
+| Claude Code | plugin local `stack-ai`, do marketplace local do repositorio, declarado em `.claude-plugin/marketplace.json` e ligado em `.claude/settings.json` |
 | Copilot | chave `chat.agentSkillsLocations` em `.vscode/settings.json` |
 | OpenCode | chave `skills.paths` em `.opencode/opencode.json` |
 
@@ -57,11 +59,15 @@ No Claude Code o plugin so vale a partir da segunda sessao: a primeira abertura 
 
 ### Nome do marketplace
 
-O plugin chama-se sempre `stack-ai`, entao a invocacao e `/stack-ai:<skill>` em qualquer repositorio. O marketplace, nao: ele chama-se `stack-ai-<diretorio de destino>`, um nome por repositorio.
+O plugin chama-se sempre `stack-ai`, entao a invocacao e `/stack-ai:<skill>` em qualquer repositorio. O marketplace, nao: cada repositorio tem o seu.
 
 O Claude Code guarda os marketplaces em um registro da maquina, em `~/.claude/plugins/known_marketplaces.json`, com um caminho so por nome. Dois repositorios com o mesmo nome de marketplace disputam a mesma entrada: o segundo perde, e passa a receber as skills do primeiro sem aviso nenhum. Como a chave de plugin e `<plugin>@<marketplace>`, basta o marketplace ser unico.
 
-O instalador resolve isso sozinho. Os dois arquivos da carga trazem `{{MARKETPLACE}}` no lugar do nome, e a instalacao troca pelo nome do diretorio de destino reduzido a `[a-z0-9-]`, com o prefixo `stack-ai-`. Um destino em `sei-sdd` recebe `stack-ai-sei-sdd`; um em `sdta` recebe `stack-ai-sdta`. Nenhum parametro a informar.
+**Destino que ainda nao tem nome.** Os dois arquivos da carga trazem `{{MARKETPLACE}}` no lugar do nome, e a instalacao troca pelo nome do diretorio de destino reduzido a `[a-z0-9-]`, com o prefixo `stack-ai-`. Um destino em `sdta` recebe `stack-ai-sdta`. Nenhum parametro a informar.
+
+**Destino que ja tem nome.** O nome do destino vale, seja ele qual for. A derivacao e so o padrao de criacao, nao um formato a impor: o que o nome precisa e ser unico entre repositorios, e um que ja existe e funciona ja cumpre isso. A instalacao le o nome em `.claude-plugin/marketplace.json`, cai para a chave `stack-ai@<marketplace>` de `enabledPlugins` quando aquele arquivo falta, e usa o que achar nos dois arquivos. Nada e acrescentado ao lado do que ja esta la, e o `verificar` nao acusa divergencia por causa do nome.
+
+Renomear uma instalacao existente nao traz ganho: quebraria a chave `stack-ai@<marketplace>` ja ligada e deixaria uma entrada orfa no registro da maquina.
 
 ## Fluxo
 
@@ -92,10 +98,11 @@ Use `--sobrescrever` somente quando o desenvolvedor pedir explicitamente para at
 
 ### 5. Relate
 
-Diga o que foi criado, o que foi preservado e por que, e o que ficou pendente. Depois aponte os dois proximos passos que pertencem ao desenvolvedor:
+Diga o que foi criado, o que foi preservado e por que, e o que ficou pendente. Depois aponte os tres proximos passos que pertencem ao desenvolvedor:
 
 1. preencher o `AGENTS.md` com contexto, dependencias e limites de escrita do projeto;
-2. instalar uma das ferramentas suportadas, se ainda nao usar nenhuma.
+2. instalar uma das ferramentas suportadas, se ainda nao usar nenhuma;
+3. ler `docs/stack-ai/README.md`, que explica a stack recem-instalada, e linkar a pasta do `README.md` do projeto. Esse passo e do desenvolvedor porque a carga nunca escreve no `README.md` do destino, entao sem o link a documentacao chega e ninguem descobre que ela existe.
 
 Se o repositorio de destino ja for versionado, lembre que a mudanca deve ir em branch propria e Pull Request.
 
@@ -111,7 +118,7 @@ Se o repositorio de destino ja for versionado, lembre que a mudanca deve ir em b
 | `.gitignore` de destino que ja tem pasta `specs/` | recebe as linhas que faltam, menos a que ignora `specs/`: o destino fica como esta, ignorando ou versionando |
 | `.vscode/settings.json` do destino | recebe so as chaves e subchaves que faltam; valor ja definido nao muda |
 | `.claude/settings.json` do destino | recebe so as chaves e subchaves que faltam; marketplace e plugin ja declarados pelo time nao mudam |
-| `.claude/settings.json` com marketplace de nome diferente do derivado | as duas chaves ficam lado a lado e o plugin passa a ser ligado duas vezes, apontando para o mesmo `./.agents`, o que carrega cada skill em dobro; remova a chave que sobra a mao, em `extraKnownMarketplaces` e em `enabledPlugins` |
+| Destino que ja declara marketplace com nome diferente do derivado | o nome do destino vale; a carga adota ele nos dois arquivos e nao acrescenta chave nenhuma |
 | `.vscode/settings.json` ou `.claude/settings.json` com comentario ou virgula sobrando | nao e tocado; o relatorio traz as chaves para acrescentar a mao |
 
 Rodar de novo no mesmo destino nao muda nada e sai com codigo 0.

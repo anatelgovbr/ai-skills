@@ -52,9 +52,11 @@ CHAVES_OBJETO = (
     "enabledPlugins",
 )
 
-# Nome do marketplace: precisa ser unico por repositorio, porque o Claude Code
-# guarda um caminho so por nome no registro da maquina. Deriva do diretorio de
-# destino, e os arquivos abaixo trazem o placeholder no lugar do nome.
+# Nome do marketplace: precisa ser unico entre repositorios, porque o Claude Code
+# guarda um caminho so por nome no registro da maquina. Vale o nome que o destino
+# ja declara; a derivacao do diretorio e so o padrao de criacao. Os arquivos abaixo
+# trazem o placeholder no lugar do nome.
+PLUGIN = "stack-ai"
 PREFIXO_MARKETPLACE = "stack-ai-"
 PLACEHOLDER_MARKETPLACE = "{{MARKETPLACE}}"
 SUBSTITUIVEIS = (".claude-plugin/marketplace.json", ".claude/settings.json")
@@ -84,19 +86,62 @@ def hash_texto(texto: str) -> str:
     return hashlib.sha256(texto.encode("utf-8")).hexdigest()
 
 
-def nome_do_marketplace(destino: Path) -> str:
+def nome_derivado(destino: Path) -> str:
     """stack-ai-<diretorio de destino>, reduzido a [a-z0-9-]."""
     sigla = re.sub(r"[^a-z0-9]+", "-", destino.name.lower()).strip("-")
     return PREFIXO_MARKETPLACE + (sigla or "repo")
 
 
-def texto_da_carga(rel: str, fonte: Path, destino: Path) -> str | None:
+def json_do_destino(p: Path) -> dict | None:
+    """Objeto JSON do arquivo, ou None quando ele falta ou nao e um objeto."""
+    try:
+        dados = json.loads(p.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    return dados if isinstance(dados, dict) else None
+
+
+def nome_ja_declarado(destino: Path) -> str | None:
+    """Nome do marketplace que o destino ja declara, ou None quando nao ha nenhum.
+
+    A fonte e o `marketplace.json`, que e quem declara. O `settings.json` entra so
+    como reserva, e por `enabledPlugins`: a chave e `<plugin>@<marketplace>`, entao
+    ela diz de qual marketplace o plugin da stack esta ligado. Marketplace de outro
+    plugin, que o time tenha declarado, nao e adotado.
+    """
+    dados = json_do_destino(destino / ".claude-plugin" / "marketplace.json")
+    if dados:
+        nome = dados.get("name")
+        if isinstance(nome, str) and nome and nome != PLACEHOLDER_MARKETPLACE:
+            return nome
+
+    dados = json_do_destino(destino / ".claude" / "settings.json")
+    if dados and isinstance(dados.get("enabledPlugins"), dict):
+        for chave in dados["enabledPlugins"]:
+            plugin, arroba, marketplace = str(chave).partition("@")
+            if arroba and plugin == PLUGIN and marketplace:
+                return marketplace
+    return None
+
+
+def nome_do_marketplace(destino: Path) -> str:
+    """O nome que o destino ja declara, ou o derivado quando ainda nao ha nenhum.
+
+    O nome so precisa ser unico entre repositorios, e uma instalacao que ja tem o
+    seu funciona. Renomear nao traz ganho, quebraria a chave `<plugin>@<marketplace>`
+    ja ligada e deixaria uma entrada orfa no registro da maquina. Entao a carga adota
+    o nome do destino, e nada e acrescentado ao lado do que ja esta la.
+    """
+    return nome_ja_declarado(destino) or nome_derivado(destino)
+
+
+def texto_da_carga(rel: str, fonte: Path, marketplace: str) -> str | None:
     """Conteudo com o nome do marketplace resolvido, ou None quando o arquivo
     nao depende do destino e pode ser copiado byte a byte."""
     if rel not in SUBSTITUIVEIS:
         return None
     bruto = fonte.read_text(encoding="utf-8")
-    return bruto.replace(PLACEHOLDER_MARKETPLACE, nome_do_marketplace(destino))
+    return bruto.replace(PLACEHOLDER_MARKETPLACE, marketplace)
 
 
 def hash_da_carga(fonte: Path, rendido: str | None) -> str:
@@ -190,6 +235,9 @@ def alvo_do_symlink(caminho: str, alvo: str) -> str:
 def instalar(destino: Path, sobrescrever: bool, aplicar: bool) -> list[dict]:
     carga = arquivos_da_carga()
     estrutura = carregar_estrutura()
+    # Resolvido antes da primeira escrita, para que marketplace.json e settings.json
+    # recebam o mesmo nome mesmo quando o primeiro e criado durante esta execucao.
+    marketplace = nome_do_marketplace(destino)
     acoes: list[dict] = []
 
     def registrar(caminho, tipo, acao, detalhe=""):
@@ -209,7 +257,7 @@ def instalar(destino: Path, sobrescrever: bool, aplicar: bool) -> list[dict]:
     for rel, fonte in carga.items():
         p = destino / rel
         existe = p.exists()
-        rendido = texto_da_carga(rel, fonte, destino)
+        rendido = texto_da_carga(rel, fonte, marketplace)
 
         if rel == MESCLA_LINHAS:
             if not existe:
@@ -298,7 +346,7 @@ def instalar(destino: Path, sobrescrever: bool, aplicar: bool) -> list[dict]:
         for acao in acoes:
             if acao["tipo"] == "arquivo" and acao["acao"] in ("criado", "substituido"):
                 p, fonte = destino / acao["caminho"], carga[acao["caminho"]]
-                rendido = texto_da_carga(acao["caminho"], fonte, destino)
+                rendido = texto_da_carga(acao["caminho"], fonte, marketplace)
                 if not p.is_file() or hash_arquivo(p) != hash_da_carga(fonte, rendido):
                     acao["acao"], acao["detalhe"] = "erro", "conteudo nao confere apos a copia"
 
@@ -308,6 +356,7 @@ def instalar(destino: Path, sobrescrever: bool, aplicar: bool) -> list[dict]:
 def verificar(destino: Path) -> list[dict]:
     carga = arquivos_da_carga()
     estrutura = carregar_estrutura()
+    marketplace = nome_do_marketplace(destino)
     itens: list[dict] = []
 
     def registrar(caminho, tipo, acao, detalhe=""):
@@ -318,7 +367,7 @@ def verificar(destino: Path) -> list[dict]:
 
     for rel, fonte in carga.items():
         p = destino / rel
-        rendido = texto_da_carga(rel, fonte, destino)
+        rendido = texto_da_carga(rel, fonte, marketplace)
         if not p.exists():
             registrar(rel, "arquivo", "ausente")
             continue

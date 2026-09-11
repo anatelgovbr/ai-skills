@@ -1,229 +1,215 @@
 ---
 name: gauntlet-loop-forge
-description: Create or optimize a bounded, evidence-driven Gauntlet Loop execution prompt from any goal, idea, plan, specification, or existing prompt. Interview the user in layers until the mission, quality bar, acceptance criteria, verification evidence, constraints, permissions, human gates, and one user-friendly maximum-effort choice are resolved; then derive the finite technical safety envelope and return one paste-ready prompt while preserving lead-agent autonomy and independent builder/critic review. Route automatically to domain-specific verification. When the mission includes software, code, systems, APIs, infrastructure, data/ML engineering, debugging, refactoring, migration, or technical implementation, activate the bundled software-engineering profile with TDD, regression/contract/integration/E2E testing, non-functional gates, and bounded executor/verifier loops. PASS requires evidence; exhausted limits are CAPPED, never PASS.
+description: Forge a paste-ready Gauntlet Loop execution prompt from a goal, idea, plan, specification, issue, or repo context, or diagnose and rewrite a Gauntlet prompt that already exists. Interviews for whatever the material leaves open, derives a finite safety envelope, and routes to the bundled software profile when the mission touches code. Produces the prompt; running the mission is a separate request.
 ---
 
 # Gauntlet Loop Forge
 
-Create or optimize a **paste-ready Gauntlet Loop execution prompt**. Do not execute the underlying mission unless the user separately asks you to run it.
+Create or optimize a **paste-ready Gauntlet Loop execution prompt**. Produce the prompt and stop there. Execute the underlying mission only when separately asked.
 
-Preserve these invariants:
+Invariants to preserve in every prompt produced:
 
-- give the lead agent the destination and hard constraints, not a premature implementation recipe;
-- use a real, inspectable quality bar rather than vague excellence language;
-- let the lead decompose the mission into the smallest independently judgeable workstreams;
-- never let a builder/executor approve its own work;
-- have fresh-context critics/verifiers inspect the actual artifact and direct evidence, not builder summaries;
-- prefer deterministic evidence where it can decide correctness; use blind comparison for genuinely comparative or subjective dimensions;
-- stop early on evidence-backed `PASS`;
-- make every iterative path finite: reaching a declared limit yields `CAPPED`, never `PASS`;
-- require explicit human approval before increasing any safety limit.
+1. give the lead agent the destination and the hard constraints, and leave the route to it;
+2. give it a bar it can read, run, render, or measure;
+3. let the lead split the mission into the smallest independently judgeable workstreams;
+4. approval comes from a critic that did not build the artifact;
+5. critics judge the current artifact and its direct evidence;
+6. deterministic evidence decides whatever it can decide, and blind comparison covers the rest;
+7. evidence-backed `PASS` stops the loop early;
+8. every iterative path carries a finite ceiling, and reaching it yields `CAPPED`;
+9. raising a ceiling takes explicit human approval.
 
-Read `references/method-core.md` when canonical Gauntlet fidelity is uncertain.
+Read `references/method-core.md` when fidelity to the original method is uncertain.
 
 ## 1. Extract before asking
 
 Accept an inline idea, goal, existing prompt, PRD, issue, plan, specification, requirements document, repo context, or other source material.
 
-Extract every usable fact first. Treat an explicitly designated source of truth as authoritative unless the user says otherwise. Do not ask again for information already present.
+Extract every usable fact first, and treat a designated source of truth as authoritative unless the user overrides it. Ask only for what the material leaves open. Name contradictions and let the user settle them.
 
-If the environment cannot provide separate contexts/subagents, state that independence is degraded and write a portable approximation. Never call same-context self-review an independent critic.
+If the target environment lacks separate contexts or subagents, say that independence is degraded and write a portable approximation. Same-context self-review is a builder judging itself, so call it that.
 
 ## 2. Classify the mission and load only relevant specialization
 
-Classify the mission after the first extraction pass. It may be single-domain or mixed-domain.
+Classify after the first extraction pass. A mission may be single-domain or mixed.
 
-Always use the general core. Then load only the needed domain guidance:
+Always use the general core, then load only what the mission needs:
 
-- for quality-bar patterns across common domains, read `references/domain-bars.md`;
-- **if any material part of the mission is software/engineering**, read both `references/software-engineering.md` and `references/software-testing.md` before finalizing acceptance criteria, delegation contracts, or verification gates;
-- for any mission with uncertain or subjective judging, read `references/verification-protocol.md`;
-- for every mission, resolve the finite safety envelope using `references/bounded-execution.md`.
+- quality-bar patterns by domain: `references/domain-bars.md`;
+- **any material software or engineering part:** `references/software-engineering.md` and `references/software-testing.md`, before finalizing acceptance criteria, delegation contracts, or verification gates;
+- uncertain or subjective judging: `references/verification-protocol.md`;
+- every mission: `references/bounded-execution.md` for the finite safety envelope.
 
-Treat software as activated when the requested artifact or work includes code, repositories, services, APIs, CLIs, libraries, infrastructure/configuration, databases/migrations, build systems, technical automation, security fixes, performance engineering, data pipelines, or ML system implementation/evaluation.
+Software is activated by code, repositories, services, APIs, CLIs, libraries, infrastructure or configuration, databases and migrations, build systems, technical automation, security fixes, performance engineering, data pipelines, or ML system implementation and evaluation.
 
-For mixed missions, compose compatible verification layers rather than forcing one domain's bar onto the whole artifact.
+For mixed missions, compose compatible verification layers and let each part keep its own bar.
 
-Read `references/intake-routing.md` for detailed routing and interview logic.
+Read `references/intake-routing.md` for routing and interview logic.
 
-## 3. Interview in layers until the prompt is actually buildable and judgeable
+## 3. Interview in layers until the prompt is buildable and judgeable
 
-Do **not** emit the final Gauntlet prompt while a material requirement below remains unresolved, unless the user explicitly delegates that decision to you.
+Emit the final prompt once every material requirement below is resolved or explicitly delegated to you.
 
-Ask missing items in compact batches. After every answer, recompute the gap list and ask only what remains material.
+Ask missing items in compact batches. Recompute the gap list after every answer and ask only what remains material.
 
 Resolve, at minimum:
 
-1. **Mission** — concrete outcome and intended user/system-visible result.
-2. **Artifact(s)** — what real outputs will exist and be inspected.
-3. **Starting state / source of truth** — greenfield, existing artifact, rewrite, repair, optimization, evaluation, migration, etc.
-4. **Scope boundaries** — in scope, out of scope, preserved behavior/content, dependencies.
-5. **Target harness/runtime** — Claude Code/SDK, Codex, OpenAI Agents SDK, another agentic runtime, plain chat, or unknown.
-6. **Acceptance criteria / definition of done** — observable conditions for completion.
-7. **Quality bar** — concrete exemplar, benchmark, test suite, rubric, gold output, reference implementation, threshold, or hybrid bar the critic can actually inspect.
-8. **Verification plan / hard gates** — objective checks that must pass, plus comparative judging only where useful.
-9. **Quality dimensions / non-functional requirements** — domain-relevant properties such as correctness, clarity, robustness, security, latency, accessibility, maintainability, groundedness, fidelity, or compliance.
-10. **Hard constraints versus preferences** — language, format, stack, compatibility, word count, platform, policy/legal boundaries, style constraints, etc.
-11. **Tools, data, access, and permissions** — what the agents may read, run, edit, fetch, test, deploy, spend, or call.
-12. **Human gates / irreversible actions** — anything requiring explicit approval.
-13. **Maximum effort** — ask one plain-language question about the maximum number of improve-and-check rounds that each important part of the work may use. The user chooses a number, selects a concise effort option, or delegates the choice. Never ask the user to size internal variables such as turns, invocations, delegation depth, concurrency, or global fan-out.
-14. **Observability** — evidence ledger/progress artifact and evidence types the user wants retained.
+1. **Mission:** concrete outcome and intended user-visible or system-visible result.
+2. **Artifacts:** the real outputs that will exist and be inspected.
+3. **Starting state and source of truth:** greenfield, existing artifact, rewrite, repair, optimization, evaluation, migration.
+4. **Scope boundaries:** in scope, out of scope, preserved behavior, dependencies.
+5. **Target harness or runtime:** Claude Code or SDK, Codex, OpenAI Agents SDK, another agentic runtime, plain chat, or unknown.
+6. **Acceptance criteria:** observable conditions for completion.
+7. **Quality bar:** exemplar, benchmark, test suite, rubric, gold output, reference implementation, threshold, or hybrid bar the critic can inspect.
+8. **Verification plan and hard gates:** objective checks that must pass, plus comparative judging where it adds signal.
+9. **Quality dimensions:** correctness, clarity, robustness, security, latency, accessibility, maintainability, groundedness, fidelity, compliance, as relevant.
+10. **Hard constraints versus preferences:** language, format, stack, compatibility, length, platform, policy and legal boundaries, style.
+11. **Tools, data, access, permissions:** what the agents may read, run, edit, fetch, test, deploy, spend, or call.
+12. **Human gates and irreversible actions:** what takes explicit approval.
+13. **Maximum effort:** one plain-language question about the maximum number of improve-and-check rounds each important part may use. The user gives a number, picks a concise option, or delegates. Ask it as specified in `references/bounded-execution.md`, and keep turns, invocations, delegation depth, concurrency, and fan-out out of the question.
+14. **Observability:** evidence ledger and the evidence types to retain.
 
-Translate the maximum-effort answer into every finite technical limit required by the runtime and prompt. Use the deterministic derivation in `references/bounded-execution.md`, mark derived values `DERIVED`, and distinguish them from user requirements. The user-facing explanation should say how many improve-and-check rounds the choice allows, not make the user validate an internal budget form.
+Translate the maximum-effort answer into every finite technical limit the runtime and prompt require, using the derivation in `references/bounded-execution.md`. Mark derived values `DERIVED` and keep them distinct from user requirements. Explain the choice back to the user as a number of improve-and-check rounds.
 
-If the user delegates missing decisions, derive them conservatively, label them `DERIVED`, and distinguish assumptions from user requirements.
+When the user delegates a decision, derive it conservatively and label it `DERIVED`.
 
-Do not ask the user to prescribe architecture, file layout, exact decomposition, or implementation sequence unless those are genuine constraints. Preserve lead-agent autonomy.
+Architecture, file layout, decomposition, and implementation sequence belong to the lead agent. Ask about them only when the user treats them as genuine constraints.
 
 ## 4. Resolve the quality bar
 
 A bar must be sufficiently:
 
-- **concrete** — named or operationally defined;
-- **inspectable** — the verifier can read, run, render, measure, or otherwise examine it;
-- **comparable** — candidate and bar share explicit evaluation dimensions;
-- **reproducible** — material comparison conditions are stable or documented;
-- **challenging** — it prevents easy rubber-stamping.
+- **concrete:** named or operationally defined;
+- **inspectable:** the verifier can read, run, render, or measure it;
+- **comparable:** candidate and bar share explicit evaluation dimensions;
+- **reproducible:** material comparison conditions are stable or documented;
+- **challenging:** it prevents easy rubber-stamping.
 
-Prefer a **hybrid bar** when one mechanism cannot settle all dimensions: deterministic gates for objective properties plus an exemplar/rubric for subjective ones.
+Prefer a **hybrid bar** when one mechanism cannot settle every dimension: deterministic gates for objective properties plus an exemplar or rubric for subjective ones.
 
-Reject vague phrases such as “world-class”, “production-ready”, “perfect”, “clean”, or “enterprise-grade” until converted into observable criteria.
+Convert "world-class", "production-ready", "perfect", "clean", "enterprise-grade", and their equivalents into observable criteria before accepting them.
 
-If the user has no usable bar, propose 2–3 concrete candidates or a measurable equivalent. If finding the right bar itself requires domain investigation, make bar discovery the lead agent's first bounded task.
+If the user has no usable bar, propose two or three concrete candidates or a measurable equivalent. If finding the right bar takes domain investigation, make bar discovery the lead agent's first bounded workstream, with its own acceptance check.
 
 ## 5. Build roles and evidence flow
 
-The final prompt must define roles without unnecessary vendor lock-in:
+Define roles without unnecessary vendor lock-in:
 
-- **Lead/orchestrator** — interprets the mission, chooses decomposition, manages dependencies and finite budget, tracks evidence, and integrates the whole. It may not grade implementation work it authored.
-- **Executor/builder per workstream** — creates or revises one bounded piece and produces direct evidence. It may self-check but cannot declare final `PASS`.
-- **Fresh verifier/critic** — receives the goal, assigned criteria, actual artifact, relevant constraints, and direct evidence; it does not receive the executor's self-assessment or rationale. It decides against the bar.
-- **Integrator/smoother** — reconciles interfaces, consistency, regressions, and cross-workstream effects after local convergence.
-- **Fresh final verifier** — evaluates the integrated whole against global acceptance criteria and gates.
+- **Lead or orchestrator:** interprets the mission, chooses the decomposition, manages dependencies and the finite budget, tracks evidence, integrates the whole. Implementation it authored is graded by someone else.
+- **Executor per workstream:** creates or revises one bounded piece and produces direct evidence. It self-checks, and `PASS` comes from the verifier.
+- **Fresh verifier:** receives the goal, assigned criteria, the actual artifact, relevant constraints, and direct evidence, and decides against the bar. The executor's self-assessment and rationale stay out of the packet.
+- **Integrator:** reconciles interfaces, consistency, regressions, and cross-workstream effects after local convergence.
+- **Fresh final verifier:** evaluates the integrated whole against global acceptance criteria and gates.
 
-Parallelize only genuinely independent workstreams and never beyond the configured concurrency cap.
+Parallelize genuinely independent workstreams, up to the concurrency cap.
 
-For software missions, the executor/verifier contract is further constrained by the TDD and test-evidence rules in `references/software-engineering.md` and `references/software-testing.md`.
+For software missions, `references/software-engineering.md` and `references/software-testing.md` constrain the executor and verifier contract further.
 
 ## 6. Use evidence-first verification
 
-A verifier inspects the **actual current artifact/version** and direct evidence. Builder claims are not evidence.
+A verifier inspects the **actual current artifact and version** plus direct evidence. Builder claims are not evidence. A mandatory gate that was never run counts as missing evidence.
 
-When a round fails, require at least:
+On a failed cycle the verifier returns at least:
 
-- explicit verdict/status;
-- criterion-by-criterion evidence or missing evidence;
+- the verdict;
+- criterion-by-criterion evidence, or the evidence that is missing;
 - every blocking finding;
 - the single highest-impact remaining gap;
 - an objective acceptance check for the next revision;
-- residual non-blocking risks when useful.
+- residual non-blocking risks when material.
 
-For pairwise/LLM judging, mask provenance when feasible and reverse A/B order. If the winner flips, return `INCONCLUSIVE` and prefer stronger evidence or a fresh judge.
+For pairwise or LLM judging, mask provenance when feasible and reverse A/B order, under the protocol in `references/verification-protocol.md`.
 
-Read `references/verification-protocol.md` for the detailed contract.
+Read `references/verification-protocol.md` for the evidence packet and evaluation order.
 
 ## 7. Make the loop bounded without confusing caps with quality
 
-Define one local Gauntlet cycle as:
+One local cycle:
 
-`executor revision → direct evidence → fresh verifier → verdict + largest gap`
+`executor revision -> direct evidence -> fresh verifier -> verdict, largest gap, next acceptance check`
+
+The next cycle starts by handing the executor that verdict, those blocking findings, the largest gap, and the next acceptance check. The verifier's full deliberation and the accumulated history stay behind. The executor attacks the largest gap first and keeps to the assigned scope.
+
+Before each spawn, the lead checks the remaining budget and spawns only while the applicable ceiling holds.
 
 Rules:
 
 1. stop immediately when assigned criteria and gates earn evidence-backed `PASS`;
-2. never exceed the declared local or global caps;
+2. keep every local and global cap;
 3. count hidden retries, self-fix loops, extra reviewers, replans, tool-runner loops, and nested agents against explicit budgets;
-4. disallow recursive fan-out beyond `MAX_DELEGATION_DEPTH`;
-5. if progress stagnates, replan/split/escalate rather than repeating the same attempt until the cap;
-6. if any hard ceiling is reached before `PASS`, return `CAPPED` with unresolved findings and the recommended next action;
-7. never auto-extend a cap; only explicit human approval can authorize a continuation envelope.
+4. keep fan-out within `MAX_DELEGATION_DEPTH`;
+5. on stagnation, replan, split, or escalate instead of repeating the same attempt until the cap;
+6. on any hard ceiling reached before `PASS`, return `CAPPED` with unresolved findings and the recommended next action;
+7. a continuation envelope comes from explicit human approval, never from the run itself.
 
-Do **not** add a minimum number of rounds. A single excellent, independently verified cycle may be sufficient. A maximum is a safety boundary, not a quality target.
+A maximum is a safety boundary, not a quality target, and this method sets no minimum: a single excellent, independently verified cycle may be enough.
 
-Read `references/bounded-execution.md` for budget inheritance, the maximum-effort-to-envelope derivation, and terminal semantics.
+A workstream `PASS` is provisional until final integration verification. If integration reveals a regression in a workstream that already passed, reopening it spends that workstream's remaining cycles. With none remaining, the run ends `CAPPED`.
 
-## 8. Require honest terminal states
+Read `references/bounded-execution.md` for budget derivation, inheritance, accounting, and stagnation handling.
 
-Use at least:
+## 8. Require honest statuses
 
-- `PASS` — all mandatory acceptance criteria/gates are evidenced, no blocking/critical finding remains, and any required comparative bar is satisfied;
-- `FAIL` — current version fails but another permitted cycle remains;
-- `INCONCLUSIVE` — evidence or judge consistency is insufficient;
-- `ESCALATE` — requirements, bar, decomposition, or strategy need reframing;
-- `BLOCKED` — missing access, permission, dependency, environment, data, or human gate;
-- `CAPPED` — a finite cycle/turn/spawn/time/token/cost boundary was reached before success;
-- `STOPPED` — human intentionally stopped the run.
+A **cycle verdict** is what one verifier returns about one candidate:
 
-Never convert a non-`PASS` terminal state into `PASS` merely because the run ended.
+- `PASS`: assigned criteria and gates are evidenced;
+- `FAIL`: the current version does not meet them;
+- `INCONCLUSIVE`: evidence or judge consistency cannot support a stable verdict.
+
+A **terminal state** ends a workstream or the run:
+
+- `PASS`: all mandatory acceptance criteria and gates are evidenced, no blocking finding remains, and any required comparative bar is satisfied;
+- `CAPPED`: a finite cycle, turn, spawn, time, token, or cost ceiling was reached before `PASS`;
+- `BLOCKED`: access, permission, dependency, environment, data, or a human gate is unavailable;
+- `ESCALATE`: requirements, bar, decomposition, or strategy need reframing;
+- `STOPPED`: a human intentionally stopped the run.
+
+While budget remains, `FAIL` starts another cycle and `INCONCLUSIVE` buys stronger evidence or a fresh judge within the verifier budget. When budget runs out first, the run ends `CAPPED`.
+
+A run that ended without evidence reports the state it actually reached.
 
 ## 9. Require a lightweight evidence ledger
 
-Have the lead maintain a progress/evidence artifact appropriate to the harness, such as `workbench.md`, containing enough to audit:
+The lead maintains a progress artifact appropriate to the harness, such as `workbench.md`, holding:
 
 - workstream and owner;
-- artifact/version locator;
-- assigned acceptance criteria/bar;
-- direct gate/evidence results;
+- artifact or version locator;
+- assigned acceptance criteria and bar;
+- direct gate and evidence results;
 - current cycle and remaining budget;
 - verifier verdict and largest gap;
 - change attempted and observed delta;
-- open findings/residual risks;
+- open findings and residual risks;
 - human gates;
-- integration/final-verifier status.
+- integration and final-verifier status.
 
-Keep observability useful but not bureaucratic.
+Those fields are the whole ledger. Anything a reader would not audit stays out.
 
 ## 10. Adapt to the harness honestly
 
-Map semantic limits to runtime controls only when those controls actually exist in the user's environment. Do not invent flags or feature names.
+Map semantic limits onto runtime controls you can verify exist in the user's environment, and name only those.
 
-Retain prompt-level workstream/global caps even when the runtime exposes a `max_turns`, cost, timeout, depth, or concurrency limit, because runtime exhaustion and quality status are different concepts.
+Keep the prompt-level workstream and global caps even when the runtime exposes its own turn, cost, timeout, depth, or concurrency limit: runtime exhaustion and quality status are different concepts.
 
-For a plain chat without real subagents/fresh contexts, explicitly describe the result as a degraded simulation and preserve visible role separation as far as possible.
+For a plain chat without real subagents or fresh contexts, call the result a degraded simulation and keep the role separation visible as far as it goes.
 
 ## 11. Compose the final Gauntlet prompt
 
-Keep the final execution prompt as short as possible without losing enforceability. It should communicate, in a natural operational order:
+Assemble the prompt with `references/output-template.md`, in the operational order it gives.
 
-1. mission and source of truth;
-2. hard constraints and exclusions;
-3. quality bar and acceptance criteria;
-4. verification/hard gates;
-5. lead autonomy over approach and decomposition;
-6. executor + fresh verifier separation;
-7. exact finite safety envelope;
-8. evidence/failed-round contract;
-9. integration + fresh final verification;
-10. human gates/forbidden actions;
-11. evidence ledger;
-12. exact `PASS` versus `CAPPED` semantics.
-
-For software missions, also include only the software/TDD/test clauses that are relevant to the task. Do not paste an entire testing encyclopedia into every prompt.
-
-Read `references/output-template.md` when a reliable assembly skeleton is useful.
+Keep it as short as enforceability allows. For software missions, carry only the software, TDD, and test clauses this task needs, selected from the software references.
 
 ## 12. Optimize an existing prompt
 
-When the user provides an existing Gauntlet prompt, diagnose it against the same invariants and rewrite only what materially improves fidelity, verification, boundedness, or domain fit.
+Diagnose the supplied prompt against these invariants and rewrite what materially improves fidelity, verification, boundedness, or domain fit.
 
-Preserve useful user constraints. Remove duplicated methodology prose, arbitrary minimum-round requirements, unbounded retry paths, self-approval, vague bars, unsupported runtime commands, and irrelevant domain-specific checks.
+Preserve the user constraints already in it. Strip duplicated methodology prose, arbitrary minimum-round requirements, unbounded retry paths, self-approval, vague bars, unsupported runtime commands, and irrelevant domain checks.
 
-## 13. Final self-gate before returning the prompt
+## 13. Self-gate before returning the prompt
 
-Verify that:
+Check the finished prompt against every rule in this file and in each reference you loaded, and against these two, which the prompt alone can answer:
 
-- every material intake field is resolved or explicitly delegated;
-- the mission says what outcome matters without unnecessary route prescription;
-- the domain was classified correctly and only relevant specializations were loaded;
 - every acceptance criterion has a credible evidence path;
-- the quality bar is real/operational and not hand-wavy;
-- executor and verifier are independent in role/context as far as the harness allows;
-- verifiers inspect current artifacts/evidence rather than summaries;
-- subjective pairwise judging is used only where it adds information;
-- all iterative/spawn paths have finite explicit ceilings;
-- a cap means `CAPPED`, never success, and only a human can extend it;
-- integrated output receives an independent whole-artifact verification;
-- **for software missions:** the appropriate TDD/regression/test strategy and engineering gates are present, with test scope proportional to risk;
-- the generated prompt remains compact and executable.
+- the prompt is compact and executable as written.
 
-Only then return the paste-ready Gauntlet Loop prompt.
+Report what the last pass had to fix. Then return the paste-ready Gauntlet Loop prompt.

@@ -83,18 +83,19 @@ mecanicos, saem do censo e da proposta, e a maioria custa um comando:
 recebe, nunca substituicao pronta: voce nao viu o que a proposta viu, e recorte e decisao de
 quem conduz a rodada.
 
-## Proibicoes
+## Limites do papel
 
-Nao invente risco para preencher lista. Categoria que nao se aplica fica de fora, e um retorno
+Traga apenas o risco que voce encontrou. Categoria que nao se aplica fica de fora, e um retorno
 com um bloqueio real vale mais que um com cinco genericos.
 
-Nao avalie a arquitetura do sistema, nao proponha refatoracao e nao compare com boa pratica de
-mercado. Padrao recorrente que pareca tecnicamente inadequado e a convencao deste sistema.
+Fique no risco de a rodada errar: arquitetura do sistema, refatoracao e comparacao com boa
+pratica de mercado ficam fora. Padrao recorrente que pareca tecnicamente inadequado e a
+convencao deste sistema.
 
-Nao investigue os eixos. Medir o que a frente vai medir e refazer o trabalho dela com menos
-contexto.
+Deixe a medicao dos eixos para a frente que os investiga. Medir aqui o que ela vai medir refaz
+o trabalho dela com menos contexto.
 
-Nao devolva bloqueio sem o comando que o sustenta. Bloqueio sem busca e opiniao, e derruba um
+Sustente cada bloqueio com o comando que o produziu. Bloqueio sem busca e opiniao, e derruba um
 recorte bom.
 
 ## Retorno
