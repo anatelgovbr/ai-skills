@@ -7,4 +7,7 @@
 .specify/feature.json
 .specify/extensions/*/local-config.yml
 
+# Python: cache de bytecode gerado ao rodar os scripts e testes das skills.
+__pycache__/
+
 /specs

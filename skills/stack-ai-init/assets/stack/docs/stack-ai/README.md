@@ -19,6 +19,7 @@ O conteúdo é genérico e vale para qualquer projeto. Ele é distribuído pela 
 |---|---|
 | Regras de código, limites de escrita e padrões do projeto | `AGENTS.md`, na raiz do repositório |
 | Regra que o agente segue ao editar uma fase do SpecKit | `.agents/references/speckit.md` |
+| Formato do relatório de revisão técnica, para a skill de revisão do projeto | `.agents/references/template-revisao-tecnica.md` |
 | O que este sistema faz e como rodar o ambiente | `README.md`, na raiz do repositório |
 
 ## Manutenção desta pasta

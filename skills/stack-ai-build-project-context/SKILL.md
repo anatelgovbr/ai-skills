@@ -84,7 +84,7 @@ organiza, que forma uma tabela de guardrails costuma ter. Conteudo, regra, nome 
 mecanismo e convencao nao atravessam: o que entra no destino sai da evidencia do destino.
 
 Esta skill tambem nao altera o sistema investigado. Ela le a codebase e escreve apenas em
-`AGENTS.md`, `.agents/references/` e `.agents/skills/`. Encontrar codigo que viola um padrao
+`AGENTS.md`, `.agents/references/` e `.agents/skills/`, mais as quatro secoes de projeto da ponte de seguranca `.agents/security/mapa-cwe-guia.md`, conforme `references/contrato-da-stack.md`. Encontrar codigo que viola um padrao
 descoberto e um achado a relatar, nunca autorizacao para corrigir o codigo.
 
 ## Fontes de regra
@@ -155,7 +155,7 @@ justamente o que a rodada vai descobrir. Pergunte apenas o que o codigo nao resp
 pergunte para comecar.
 
 1. **Escopo de escrita.** Default: os tres destinos da stack, `AGENTS.md`,
-   `.agents/references/` e `.agents/skills/`, e nada alem. Escrever fora disso e o unico caso
+   `.agents/references/` e `.agents/skills/`, mais as quatro secoes de projeto da ponte `.agents/security/mapa-cwe-guia.md` quando ela existir, e nada alem. Escrever fora disso e o unico caso
    que sempre exige autorizacao explicita.
 2. **Nao objetivos.** Default: o que nao esta no codigo e nao muda o que o agente escreve,
    ou seja, fluxo de branches e promocao entre ambientes, procedimento de deploy, agendamento
@@ -178,7 +178,7 @@ como premissa e nao como fato. Premissa declarada o desenvolvedor corrige na rod
 premissa silenciosa vira regra errada sem dono.
 
 So duas coisas travam a rodada antes de comecar: stack ausente no destino, que exige decisao de
-instalar, e pedido de escrita fora dos tres destinos. O resto se resolve com default declarado.
+instalar, e pedido de escrita fora do escopo de escrita padrao. O resto se resolve com default declarado.
 
 **Abra o registro da rodada.** Copie `assets/template-registro-da-rodada.md` para a area de
 trabalho da sessao, fora do repositorio de destino, e preencha o enquadramento agora. O
@@ -566,6 +566,11 @@ Escreva somente os itens aprovados, na forma de `references/formato-artefatos.md
   passagem so gasta contexto no pior momento da rodada, quando ele ja esta curto, e produz um
   bloco que ninguem consegue revisar por partes. Cada artefato escrito fecha sua linha na secao de
   execucao do registro, e e ela que permite retomar a Fase 8 pela metade em sessao nova.
+- **Ponte de seguranca.** Quando `.agents/security/mapa-cwe-guia.md` existir no destino, preencha as quatro secoes de projeto com o que a investigacao mediu, e so elas: `Traducao` e `Saidas opcionais` chegam da stack e nao sao alteradas. Cada entrada se apoia em evidencia do codigo, arquivo e linha ou saida do comando. Sem sinal ou auditor real, a secao mantem o texto padrao que veio da stack. Forma de cada secao em `references/formato-artefatos.md`.
+  - `Sinais do projeto`: tabela com as colunas `Sinal no escopo`, `Play` e `Onde esta hoje`, um sinal por tipo de artefato que a investigacao encontrou (pagina ou unidade equivalente, API ou endpoint, dependencia versionada, infraestrutura como codigo, codigo que chama modelo de IA, configuracao de agente de IA), com o play correspondente da tabela Plays disponiveis do `SKILL.md` da `owasp-playbook`. Nao invente sinal para artefato que o projeto nao tem.
+  - `Auditores do projeto`: bloco `bash` com comandos que existem no repositorio (script de verificacao, lint, teste) ou comandos `grep` derivados dos guardrails do `AGENTS.md`, cada um executado uma vez antes de entrar e registrado com o que procura. Auditor que nao roda nao entra.
+  - `Excecoes`: lista do que nao e achado neste repositorio, com o motivo e a evidencia: area congelada pelo escopo de escrita, biblioteca de terceiros versionada, mecanismo que vem do core ou do framework.
+  - `Correcao`: a skill ou o procedimento do projeto que recebe a correcao, por tipo de artefato, apontando o que ja existe na stack do destino.
 
 Escrito o que foi aprovado, rode a passagem final de Auditor sobre o diff real, com contexto
 novo, e corrija somente o que ela bloquear. Em modo autonomo essa passagem e obrigatoria, pelo

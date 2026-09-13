@@ -19,6 +19,7 @@ acionar a `skill-creator`.
 - [Skill](#skill)
 - [Descartado, na reference de evidencias](#descartado-na-reference-de-evidencias)
 - [Recomendacao de automacao](#recomendacao-de-automacao)
+- [Ponte de seguranca](#ponte-de-seguranca)
 - [Verificacao antes de fechar](#verificacao-antes-de-fechar)
 
 ## Regra que precede todas
@@ -444,6 +445,41 @@ Nao e artefato escrito por esta skill: e uma linha no relatorio, com quatro camp
 A linha do relatorio e a entrega inteira: configuracao, exemplo em JSON e instalacao ficam com
 o desenvolvedor. Sintaxe de hook muda com a versao da ferramenta, e o que nao envelhece e o
 tipo, o gatilho e o motivo.
+
+## Ponte de seguranca
+
+`.agents/security/mapa-cwe-guia.md` e lido pela `owasp-playbook` secao por secao, pelo titulo. Os titulos ficam como estao, e `Traducao` e `Saidas opcionais` nao sao tocadas. As quatro secoes de projeto recebem a forma abaixo; secao sem material mantem o texto padrao que veio da stack.
+
+**`Sinais do projeto`.** Uma tabela, um sinal por tipo de artefato encontrado, com o play que ele dispara. O sinal e reconhecivel por nome de arquivo, sufixo, diretorio ou simbolo literal; a terceira coluna diz onde o artefato vive hoje e de onde veio a evidencia.
+
+```markdown
+| Sinal no escopo | Play | Onde esta hoje |
+|---|---|---|
+| `<padrao de nome, diretorio ou simbolo literal>` | `<play da owasp-playbook>` | <territorio comprovado>; evidencia: `<caminho:linha ou comando>` |
+```
+
+**`Auditores do projeto`.** Um bloco `bash`, um comando por linha, com o alvo parametrizado, seguido de uma linha de texto por comando dizendo o que ele procura. Todo comando foi executado uma vez sobre o repositorio antes de entrar; comando que nao roda fica de fora.
+
+````markdown
+```bash
+python3 <script de verificacao do repositorio> --input <arquivo ou pasta>
+grep -rn --binary-files=text '<simbolo do guardrail>' <escopo>
+```
+
+- `<comando>`: procura <o que>, em <territorio>.
+````
+
+**`Excecoes`.** Uma lista, um item por linha, com o assunto em negrito, o que nao e achado, o motivo e a evidencia.
+
+```markdown
+- **<assunto>**: <o que nao e achado neste repositorio>, porque <area congelada pelo escopo de escrita | biblioteca de terceiros versionada | mecanismo do core ou do framework>. Evidencia: `<caminho:linha ou regra do AGENTS.md>`.
+```
+
+**`Correcao`.** Um paragrafo curto que aponta, por tipo de artefato, a skill ou o procedimento do projeto que recebe a correcao, citando o achado pelo numero do relatorio.
+
+```markdown
+Correcao nao e desta skill. Peca a correcao citando o numero do achado no relatorio e roteie por tipo de artefato: <tipo> para `<skill ou procedimento>`, <tipo> para `<skill ou procedimento>`.
+```
 
 ## Verificacao antes de fechar
 

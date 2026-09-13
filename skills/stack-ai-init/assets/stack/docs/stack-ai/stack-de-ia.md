@@ -80,20 +80,24 @@ Os agentes são configurados na pasta `.agents/` e integrados às ferramentas vi
 
 As **skills** são agentes especializados em tarefas específicas. Cada skill tem um escopo bem definido. Para acionar uma skill, mencione o nome dela na conversa com o assistente (no painel de chat da ferramenta de IA, como o chat do Copilot no VS Code). Por exemplo: *"Use a skill `skill-creator` para criar uma skill de X."* O assistente carrega as instruções da skill e executa o processo correspondente.
 
-A tabela abaixo lista as 21 skills que a stack instala. Todas vêm de terceiros e trazem a versão que está em `.agents/skills/` hoje. Essa versão não se atualiza sozinha: a troca é coordenada pela equipe conforme [`manutencao-da-stack.md`](manutencao-da-stack.md).
+A tabela abaixo lista as 18 skills que a stack instala. Dezesseis vêm de terceiros e duas, `dicionario-dados-db-scan-codebase-docs` e `gauntlet-loop-forge`, são mantidas pela Anatel no repositório `ai-skills`, o mesmo da `stack-ai-init`. Todas trazem a versão que está em `.agents/skills/` hoje. Essa versão não se atualiza sozinha: a troca é coordenada pela equipe conforme [`manutencao-da-stack.md`](manutencao-da-stack.md).
 
 | Skill | O que faz | Versão instalada | Licença | Repositório |
 |---|---|---|---|---|
 | `speckit-<fase>`, as 10 fases | Conduzem as fases do fluxo SDD com SpecKit | v1.0.3 | MIT | [github/spec-kit](https://github.com/github/spec-kit) |
 | `skill-creator` | Cria, edita e avalia skills | sem versionamento na origem | Apache-2.0 | [anthropics/skills](https://github.com/anthropics/skills/tree/main/skills/skill-creator) |
 | `dicionario-dados-db-scan-codebase-docs` | Cria, atualiza e verifica dicionários de dados e changelogs estruturais de banco de dados a partir da codebase, dos scripts de banco e da documentação | sem versionamento na origem | GPL-3.0 | `ai-skills`, o mesmo repositório da `stack-ai-init` |
+| `gauntlet-loop-forge` | Transforma um objetivo, plano, especificação ou prompt existente em um prompt de execução pronto para colar, com critérios de aceite verificáveis, revisão por agente que não construiu o artefato e limite finito de rodadas | sem versionamento na origem | GPL-3.0 | `ai-skills`, o mesmo repositório da `stack-ai-init` |
 | `caveman` | Comprime a prosa da resposta preservando termo técnico, código e mensagem de erro | v1.9.0 | MIT | [JuliusBrussee/caveman](https://github.com/JuliusBrussee/caveman) |
-| `grill-me` e `grilling` | Entrevistam o desenvolvedor sobre um plano ou design, uma pergunta por vez, antes de implementar | v1.0.1 | MIT | [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/productivity) |
-| `ponytail` e a família `ponytail-review`, `ponytail-audit`, `ponytail-debt`, `ponytail-help` e `ponytail-gain` | Força a solução mínima que funciona e revisa código à procura de over-engineering | v4.8.4 | MIT | [DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail) |
+| `grill-me` e `grilling` | Entrevistam o desenvolvedor sobre um plano ou design, em rodadas de perguntas com resposta recomendada, antes de implementar | v1.2.3 | MIT | [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/productivity) |
+| `writing-for-agents` | Orienta a escrita de documento que agente de IA lê: skill, `AGENTS.md`, `CLAUDE.md` e arquivo alcançado por ponteiro de contexto | v1.2.3 | MIT | [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/productivity) |
+| `owasp-playbook` | Revisão de segurança por procedimento OWASP: 17 plays cobrindo código, Top 10, API, segredos, dependências, infraestrutura como código, mobile, agente de IA, servidor MCP e aplicação LLM, mais o índice do ASVS para código novo | v0.2.7 | CC-BY-4.0 no playbook e CC-BY-SA-4.0 nos dados OWASP | [OWASP/secure-agent-playbook](https://github.com/OWASP/secure-agent-playbook) |
 
-As skills `caveman`, `ponytail` e a família dela são **modos opcionais**: o agente nunca as aciona sozinho, e elas só entram se você invocar. O uso delas está em [`prompts-exemplo.md`](prompts-exemplo.md), na seção de modos auxiliares.
+As skills `caveman` e `grill-me` são **modos opcionais**: o agente nunca as aciona sozinho, e elas só entram se você invocar. O `caveman` comprime as respostas e o `grill-me` interroga um plano ou um pedido antes de você aprová-lo. O uso delas está em [`prompts-exemplo.md`](prompts-exemplo.md), na seção de modos auxiliares.
 
-O projeto pode ter outras skills além dessas 21, criadas pela própria equipe. Elas ficam no mesmo `.agents/skills/`, são versionadas junto com o repositório e estão descritas no `README.md` da raiz.
+A `owasp-playbook` também é **opt-in**: o agente nunca a aciona sozinho. Para pedir, basta uma frase em português, sem conhecer segurança: a skill escolhe os procedimentos pelo que existe no escopo, traduz o resultado pelo guia de segurança e responde com um resumo em linguagem simples antes da tabela técnica. Os prompts estão em [`prompts-exemplo.md`](prompts-exemplo.md#revisão-de-segurança). A pasta `upstream/` dela é cópia literal do projeto de origem e não deve ser editada; o que é do projeto entra pela ponte `.agents/security/mapa-cwe-guia.md`.
+
+O projeto pode ter outras skills além dessas 18, criadas pela própria equipe. Elas ficam no mesmo `.agents/skills/`, são versionadas junto com o repositório e estão descritas no `README.md` da raiz.
 
 ---
 
@@ -132,6 +136,7 @@ Se você optar por uma ferramenta diferente das listadas acima, confirme antes q
 ```text
 .agents/
 ├── references/    # Material de referência consultado pelas skills
+├── security/      # Guia de segurança e ponte da skill owasp-playbook
 └── skills/        # As skills: agentes especializados por tipo de tarefa
 
 .claude/
@@ -171,11 +176,11 @@ Alguns itens existem apenas localmente em cada máquina e estão listados no `.g
 
 | Item | Por que não é versionado |
 |---|---|
-| `/specs` | Documentos gerados pelo SpecKit para cada funcionalidade; são locais e descartáveis |
+| `/specs` | Documentos gerados pelo SpecKit para cada funcionalidade; são locais e descartáveis. A linha só entra quando o repositório ainda não tem a pasta `specs/` |
 | `.claude/settings.local.json` | Configuração local do Claude Code, diferente em cada máquina |
 | `.specify/feature.json` | Configuração local do SpecKit, por desenvolvedor |
-| `node_modules/` | Dependências instaladas pelo npm; nunca devem ser salvas no repositório |
-| `.env*` | Arquivos de configuração com dados sensíveis como senhas e chaves de acesso |
+| `.specify/extensions/*/local-config.yml` | Configuração local das extensões do SpecKit, por desenvolvedor |
+| `__pycache__/` | Cache de bytecode que o Python gera ao rodar os scripts e os testes das skills; é recriado a cada execução |
 
 Antes de remover qualquer item do `.gitignore`, avalie se a remoção é realmente necessária. Na dúvida, mantenha.
 
