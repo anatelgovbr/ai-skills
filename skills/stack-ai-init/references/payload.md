@@ -5,7 +5,7 @@ Autoridade sobre: o que a skill distribui, o que fica de fora e por que, como a 
 ## Onde a carga fica
 
 ```text
-assets/stack/          os 605 arquivos, com os nomes com ponto mapeados para dot-
+assets/stack/          os 606 arquivos, com os nomes com ponto mapeados para dot-
 assets/estrutura.json  diretorios vazios e symlinks a recriar na instalacao
 ```
 
@@ -17,7 +17,7 @@ Duas skills sao a excecao: `dicionario-dados-db-scan-codebase-docs` e `gauntlet-
 
 | Grupo | Arquivos | Conteudo |
 |---|---|---|
-| Raiz | 3 | `AGENTS.md`, `CLAUDE.md`, `.gitignore` |
+| Raiz | 4 | `AGENTS.md`, `CLAUDE.md`, `.gitignore`, `THIRD_PARTY_NOTICES.md` |
 | `.agents/references/` | 2 | `speckit.md`, a regra de manutencao das fases; `template-revisao-tecnica.md`, o formato do relatorio de revisao tecnica, com estados, severidades, origem temporal e limite de cada celula |
 | `.agents/security/` | 2 | `guia-seguranca.md`, os 19 topicos de risco agnosticos de linguagem; `mapa-cwe-guia.md`, a ponte da `owasp-playbook` |
 | `.agents/skills/` | 562 | os 18 arquivos da `skill-creator`, as 10 fases do SpecKit em `speckit-<fase>/`, 6 skills de apoio (`caveman`, `dicionario-dados-db-scan-codebase-docs`, `gauntlet-loop-forge`, `grill-me`, `grilling` e `writing-for-agents`) e os 506 arquivos da `owasp-playbook`, dos quais 505 sao a copia do OWASP Secure Agent Playbook em `upstream/` |

@@ -31,7 +31,7 @@ Se voce acha que a carga precisa mudar, o caminho e editar `assets/` desta skill
 
 | Grupo | Conteudo |
 |---|---|
-| Raiz | `AGENTS.md`, `CLAUDE.md`, `.gitignore` |
+| Raiz | `AGENTS.md`, `CLAUDE.md`, `.gitignore`, `THIRD_PARTY_NOTICES.md` |
 | `.agents/references/` | `speckit.md`, a regra de manutencao das fases; `template-revisao-tecnica.md`, o formato do relatorio de revisao tecnica, para a skill de revisao do projeto |
 | `.agents/security/` | `guia-seguranca.md`, 19 topicos de risco agnosticos de linguagem, com rastreio para OWASP Top 10:2025 e CWE; `mapa-cwe-guia.md`, ponte da `owasp-playbook`, com a traducao de CWE para topico e as secoes que o projeto preenche |
 | `.agents/skills/` | a skill `skill-creator`, as 10 fases do SpecKit em `speckit-<fase>/`, 6 skills de apoio (`caveman`, `dicionario-dados-db-scan-codebase-docs`, `gauntlet-loop-forge`, `grill-me`, `grilling` e `writing-for-agents`) e a `owasp-playbook`, com o OWASP Secure Agent Playbook copiado em `upstream/` |

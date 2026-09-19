@@ -9,6 +9,7 @@ O conteúdo é genérico e vale para qualquer projeto. Ele é distribuído pela 
 | Arquivo | O que contém | Quando ler |
 |---|---|---|
 | [`stack-de-ia.md`](stack-de-ia.md) | O que é a stack, o que são agentes e skills, quais ferramentas de IA funcionam aqui, o que foi instalado e como começar | Uma vez, ao entrar no projeto |
+| [`THIRD_PARTY_NOTICES.md`](../../THIRD_PARTY_NOTICES.md) | Origem, revisão, licença e condições de distribuição das skills vendorizadas e dos avisos incorporados | Ao avaliar proveniência, atualização ou redistribuição da stack |
 | [`speckit.md`](speckit.md) | O que é o SpecKit, quando usar, as 10 fases e como invocar cada uma | Antes de começar uma demanda grande ou ambígua |
 | [`prompts-exemplo.md`](prompts-exemplo.md) | Prompts prontos para adaptar e enviar ao assistente | Toda vez que for pedir algo ao agente |
 | [`manutencao-da-stack.md`](manutencao-da-stack.md) | Como atualizar o SpecKit e os demais arquivos da stack | Apenas quem mantém a stack, e raramente |

@@ -80,18 +80,18 @@ Os agentes são configurados na pasta `.agents/` e integrados às ferramentas vi
 
 As **skills** são agentes especializados em tarefas específicas. Cada skill tem um escopo bem definido. Para acionar uma skill, mencione o nome dela na conversa com o assistente (no painel de chat da ferramenta de IA, como o chat do Copilot no VS Code). Por exemplo: *"Use a skill `skill-creator` para criar uma skill de X."* O assistente carrega as instruções da skill e executa o processo correspondente.
 
-A tabela abaixo lista as 18 skills que a stack instala. Dezesseis vêm de terceiros e duas, `dicionario-dados-db-scan-codebase-docs` e `gauntlet-loop-forge`, são mantidas pela Anatel no repositório `ai-skills`, o mesmo da `stack-ai-init`. Todas trazem a versão que está em `.agents/skills/` hoje. Essa versão não se atualiza sozinha: a troca é coordenada pela equipe conforme [`manutencao-da-stack.md`](manutencao-da-stack.md).
+A tabela abaixo lista as 18 skills que a stack instala. Dezesseis vêm de terceiros e duas, `dicionario-dados-db-scan-codebase-docs` e `gauntlet-loop-forge`, são mantidas pela Anatel no repositório `ai-skills`, o mesmo da `stack-ai-init`. A origem, a revisão, a licença e as condições de distribuição estão em [`THIRD_PARTY_NOTICES.md`](../../THIRD_PARTY_NOTICES.md); a troca de versão é coordenada pela equipe conforme [`manutencao-da-stack.md`](manutencao-da-stack.md).
 
-| Skill | O que faz | Versão instalada | Licença | Repositório |
-|---|---|---|---|---|
-| `speckit-<fase>`, as 10 fases | Conduzem as fases do fluxo SDD com SpecKit | v1.0.3 | MIT | [github/spec-kit](https://github.com/github/spec-kit) |
-| `skill-creator` | Cria, edita e avalia skills | sem versionamento na origem | Apache-2.0 | [anthropics/skills](https://github.com/anthropics/skills/tree/main/skills/skill-creator) |
-| `dicionario-dados-db-scan-codebase-docs` | Cria, atualiza e verifica dicionários de dados e changelogs estruturais de banco de dados a partir da codebase, dos scripts de banco e da documentação | sem versionamento na origem | GPL-3.0 | `ai-skills`, o mesmo repositório da `stack-ai-init` |
-| `gauntlet-loop-forge` | Transforma um objetivo, plano, especificação ou prompt existente em um prompt de execução pronto para colar, com critérios de aceite verificáveis, revisão por agente que não construiu o artefato e limite finito de rodadas | sem versionamento na origem | GPL-3.0 | `ai-skills`, o mesmo repositório da `stack-ai-init` |
-| `caveman` | Comprime a prosa da resposta preservando termo técnico, código e mensagem de erro | v1.9.0 | MIT | [JuliusBrussee/caveman](https://github.com/JuliusBrussee/caveman) |
-| `grill-me` e `grilling` | Entrevistam o desenvolvedor sobre um plano ou design, em rodadas de perguntas com resposta recomendada, antes de implementar | v1.2.3 | MIT | [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/productivity) |
-| `writing-for-agents` | Orienta a escrita de documento que agente de IA lê: skill, `AGENTS.md`, `CLAUDE.md` e arquivo alcançado por ponteiro de contexto | v1.2.3 | MIT | [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/productivity) |
-| `owasp-playbook` | Revisão de segurança por procedimento OWASP: 17 plays cobrindo código, Top 10, API, segredos, dependências, infraestrutura como código, mobile, agente de IA, servidor MCP e aplicação LLM, mais o índice do ASVS para código novo | v0.2.7 | CC-BY-4.0 no playbook e CC-BY-SA-4.0 nos dados OWASP | [OWASP/secure-agent-playbook](https://github.com/OWASP/secure-agent-playbook) |
+| Skill | O que faz |
+|---|---|
+| `speckit-<fase>`, as 10 fases | Conduzem as fases do fluxo SDD com SpecKit |
+| `skill-creator` | Cria, edita e avalia skills |
+| `dicionario-dados-db-scan-codebase-docs` | Cria, atualiza e verifica dicionários de dados e changelogs estruturais de banco de dados a partir da codebase, dos scripts de banco e da documentação |
+| `gauntlet-loop-forge` | Transforma um objetivo, plano, especificação ou prompt existente em um prompt de execução pronto para colar, com critérios de aceite verificáveis, revisão por agente que não construiu o artefato e limite finito de rodadas |
+| `caveman` | Comprime a prosa da resposta preservando termo técnico, código e mensagem de erro |
+| `grill-me` e `grilling` | Entrevistam o desenvolvedor sobre um plano ou design, em rodadas de perguntas com resposta recomendada, antes de implementar |
+| `writing-for-agents` | Orienta a escrita de documento que agente de IA lê: skill, `AGENTS.md`, `CLAUDE.md` e arquivo alcançado por ponteiro de contexto |
+| `owasp-playbook` | Revisão de segurança por procedimento OWASP: 17 plays cobrindo código, Top 10, API, segredos, dependências, infraestrutura como código, mobile, agente de IA, servidor MCP e aplicação LLM, mais o índice do ASVS para código novo |
 
 As skills `caveman` e `grill-me` são **modos opcionais**: o agente nunca as aciona sozinho, e elas só entram se você invocar. O `caveman` comprime as respostas e o `grill-me` interroga um plano ou um pedido antes de você aprová-lo. O uso delas está em [`prompts-exemplo.md`](prompts-exemplo.md), na seção de modos auxiliares.
 
@@ -162,6 +162,7 @@ Se você optar por uma ferramenta diferente das listadas acima, confirme antes q
 └── settings.json  # Aponta o Copilot para .agents/skills/
 
 docs/stack-ai/     # Esta documentação
+THIRD_PARTY_NOTICES.md # Origem, revisão, licença e condições de distribuição
 AGENTS.md          # Regras do projeto para agentes de IA (leia antes de contribuir)
 CLAUDE.md          # Ponteiro de compatibilidade para AGENTS.md
 ```
