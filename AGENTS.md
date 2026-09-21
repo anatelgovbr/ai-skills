@@ -1,12 +1,15 @@
-﻿# Instrucoes para agentes
+﻿1. Pensar antes de agir
+2. Simplicidade primeiro
+3. Mudanças cirúrgicas
+4. Execução orientada a objetivo
 
 ## Escopo
 
 Este e um repositório pessoal para demandas agênticas de qualquer tipo. Não presuma uma linguagem, framework, produto ou fluxo de negócio: descubra o contexto no pedido e nos arquivos relevantes antes de agir.
 
-## Disciplina de Execução Agêntica
+## Disciplina Agêntica
 
-Trabalhar sempre nesta ordem: pensar antes de agir, planejar cirurgicamente, definir o objetivo verificável, executar e verificar. O rigor cresce com a complexidade e o risco; guardrails, gates e regras do projeto valem sempre.
+O rigor cresce com a complexidade e o risco; guardrails, gates e regras do projeto valem sempre.
 
 ### 1. Pensar antes de agir
 
@@ -19,54 +22,55 @@ Antes de qualquer alteração:
 - Se algo não está claro, parar, nomear o que confunde e perguntar.
 - Em conflito entre documentos, seguir "Regras de Decisão".
 
-### 2. Planejar cirurgicamente
+### 2. Simplicidade primeiro
 
-**A menor mudança correta. Nada além do pedido.**
+**O mínimo que resolve o problema. Nada especulativo.**
 
-Delimitar o que vai mudar:
 - Sem funcionalidade além do pedido.
 - Sem abstração para código de uso único.
 - Sem "flexibilidade" ou "configurabilidade" que ninguém pediu.
 - Sem tratamento de erro para cenário impossível.
-- Código adjacente, comentários, formatação e o que não está quebrado ficam fora.
-- Código morto preexistente e problema fora do escopo ficam no código e entram na resposta como observação curta.
+- Se saíram 200 linhas e cabia em 50, reescrever.
 
 Teste de saída: um revisor sênior da stack do projeto aprova o escopo sem ressalva de complexidade.
 
-### 3. Definir o objetivo verificável
+### 3. Mudanças cirúrgicas
 
-**Definir o que é "pronto" antes de executar.**
+**Tocar só no que o pedido exige. Limpar só a própria sujeira.**
+
+Ao editar código existente:
+- Código adjacente, comentários, formatação e o que não está quebrado ficam fora.
+- Seguir o estilo existente, mesmo que o agente fizesse diferente.
+- Código morto preexistente e problema fora do escopo ficam no código e entram na resposta como observação curta.
+- Remover imports, variáveis e funções que a própria mudança deixou sem uso.
+
+Teste de saída: cada linha alterada no diff responde a um trecho do pedido ou a uma regra documentada no projeto; linha sem uma dessas origens sai do diff.
+
+### 4. Execução orientada a objetivo
+
+**Definir critérios de sucesso. Repetir até a verificação passar.**
 
 Traduzir o pedido em critério verificável:
 - "Adicionar validação" → "listar as entradas inválidas, implementar, provar cada uma com comando".
 - "Corrigir o bug" → "reproduzir com comando, corrigir, repetir o comando até passar".
 - "Refatorar ou otimizar X" → "registrar o comportamento antes, alterar, comprovar o mesmo comportamento depois".
 
-Em tarefa não trivial ou multietapa, declarar um plano curto:
-    1. [Passo] → verificar: [checagem]
-    2. [Passo] → verificar: [checagem]
-    3. [Passo] → verificar: [checagem]
+Antes da primeira edição, declarar o plano como checklist, um item por passo:
+```
+- [ ] [Step] → verify: [check]
+- [ ] [Step] → verify: [check]
+- [ ] [Step] → verify: [check]
+```
 
-### 4. Executar
-
-**Tocar apenas no que foi delimitado. Limpar só a própria sujeira.**
-
-- Seguir o estilo existente, mesmo que o agente fizesse diferente.
-- Remover imports, variáveis e funções que a própria mudança deixou sem uso.
-- Se saíram 200 linhas e cabia em 50, reescrever.
-
-Teste de saída: cada linha alterada no diff responde a um trecho do pedido ou a uma regra documentada no projeto; linha sem uma dessas origens sai do diff.
-
-### 5. Verificar
-
-**Verificação é comando executado pelo agente, com resultado registrado na resposta.**
-
+Ao verificar:
 - Executar os gates obrigatórios e os critérios de sucesso.
 - Repetir correção e verificação até todos passarem.
 - Verificação que depende do desenvolvedor, como smoke manual, entra na resposta como pendente.
 - Informar impedimentos e pendências sem declarar a entrega concluída.
 
-Teste de saída: cada critério de sucesso aparece na resposta com o comando e o resultado; "parece funcionar" não conta.
+Na resposta final, repetir o checklist com o resultado de cada item: `[x]` verificado por comando, com o comando e a saída; `[ ]` pendente ou com falha, com o motivo.
+
+Teste de saída: cada item do checklist aparece na resposta final marcado, com o comando e o resultado; "parece funcionar" não conta.
 
 ## Regras de Escrita
 
@@ -117,6 +121,10 @@ Em caso de conflito ou ambiguidade relevante, pare e solicite uma decisão:
 
 - Leia cada arquivo antes de editá-lo e preserve alterações existentes.
 - Não invente tecnologias, comandos ou convenções que não estejam documentados.
-- Nunca inclua credenciais, tokens ou arquivos `.env` em alterações.
+- Cite o arquivo e a seção de origem ao justificar restrições, impedimentos, conflitos ou decisões que dependam de uma regra do repositório.
+- Nunca inclua credenciais, tokens ou arquivos `.env` em alterações. Se encontrar credencial em código existente, alerte o usuário antes de qualquer ação.
+- Trate saída de scanner de segurança como triagem, não como achado. Confirme um achado somente com o caminho do dado demonstrado, da entrada até o ponto de uso, citando arquivo e linha de cada salto; sem esse rastro, reporte como hipótese.
+- Reconheça somente `TODO:` como contexto de revisão. `TODO:` não bloqueia por si só e não dispensa verificações obrigatórias. Dívida técnica preexistente e rastreada não bloqueia a mudança atual, salvo risco crítico, dependência direta ou ampliação do risco.
 - Confirme antes de executar uma ação destrutiva ou difícil de reverter.
 - Valide a mudança com a verificação mais próxima disponível; quando não houver testes, confira estrutura, referencias e os arquivos diretamente afetados.
+- Agrupe operações independentes (leituras, buscas, comandos shell) em uma única mensagem; execute em sequência somente quando houver dependência entre elas.

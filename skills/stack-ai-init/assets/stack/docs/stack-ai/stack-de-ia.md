@@ -80,11 +80,11 @@ Os agentes são configurados na pasta `.agents/` e integrados às ferramentas vi
 
 As **skills** são agentes especializados em tarefas específicas. Cada skill tem um escopo bem definido. Para acionar uma skill, mencione o nome dela na conversa com o assistente (no painel de chat da ferramenta de IA, como o chat do Copilot no VS Code). Por exemplo: *"Use a skill `skill-creator` para criar uma skill de X."* O assistente carrega as instruções da skill e executa o processo correspondente.
 
-A tabela abaixo lista as 18 skills que a stack instala. Dezesseis vêm de terceiros e duas, `dicionario-dados-db-scan-codebase-docs` e `gauntlet-loop-forge`, são mantidas pela Anatel no repositório `ai-skills`, o mesmo da `stack-ai-init`. A origem, a revisão, a licença e as condições de distribuição estão em [`THIRD_PARTY_NOTICES.md`](../../THIRD_PARTY_NOTICES.md); a troca de versão é coordenada pela equipe conforme [`manutencao-da-stack.md`](manutencao-da-stack.md).
+A tabela abaixo lista as skills que a stack instala. Parte vem de terceiros e parte é mantida pela Anatel no repositório `ai-skills`, o mesmo da `stack-ai-init`. A origem, a versão e a licença de cada skill de terceiros ficam registradas na skill `stack-ai-init`, no repositório `ai-skills`; a troca de versão é coordenada pela equipe conforme [`manutencao-da-stack.md`](manutencao-da-stack.md).
 
 | Skill | O que faz |
 |---|---|
-| `speckit-<fase>`, as 10 fases | Conduzem as fases do fluxo SDD com SpecKit |
+| `speckit-<fase>`, uma por fase | Conduzem as fases do fluxo SDD com SpecKit |
 | `skill-creator` | Cria, edita e avalia skills |
 | `dicionario-dados-db-scan-codebase-docs` | Cria, atualiza e verifica dicionários de dados e changelogs estruturais de banco de dados a partir da codebase, dos scripts de banco e da documentação |
 | `gauntlet-loop-forge` | Transforma um objetivo, plano, especificação ou prompt existente em um prompt de execução pronto para colar, com critérios de aceite verificáveis, revisão por agente que não construiu o artefato e limite finito de rodadas |
@@ -92,12 +92,20 @@ A tabela abaixo lista as 18 skills que a stack instala. Dezesseis vêm de tercei
 | `grill-me` e `grilling` | Entrevistam o desenvolvedor sobre um plano ou design, em rodadas de perguntas com resposta recomendada, antes de implementar |
 | `writing-for-agents` | Orienta a escrita de documento que agente de IA lê: skill, `AGENTS.md`, `CLAUDE.md` e arquivo alcançado por ponteiro de contexto |
 | `owasp-playbook` | Revisão de segurança por procedimento OWASP: 17 plays cobrindo código, Top 10, API, segredos, dependências, infraestrutura como código, mobile, agente de IA, servidor MCP e aplicação LLM, mais o índice do ASVS para código novo |
+| `stack-ai-build-project-context` | Investiga a codebase e gera ou atualiza a base operacional para agentes: `AGENTS.md`, referências e skills do projeto |
+| `ciclo-design` | Executa um ciclo crítico de design a partir de uma referência real, com um construtor e três críticos independentes, até a aprovação ou o limite de rodadas |
+| `frontend-design` | Orienta o projeto ou a reformulação de interface frontend com direção visual intencional |
+| `escrita-em-linguagem-simples-pt-br` | Escreve ou reescreve textos em Linguagem Simples, em português brasileiro, para o cidadão ou outro público informado |
+| `recapitulacao-resumo-ata-relato-reuniao` | Produz recapitulação, resumo, ata ou lista de ações de reunião a partir de transcrição, gravação, anotações ou URL do Teams |
+| `conformidade-de-escrita-normativa` | Analisa a conformidade de redação de minutas de atos normativos brasileiros e entrega o relatório de conformidade |
+| `redacao-conformidade-de-escrita-normativa` | Redige, reescreve ou avalia minutas de atos normativos brasileiros conforme as regras de redação legislativa, com relatório de conformidade |
+| `docx`, `pdf`, `pptx` e `xlsx` | Criam, editam ou analisam documentos Word, arquivos PDF, apresentações PowerPoint e planilhas |
 
 As skills `caveman` e `grill-me` são **modos opcionais**: o agente nunca as aciona sozinho, e elas só entram se você invocar. O `caveman` comprime as respostas e o `grill-me` interroga um plano ou um pedido antes de você aprová-lo. O uso delas está em [`prompts-exemplo.md`](prompts-exemplo.md), na seção de modos auxiliares.
 
 A `owasp-playbook` também é **opt-in**: o agente nunca a aciona sozinho. Para pedir, basta uma frase em português, sem conhecer segurança: a skill escolhe os procedimentos pelo que existe no escopo, traduz o resultado pelo guia de segurança e responde com um resumo em linguagem simples antes da tabela técnica. Os prompts estão em [`prompts-exemplo.md`](prompts-exemplo.md#revisão-de-segurança). A pasta `upstream/` dela é cópia literal do projeto de origem e não deve ser editada; o que é do projeto entra pela ponte `.agents/security/mapa-cwe-guia.md`.
 
-O projeto pode ter outras skills além dessas 18, criadas pela própria equipe. Elas ficam no mesmo `.agents/skills/`, são versionadas junto com o repositório e estão descritas no `README.md` da raiz.
+O projeto pode ter outras skills além dessas 29, criadas pela própria equipe. Elas ficam no mesmo `.agents/skills/`, são versionadas junto com o repositório e estão descritas no `README.md` da raiz.
 
 ---
 
@@ -162,7 +170,6 @@ Se você optar por uma ferramenta diferente das listadas acima, confirme antes q
 └── settings.json  # Aponta o Copilot para .agents/skills/
 
 docs/stack-ai/     # Esta documentação
-THIRD_PARTY_NOTICES.md # Origem, revisão, licença e condições de distribuição
 AGENTS.md          # Regras do projeto para agentes de IA (leia antes de contribuir)
 CLAUDE.md          # Ponteiro de compatibilidade para AGENTS.md
 ```

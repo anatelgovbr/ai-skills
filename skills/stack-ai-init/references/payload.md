@@ -5,22 +5,22 @@ Autoridade sobre: o que a skill distribui, o que fica de fora e por que, como a 
 ## Onde a carga fica
 
 ```text
-assets/stack/          os 606 arquivos, com os nomes com ponto mapeados para dot-
+assets/stack/          os 807 arquivos, com os nomes com ponto mapeados para dot-
 assets/estrutura.json  diretorios vazios e symlinks a recriar na instalacao
 ```
 
 `assets/stack/` e a fonte de verdade da stack e nao um gerador. Quem mantem edita esses arquivos direto. O instalador so copia o que esta la.
 
-Duas skills sao a excecao: `dicionario-dados-db-scan-codebase-docs` e `gauntlet-loop-forge` tem a fonte em `skills/<nome>/` deste mesmo repositorio, e a copia em `assets/stack/dot-agents/skills/<nome>/` e feita a mao, sem script de sincronizacao. Para conferir que fonte e copia continuam iguais, rode a partir da raiz do repositorio `diff -rq -x __pycache__ skills/<nome> skills/stack-ai-init/assets/stack/dot-agents/skills/<nome>`; o comando precisa voltar vazio. Onde a fonte nao guarda `README.md`, o diff mostra so esse arquivo.
+As skills de `skills/` deste mesmo repositorio sao a excecao: toda skill que esta la, menos a propria `stack-ai-init`, esta tambem na carga, em `assets/stack/dot-agents/skills/<nome>/`, e a copia e feita a mao, sem script de sincronizacao. Sao 16: `caveman`, `ciclo-design`, `conformidade-de-escrita-normativa`, `dicionario-dados-db-scan-codebase-docs`, `docx`, `escrita-em-linguagem-simples-pt-br`, `frontend-design`, `gauntlet-loop-forge`, `pdf`, `pptx`, `recapitulacao-resumo-ata-relato-reuniao`, `redacao-conformidade-de-escrita-normativa`, `skill-creator`, `stack-ai-build-project-context`, `writing-for-agents` e `xlsx`. A carga nao leva o `LICENSE.txt` das skills: ela e uma instalacao da stack, nao a mantenedora, e origem, versao e licenca ficam registradas no `ai-skills`. Para conferir que fonte e copia continuam iguais, rode a partir da raiz do repositorio `diff -rq -x __pycache__ -x LICENSE.txt -x README.md skills/<nome> skills/stack-ai-init/assets/stack/dot-agents/skills/<nome>`; o comando precisa voltar vazio.
 
 ## Inventario
 
 | Grupo | Arquivos | Conteudo |
 |---|---|---|
-| Raiz | 4 | `AGENTS.md`, `CLAUDE.md`, `.gitignore`, `THIRD_PARTY_NOTICES.md` |
+| Raiz | 3 | `AGENTS.md`, `CLAUDE.md`, `.gitignore` |
 | `.agents/references/` | 2 | `speckit.md`, a regra de manutencao das fases; `template-revisao-tecnica.md`, o formato do relatorio de revisao tecnica, com estados, severidades, origem temporal e limite de cada celula |
 | `.agents/security/` | 2 | `guia-seguranca.md`, os 19 topicos de risco agnosticos de linguagem; `mapa-cwe-guia.md`, a ponte da `owasp-playbook` |
-| `.agents/skills/` | 562 | os 18 arquivos da `skill-creator`, as 10 fases do SpecKit em `speckit-<fase>/`, 6 skills de apoio (`caveman`, `dicionario-dados-db-scan-codebase-docs`, `gauntlet-loop-forge`, `grill-me`, `grilling` e `writing-for-agents`) e os 506 arquivos da `owasp-playbook`, dos quais 505 sao a copia do OWASP Secure Agent Playbook em `upstream/` |
+| `.agents/skills/` | 764 | 29 skills: os 17 arquivos da `skill-creator`, as 10 fases do SpecKit em `speckit-<fase>/`, os 506 arquivos da `owasp-playbook`, dos quais 505 sao a copia do OWASP Secure Agent Playbook em `upstream/`, e 17 skills de apoio em 231 arquivos: 4 de terceiros (`caveman`, `grill-me`, `grilling` e `writing-for-agents`), 5 da Anthropic (`frontend-design` e as documentais `docx`, `pdf`, `pptx` e `xlsx`, estas com 178 arquivos) e 8 mantidas pela Anatel no `ai-skills` (`ciclo-design`, `conformidade-de-escrita-normativa`, `dicionario-dados-db-scan-codebase-docs`, `escrita-em-linguagem-simples-pt-br`, `gauntlet-loop-forge`, `recapitulacao-resumo-ata-relato-reuniao`, `redacao-conformidade-de-escrita-normativa` e `stack-ai-build-project-context`) |
 | `.claude/` | 1 | `settings.json`, que registra o marketplace local e liga o plugin `stack-ai` |
 | `.claude-plugin/` | 1 | `marketplace.json`, o plugin local que aponta o Claude Code para `.agents/skills/`; traz `{{MARKETPLACE}}` no lugar do nome |
 | `.github/` | 1 | `copilot-instructions.md` |
@@ -92,7 +92,7 @@ find "$DEST" -name '.*'
 
 O upstream traz symlinks `references -> data` dentro de `plugins/code-security-skills/skills/*/`, e a carga nao os guarda: o `find -type l -delete` apaga so o link, nunca a pasta `data/` de destino. O `find` no fim precisa voltar vazio: componente de caminho iniciado por ponto dentro de `upstream/` teria de ser mapeado para `dot-`, e a lista de exclusao acima ja remove todos os que o upstream tem hoje. Depois:
 
-1. Registre o commit e a data na tabela desta secao e a versao na tabela de skills de `docs/stack-ai/stack-de-ia.md`.
+1. Registre o commit e a data na tabela desta secao.
 2. Confira a tabela de plays disponiveis do `SKILL.md` contra `ls upstream/plugins/*/plays/`. Play novo, removido ou renomeado exige ajuste na tabela de plays, na tabela de sinais e na de intencao.
 3. Confira a coluna ASVS de `mapa-cwe-guia.md` contra o indice de `upstream/plugins/code-security-skills/skills/security-guidance/SKILL.md`.
 4. Rode os testes e uma instalacao em destino descartavel, como em qualquer alteracao da carga.
@@ -100,22 +100,24 @@ O upstream traz symlinks `references -> data` dentro de `plugins/code-security-s
 
 ## As demais skills de terceiros
 
-Quatro skills de apoio sao copia de projeto de terceiro, e a versao instalada fica registrada aqui e na tabela de skills de `docs/stack-ai/stack-de-ia.md`:
+Nove skills de apoio sao copia de material de terceiro, e a versao instalada fica registrada aqui:
 
 | Skill | Versao instalada | Origem | Licenca |
 |---|---|---|---|
 | `caveman` | v1.9.0 | [JuliusBrussee/caveman](https://github.com/JuliusBrussee/caveman) | MIT |
+| `frontend-design` | sem versionamento na origem | [anthropics/skills](https://github.com/anthropics/skills/tree/main/skills/frontend-design) | Apache-2.0, em `skills/frontend-design/LICENSE.txt` deste repositorio |
+| `docx`, `pdf`, `pptx` e `xlsx` | sem versionamento na origem | Anthropic, fornecidas pelo host | termos proprietarios em `skills/<nome>/LICENSE.txt` deste repositorio; o texto restringe copia, retencao fora dos servicos da Anthropic, obra derivada e distribuicao a terceiros |
 | `grill-me` | v1.2.3 | [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/productivity) | MIT |
 | `grilling` | v1.2.3 | [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/productivity) | MIT |
 | `writing-for-agents` | v1.2.3 | [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/productivity) | MIT |
 
-Para atualizar uma delas, substitua a pasta da skill inteira pela versao nova da origem, registre a versao nesta tabela e na tabela de `docs/stack-ai/stack-de-ia.md`, e rode os testes e uma instalacao em destino descartavel, como em qualquer alteracao da carga.
+Para atualizar uma delas, substitua a pasta da skill inteira pela versao nova da origem, em `skills/<nome>/` e na carga, registre a versao nesta tabela, e rode os testes e uma instalacao em destino descartavel, como em qualquer alteracao da carga.
 
 ## A documentacao em docs/stack-ai/
 
 Cinco arquivos `.md` que explicam a stack para quem vai usar: o indice, o conceito, o SpecKit, a manutencao e os prompts genericos. E a unica parte da carga escrita para pessoa, e nao para agente.
 
-O conteudo e generico e nao cita projeto nenhum. Ele descreve so o que esta nesta carga: os oito diretorios instalados e as 18 skills. Regra de projeto continua no `AGENTS.md`, e a regra que o agente segue ao editar uma fase continua em `.agents/references/speckit.md`, que a documentacao cita em vez de repetir.
+O conteudo e generico e nao cita projeto nenhum. Ele descreve so o que esta nesta carga: os oito diretorios instalados e as 29 skills. Regra de projeto continua no `AGENTS.md`, e a regra que o agente segue ao editar uma fase continua em `.agents/references/speckit.md`, que a documentacao cita em vez de repetir.
 
 A pasta e namespaced de proposito. O destino quase sempre ja tem `docs/`, e um subdiretorio proprio nunca colide com o que ja esta la.
 
@@ -129,8 +131,8 @@ Nenhuma integracao recebe arquivo do SpecKit. O workflow de cada fase existe uma
 |---|---|
 | `.claude/settings.local.json` | configuracao local do desenvolvedor, ja no `.gitignore` |
 | `.opencode/node_modules/`, `package.json`, `package-lock.json` | dependencias instaladas pelo npm, nunca versionadas |
-| As demais skills de `skills/` deste repositorio: `ciclo-design`, `conformidade-de-escrita-normativa`, `redacao-conformidade-de-escrita-normativa`, `recapitulacao-resumo-ata-relato-reuniao`, `reescrita-em-linguagem-simples-pt-br` e `stack-ai-build-project-context` | nao entram na carga por decisao. A `stack-ai-build-project-context` e skill em evolucao, e enriquecimento nao e escopo da `stack-ai-init` |
 | `.agents/skills/stack-ai-init/` | ela mesma; distribuir o instalador levaria a carga junto, recursivamente |
+| `LICENSE.txt` das skills e `THIRD_PARTY_NOTICES.md` | a carga e uma instalacao da stack no destino e nao mantem as skills; origem, versao e licenca ficam no `ai-skills`, em `THIRD_PARTY_NOTICES.md` da raiz e neste arquivo. A pasta `upstream/` da `owasp-playbook` e copia literal e conserva os dela |
 | `specs/`, `.git/`, `__pycache__/` | trabalho do repositorio, nao artefato da stack |
 | Partes do OWASP Secure Agent Playbook listadas na secao "A skill owasp-playbook" | formato de ferramenta ou insumo de teste |
 
@@ -202,12 +204,12 @@ A constante e `LINHA_CONDICIONAL_SPECS`, em `scripts/instalar_stack.py`.
 
 ## Alterar a carga
 
-Edite `assets/stack/` direto, com o nome mapeado para `dot-` onde houver ponto. Nao existe repositorio molde de onde puxar. As duas skills com fonte em `skills/<nome>/` deste repositorio, `dicionario-dados-db-scan-codebase-docs` e `gauntlet-loop-forge`, sao copiadas a mao para a carga, sem script de sincronizacao.
+Edite `assets/stack/` direto, com o nome mapeado para `dot-` onde houver ponto. Nao existe repositorio molde de onde puxar. As skills com fonte em `skills/<nome>/` deste repositorio sao copiadas a mao para a carga, sem script de sincronizacao; a lista esta na secao "Onde a carga fica".
 
 O fluxo de qualquer mudanca:
 
 1. Editar o arquivo em `assets/stack/`, ou criar o diretorio da skill nova.
-2. Se a mudanca for em `dicionario-dados-db-scan-codebase-docs` ou em `gauntlet-loop-forge`, editar a fonte em `skills/<nome>/`, copiar a pasta inteira para `assets/stack/dot-agents/skills/<nome>/` e conferir com o `diff -rq` da secao "Onde a carga fica".
+2. Se a skill tambem vive em `skills/<nome>/`, editar a fonte la, copiar a pasta inteira para `assets/stack/dot-agents/skills/<nome>/` e conferir com o `diff -rq` da secao "Onde a carga fica".
 3. Se a mudanca envolver diretorio vazio ou symlink, declarar em `assets/estrutura.json`. As duas listas estao vazias hoje.
 4. Rodar os testes: `cd scripts && python3 -m unittest test_instalar_stack`.
 5. Instalar em um destino descartavel e conferir: `python3 scripts/instalar_stack.py instalar --destino <pasta vazia>`.

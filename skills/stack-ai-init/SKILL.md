@@ -31,10 +31,10 @@ Se voce acha que a carga precisa mudar, o caminho e editar `assets/` desta skill
 
 | Grupo | Conteudo |
 |---|---|
-| Raiz | `AGENTS.md`, `CLAUDE.md`, `.gitignore`, `THIRD_PARTY_NOTICES.md` |
+| Raiz | `AGENTS.md`, `CLAUDE.md`, `.gitignore` |
 | `.agents/references/` | `speckit.md`, a regra de manutencao das fases; `template-revisao-tecnica.md`, o formato do relatorio de revisao tecnica, para a skill de revisao do projeto |
 | `.agents/security/` | `guia-seguranca.md`, 19 topicos de risco agnosticos de linguagem, com rastreio para OWASP Top 10:2025 e CWE; `mapa-cwe-guia.md`, ponte da `owasp-playbook`, com a traducao de CWE para topico e as secoes que o projeto preenche |
-| `.agents/skills/` | a skill `skill-creator`, as 10 fases do SpecKit em `speckit-<fase>/`, 6 skills de apoio (`caveman`, `dicionario-dados-db-scan-codebase-docs`, `gauntlet-loop-forge`, `grill-me`, `grilling` e `writing-for-agents`) e a `owasp-playbook`, com o OWASP Secure Agent Playbook copiado em `upstream/` |
+| `.agents/skills/` | 29 skills: a `skill-creator`, as 10 fases do SpecKit em `speckit-<fase>/`, a `owasp-playbook`, com o OWASP Secure Agent Playbook copiado em `upstream/`, e 17 skills de apoio: 4 de terceiros (`caveman`, `grill-me`, `grilling` e `writing-for-agents`), 5 da Anthropic (`frontend-design`, `docx`, `pdf`, `pptx` e `xlsx`) e 8 mantidas pela Anatel no repositorio `ai-skills` (`ciclo-design`, `conformidade-de-escrita-normativa`, `dicionario-dados-db-scan-codebase-docs`, `escrita-em-linguagem-simples-pt-br`, `gauntlet-loop-forge`, `recapitulacao-resumo-ata-relato-reuniao`, `redacao-conformidade-de-escrita-normativa` e `stack-ai-build-project-context`) |
 | `.claude/` | `settings.json`, que registra o marketplace local e liga o plugin `stack-ai` |
 | `.claude-plugin/` | `marketplace.json`, o plugin local que aponta o Claude Code para `.agents/skills/`; o nome do marketplace sai do diretorio de destino |
 | `.github/` | `copilot-instructions.md` |
@@ -139,4 +139,4 @@ Nao escreve nada. Compara arquivo a arquivo por sha256 e devolve `igual`, `diver
 
 ## Manutencao da carga
 
-`assets/stack/` e a fonte de verdade da stack: quem mantem edita esses arquivos direto, com o nome mapeado para `dot-` onde houver ponto. Nao existe repositorio molde de onde puxar. Duas skills, `dicionario-dados-db-scan-codebase-docs` e `gauntlet-loop-forge`, tem a fonte em `skills/<nome>/` deste repositorio e sao copiadas a mao para a carga, sem script de sincronizacao. O inventario, as exclusoes e o passo a passo de uma alteracao estao em `references/payload.md`.
+`assets/stack/` e a fonte de verdade da stack: quem mantem edita esses arquivos direto, com o nome mapeado para `dot-` onde houver ponto. Nao existe repositorio molde de onde puxar. Toda skill de `skills/` deste repositorio, menos a propria `stack-ai-init`, esta na carga e e copiada a mao, sem script de sincronizacao. O inventario, as exclusoes e o passo a passo de uma alteracao estao em `references/payload.md`.
