@@ -98,14 +98,13 @@ A tabela abaixo lista as skills que a stack instala. Parte vem de terceiros e pa
 | `escrita-em-linguagem-simples-pt-br` | Escreve ou reescreve textos em Linguagem Simples, em português brasileiro, para o cidadão ou outro público informado |
 | `recapitulacao-resumo-ata-relato-reuniao` | Produz recapitulação, resumo, ata ou lista de ações de reunião a partir de transcrição, gravação, anotações ou URL do Teams |
 | `conformidade-de-escrita-normativa` | Analisa a conformidade de redação de minutas de atos normativos brasileiros e entrega o relatório de conformidade |
-| `redacao-conformidade-de-escrita-normativa` | Redige, reescreve ou avalia minutas de atos normativos brasileiros conforme as regras de redação legislativa, com relatório de conformidade |
 | `docx`, `pdf`, `pptx` e `xlsx` | Criam, editam ou analisam documentos Word, arquivos PDF, apresentações PowerPoint e planilhas |
 
 As skills `caveman` e `grill-me` são **modos opcionais**: o agente nunca as aciona sozinho, e elas só entram se você invocar. O `caveman` comprime as respostas e o `grill-me` interroga um plano ou um pedido antes de você aprová-lo. O uso delas está em [`prompts-exemplo.md`](prompts-exemplo.md), na seção de modos auxiliares.
 
 A `owasp-playbook` também é **opt-in**: o agente nunca a aciona sozinho. Para pedir, basta uma frase em português, sem conhecer segurança: a skill escolhe os procedimentos pelo que existe no escopo, traduz o resultado pelo guia de segurança e responde com um resumo em linguagem simples antes da tabela técnica. Os prompts estão em [`prompts-exemplo.md`](prompts-exemplo.md#revisão-de-segurança). A pasta `upstream/` dela é cópia literal do projeto de origem e não deve ser editada; o que é do projeto entra pela ponte `.agents/security/mapa-cwe-guia.md`.
 
-O projeto pode ter outras skills além dessas 29, criadas pela própria equipe. Elas ficam no mesmo `.agents/skills/`, são versionadas junto com o repositório e estão descritas no `README.md` da raiz.
+O projeto pode ter outras skills além dessas 28, criadas pela própria equipe. Elas ficam no mesmo `.agents/skills/`, são versionadas junto com o repositório e estão descritas no `README.md` da raiz.
 
 ---
 

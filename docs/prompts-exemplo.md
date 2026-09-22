@@ -35,10 +35,6 @@
 - [reescrita-em-linguagem-simples-pt-br](#reescrita-em-linguagem-simples-pt-br)
   - [Reescrever um texto colado](#reescrever-um-texto-colado)
   - [Reescrever um arquivo ou uma página](#reescrever-um-arquivo-ou-uma-página)
-- [redacao-conformidade-de-escrita-normativa](#redacao-conformidade-de-escrita-normativa)
-  - [Redigir uma minuta](#redigir-uma-minuta)
-  - [Reescrever uma minuta ou um dispositivo](#reescrever-uma-minuta-ou-um-dispositivo)
-  - [Avaliar a conformidade de uma minuta](#avaliar-a-conformidade-de-uma-minuta)
 - [conformidade-de-escrita-normativa](#conformidade-de-escrita-normativa)
   - [Analisar a minuta inteira](#analisar-a-minuta-inteira)
   - [Analisar só alguns dispositivos](#analisar-só-alguns-dispositivos)
@@ -540,51 +536,9 @@ Público-alvo: <se não for o cidadão>
 
 ---
 
-## redacao-conformidade-de-escrita-normativa
-
-Redige, reescreve e avalia minutas de ato normativo brasileiro (lei, medida provisória, decreto, portaria, resolução, instrução normativa e outras) contra regras fixas de redação legislativa, guardadas em `references/` dentro da skill. Ela cuida só da forma: não opina sobre mérito, competência, constitucionalidade ou conveniência.
-
-São três modos, escolhidos pelo verbo do pedido: redigir, reescrever e avaliar. A avaliação devolve um relatório com dezessete dimensões, as sugestões de ajuste e o texto ajustado de cada dispositivo. Para avaliar e ajustar na mesma resposta, peça o relatório sobre o texto original e, em seguida, a minuta ajustada. A skill pergunta só o que for indispensável, como espécie, autoridade ou objeto, e nunca presume esses dados.
-
-### Redigir uma minuta
-
-**Prompt:**
-
-```text
-Use a skill `redacao-conformidade-de-escrita-normativa` para redigir a minuta de <espécie normativa, ex.: portaria>.
-
-Autoridade competente: <quem assina>
-Objeto: <o que o ato regula, em uma frase>
-Âmbito de aplicação: <a quem ou a que o ato se aplica>
-Fundamento de validade: <norma que dá a competência, se souber>
-Conteúdo: <as regras que o ato deve conter, em tópicos>
-```
-
-### Reescrever uma minuta ou um dispositivo
-
-**Prompt:**
-
-```text
-Use a skill `redacao-conformidade-de-escrita-normativa` para reescrever <a minuta inteira ou os dispositivos indicados> conforme as regras de redação normativa, preservando o conteúdo material.
-
-<cole aqui a minuta ou os dispositivos, ou informe o caminho do arquivo>
-```
-
-### Avaliar a conformidade de uma minuta
-
-**Prompt:**
-
-```text
-Use a skill `redacao-conformidade-de-escrita-normativa` para avaliar a conformidade da redação da minuta abaixo e apresentar o relatório.
-
-<cole aqui a minuta, ou informe o caminho do arquivo>
-```
-
----
-
 ## conformidade-de-escrita-normativa
 
-Versão em arquivo único da avaliação de conformidade: as dezessete dimensões e as regras de redação ficam dentro do próprio `SKILL.md`, para ambiente que carrega a skill em um arquivo só, como o Copilot Studio. Qualquer pedido, mesmo com os verbos corrigir ou reescrever, é tratado como análise e devolve só o relatório; o texto ajustado aparece apenas na seção de transcrição dos ajustes, dispositivo por dispositivo. Para redigir ou reescrever a minuta, use a `redacao-conformidade-de-escrita-normativa`.
+Versão em arquivo único da avaliação de conformidade: as dezessete dimensões e as regras de redação ficam dentro do próprio `SKILL.md`, para ambiente que carrega a skill em um arquivo só, como o Copilot Studio. Qualquer pedido, mesmo com os verbos corrigir ou reescrever, é tratado como análise e devolve só o relatório; o texto ajustado aparece apenas na seção de transcrição dos ajustes, dispositivo por dispositivo.
 
 ### Analisar a minuta inteira
 

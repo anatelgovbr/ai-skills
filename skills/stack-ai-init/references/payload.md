@@ -5,13 +5,13 @@ Autoridade sobre: o que a skill distribui, o que fica de fora e por que, como a 
 ## Onde a carga fica
 
 ```text
-assets/stack/          os 807 arquivos, com os nomes com ponto mapeados para dot-
+assets/stack/          os 805 arquivos, com os nomes com ponto mapeados para dot-
 assets/estrutura.json  diretorios vazios e symlinks a recriar na instalacao
 ```
 
 `assets/stack/` e a fonte de verdade da stack e nao um gerador. Quem mantem edita esses arquivos direto. O instalador so copia o que esta la.
 
-As skills de `skills/` deste mesmo repositorio sao a excecao: toda skill que esta la, menos a propria `stack-ai-init`, esta tambem na carga, em `assets/stack/dot-agents/skills/<nome>/`, e a copia e feita a mao, sem script de sincronizacao. Sao 16: `caveman`, `ciclo-design`, `conformidade-de-escrita-normativa`, `dicionario-dados-db-scan-codebase-docs`, `docx`, `escrita-em-linguagem-simples-pt-br`, `frontend-design`, `gauntlet-loop-forge`, `pdf`, `pptx`, `recapitulacao-resumo-ata-relato-reuniao`, `redacao-conformidade-de-escrita-normativa`, `skill-creator`, `stack-ai-build-project-context`, `writing-for-agents` e `xlsx`. A carga nao leva o `LICENSE.txt` das skills: ela e uma instalacao da stack, nao a mantenedora, e origem, versao e licenca ficam registradas no `ai-skills`. Para conferir que fonte e copia continuam iguais, rode a partir da raiz do repositorio `diff -rq -x __pycache__ -x LICENSE.txt -x README.md skills/<nome> skills/stack-ai-init/assets/stack/dot-agents/skills/<nome>`; o comando precisa voltar vazio.
+As skills de `skills/` deste mesmo repositorio sao a excecao: toda skill que esta la, menos a propria `stack-ai-init`, esta tambem na carga, em `assets/stack/dot-agents/skills/<nome>/`, e a copia e feita a mao, sem script de sincronizacao. Sao 15: `caveman`, `ciclo-design`, `conformidade-de-escrita-normativa`, `dicionario-dados-db-scan-codebase-docs`, `docx`, `escrita-em-linguagem-simples-pt-br`, `frontend-design`, `gauntlet-loop-forge`, `pdf`, `pptx`, `recapitulacao-resumo-ata-relato-reuniao`, `skill-creator`, `stack-ai-build-project-context`, `writing-for-agents` e `xlsx`. A carga nao leva o `LICENSE.txt` das skills: ela e uma instalacao da stack, nao a mantenedora, e origem, versao e licenca ficam registradas no `ai-skills`. Para conferir que fonte e copia continuam iguais, rode a partir da raiz do repositorio `diff -rq -x __pycache__ -x LICENSE.txt -x README.md skills/<nome> skills/stack-ai-init/assets/stack/dot-agents/skills/<nome>`; o comando precisa voltar vazio.
 
 ## Inventario
 
@@ -20,7 +20,7 @@ As skills de `skills/` deste mesmo repositorio sao a excecao: toda skill que est
 | Raiz | 3 | `AGENTS.md`, `CLAUDE.md`, `.gitignore` |
 | `.agents/references/` | 2 | `speckit.md`, a regra de manutencao das fases; `template-revisao-tecnica.md`, o formato do relatorio de revisao tecnica, com estados, severidades, origem temporal e limite de cada celula |
 | `.agents/security/` | 2 | `guia-seguranca.md`, os 19 topicos de risco agnosticos de linguagem; `mapa-cwe-guia.md`, a ponte da `owasp-playbook` |
-| `.agents/skills/` | 764 | 29 skills: os 17 arquivos da `skill-creator`, as 10 fases do SpecKit em `speckit-<fase>/`, os 506 arquivos da `owasp-playbook`, dos quais 505 sao a copia do OWASP Secure Agent Playbook em `upstream/`, e 17 skills de apoio em 231 arquivos: 4 de terceiros (`caveman`, `grill-me`, `grilling` e `writing-for-agents`), 5 da Anthropic (`frontend-design` e as documentais `docx`, `pdf`, `pptx` e `xlsx`, estas com 178 arquivos) e 8 mantidas pela Anatel no `ai-skills` (`ciclo-design`, `conformidade-de-escrita-normativa`, `dicionario-dados-db-scan-codebase-docs`, `escrita-em-linguagem-simples-pt-br`, `gauntlet-loop-forge`, `recapitulacao-resumo-ata-relato-reuniao`, `redacao-conformidade-de-escrita-normativa` e `stack-ai-build-project-context`) |
+| `.agents/skills/` | 762 | 28 skills: os 17 arquivos da `skill-creator`, as 10 fases do SpecKit em `speckit-<fase>/`, os 506 arquivos da `owasp-playbook`, dos quais 505 sao a copia do OWASP Secure Agent Playbook em `upstream/`, e 16 skills de apoio em 229 arquivos: 4 de terceiros (`caveman`, `grill-me`, `grilling` e `writing-for-agents`), 5 da Anthropic (`frontend-design` e as documentais `docx`, `pdf`, `pptx` e `xlsx`, estas com 178 arquivos) e 7 mantidas pela Anatel no `ai-skills` (`ciclo-design`, `conformidade-de-escrita-normativa`, `dicionario-dados-db-scan-codebase-docs`, `escrita-em-linguagem-simples-pt-br`, `gauntlet-loop-forge`, `recapitulacao-resumo-ata-relato-reuniao` e `stack-ai-build-project-context`) |
 | `.claude/` | 1 | `settings.json`, que registra o marketplace local e liga o plugin `stack-ai` |
 | `.claude-plugin/` | 1 | `marketplace.json`, o plugin local que aponta o Claude Code para `.agents/skills/`; traz `{{MARKETPLACE}}` no lugar do nome |
 | `.github/` | 1 | `copilot-instructions.md` |
@@ -117,7 +117,7 @@ Para atualizar uma delas, substitua a pasta da skill inteira pela versao nova da
 
 Cinco arquivos `.md` que explicam a stack para quem vai usar: o indice, o conceito, o SpecKit, a manutencao e os prompts genericos. E a unica parte da carga escrita para pessoa, e nao para agente.
 
-O conteudo e generico e nao cita projeto nenhum. Ele descreve so o que esta nesta carga: os oito diretorios instalados e as 29 skills. Regra de projeto continua no `AGENTS.md`, e a regra que o agente segue ao editar uma fase continua em `.agents/references/speckit.md`, que a documentacao cita em vez de repetir.
+O conteudo e generico e nao cita projeto nenhum. Ele descreve so o que esta nesta carga: os oito diretorios instalados e as 28 skills. Regra de projeto continua no `AGENTS.md`, e a regra que o agente segue ao editar uma fase continua em `.agents/references/speckit.md`, que a documentacao cita em vez de repetir.
 
 A pasta e namespaced de proposito. O destino quase sempre ja tem `docs/`, e um subdiretorio proprio nunca colide com o que ja esta la.
 

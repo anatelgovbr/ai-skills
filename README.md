@@ -15,7 +15,7 @@ Toda skill daqui é agnóstica: as regras, os formatos e os critérios de qualid
   - [O que são skills](#o-que-são-skills)
   - [Limitações e riscos](#limitações-e-riscos)
   - [Segurança, privacidade e governança](#segurança-privacidade-e-governança)
-- [Instalação](#instalação)
+- [Instalar uma skill](#instalar-uma-skill)
 - [Skills Disponíveis](#skills-disponíveis)
 - [Preparar um repositório para trabalhar com agentes](#preparar-um-repositório-para-trabalhar-com-agentes)
   - [Passo 1. Instalar a estrutura com a `stack-ai-init`](#passo-1-instalar-a-estrutura-com-a-stack-ai-init)
@@ -24,7 +24,7 @@ Toda skill daqui é agnóstica: as regras, os formatos e os critérios de qualid
 
 ## Introdução e conceitos fundamentais
 
-Esta seção resume os conceitos do [Guia de Desenvolvimento de Software Apoiado por Inteligência Artificial](https://git.anatel.gov.br/informacao-e-conhecimento/desenvolvimento-apoiado-por-ia) da Anatel que são necessários para usar este repositório. O guia é a fonte completa.
+Esta seção explica os termos e os cuidados que o restante do documento pressupõe. Se você já trabalha com agentes de IA e skills, vá direto para [Instalar uma skill](#instalar-uma-skill).
 
 ### O que é desenvolvimento apoiado por IA
 
@@ -73,7 +73,7 @@ O uso de ferramentas públicas com código ou dados internos pode expor informa�
 
 Este repositório não repete essas regras. Ele fornece as skills que as ferramentas ali indicadas usam.
 
-## Instalação
+## Instalar uma skill
 
 Copie a pasta da skill desejada para o diretório de skills do seu projeto.
 
@@ -84,6 +84,8 @@ Nos repositórios que receberam a stack pela skill `stack-ai-init`, esse diretó
 - Claude Code, pelo `.claude-plugin/marketplace.json`
 
 Nos demais projetos, consulte a documentação da sua ferramenta para saber em qual pasta ela procura o `SKILL.md`.
+
+Montar a estrutura de agentes de um repositório inteiro é outra tarefa, e quem faz isso é a skill `stack-ai-init`, no [Passo 1. Instalar a estrutura com a `stack-ai-init`](#passo-1-instalar-a-estrutura-com-a-stack-ai-init).
 
 Depois de instalar, os prompts prontos para usar cada skill estão em [`docs/prompts-exemplo.md`](./docs/prompts-exemplo.md).
 
@@ -104,7 +106,6 @@ Para origem, revisão e licença das skills de terceiros, consulte [`THIRD_PARTY
 | `pdf` | Criar, editar ou analisar arquivos PDF | Automático ou pelo nome exato |
 | `pptx` | Criar, editar ou analisar apresentações PowerPoint | Automático ou pelo nome exato |
 | `recapitulacao-resumo-ata-relato-reuniao` | Produzir recapitulação e lista de ações de reunião a partir de transcrição, gravação, anotações ou URL do Teams | Automático ou pelo nome exato |
-| `redacao-conformidade-de-escrita-normativa` | Redigir, reescrever ou avaliar minutas de atos normativos brasileiros conforme regras de redação legislativa, com relatório de conformidade | Automático ou pelo nome exato |
 | `skill-creator` | Criar, editar, melhorar e avaliar skills | Automático ou `/skill-creator` |
 | `stack-ai-build-project-context` | Investigar uma codebase e gerar ou atualizar a base operacional para agentes | Automático ou pelo nome exato |
 | `stack-ai-init` | Instalar, atualizar ou verificar a stack em outro repositório | Automático ou pelo nome exato |
