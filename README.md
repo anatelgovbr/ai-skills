@@ -109,6 +109,7 @@ Para origem, revisão e licença das skills de terceiros, consulte [`THIRD_PARTY
 | `skill-creator` | Criar, editar, melhorar e avaliar skills | Automático ou `/skill-creator` |
 | `stack-ai-build-project-context` | Investigar uma codebase e gerar ou atualizar a base operacional para agentes | Automático ou pelo nome exato |
 | `stack-ai-init` | Instalar, atualizar ou verificar a stack em outro repositório | Automático ou pelo nome exato |
+| `testes-unitarios-cobertura` | Impor teste unitário e cobertura mínima de 90% em todo código de produção | Automático ou pelo nome exato |
 | `writing-for-agents` | Escrever documentação consumida por agentes e modificar `AGENTS.md` ou `CLAUDE.md` | Automático ou pelo nome exato |
 | `xlsx` | Criar, editar ou analisar planilhas | Automático ou pelo nome exato |
 

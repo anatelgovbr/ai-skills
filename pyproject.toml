@@ -1,0 +1,25 @@
+[tool.pytest.ini_options]
+testpaths = [
+    "tests",
+    "skills/testes-unitarios-cobertura/scripts",
+    "skills/stack-ai-init/scripts",
+    "skills/stack-ai-build-project-context/scripts",
+    "skills/dicionario-dados-db-scan-codebase-docs/scripts",
+]
+python_files = ["test_*.py"]
+addopts = "-p no:cacheprovider"
+
+[tool.coverage.run]
+branch = true
+source = [
+    "skills/testes-unitarios-cobertura/scripts",
+    "skills/stack-ai-init/scripts",
+    "skills/stack-ai-build-project-context/scripts",
+    "skills/dicionario-dados-db-scan-codebase-docs/scripts",
+]
+omit = ["*/test_*.py"]
+
+[tool.coverage.report]
+fail_under = 90
+show_missing = true
+skip_covered = true

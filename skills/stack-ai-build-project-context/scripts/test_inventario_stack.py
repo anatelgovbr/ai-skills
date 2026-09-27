@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 """Testes de inventario_stack.py."""
 
+import contextlib
+import io
 import shutil
 import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
@@ -682,6 +685,331 @@ class TesteLeituraTolerante(Base):
         caminho = self.raiz / "legado.md"
         caminho.write_bytes("# Descrição\n".encode("latin-1"))
         self.assertIn("Descri", inv.ler_texto(caminho))
+
+
+class TesteDetectarCodificacaoRamosExtras(unittest.TestCase):
+    def test_byte_nulo_isolado_e_binario(self):
+        self.assertEqual(inv.detectar_codificacao(b"\x00"), "binario")
+
+    def test_sequencia_truncada_com_prefixo_valido_ainda_decide_utf8(self):
+        self.assertEqual(inv.detectar_codificacao(b"ab\xc3"), "utf-8")
+
+    def test_terminacao_sem_codec_conhecido_e_na(self):
+        self.assertEqual(inv.detectar_terminacao(b"qualquer coisa", "binario"), "n/a")
+
+
+class TesteSinaisDeDependencia(Base):
+    def test_biblioteca_versionada_no_nome_do_arquivo(self):
+        escrever(self.raiz / "jquery-1.9.2.min.js", "// jquery\n")
+        dep = inv.coletar_censo(self.raiz, 10)["dependencias"]
+        nomes = [b["nome"] for b in dep["bibliotecas"]]
+        self.assertIn("jquery 1.9.2", nomes)
+
+    def test_componentes_includes_drivers_e_modulos_no_codigo(self):
+        escrever(
+            self.raiz / "legacy.asp",
+            'Set fso = CreateObject("Scripting.FileSystemObject")\n'
+            '<!--#include file="header.asp"-->\n'
+            'Provider=SQLOLEDB;\n',
+        )
+        escrever(self.raiz / "app.php", 'require_once("utils.inc");\n')
+        escrever(self.raiz / "config.txt", "conn = jdbc:mysql://localhost:3306/mydb\n")
+        escrever(self.raiz / "app.js", 'import x from "lodash";\nconst y = require("./local");\n')
+        dep = inv.coletar_censo(self.raiz, 10)["dependencias"]
+
+        componentes = {c["nome"]: c["exemplo"] for c in dep["componentes"]}
+        self.assertEqual(componentes.get("Scripting.FileSystemObject"), "legacy.asp")
+
+        includes = {i["nome"] for i in dep["includes"]}
+        self.assertEqual(includes, {"header.asp", "utils.inc"})
+
+        modulos = {m["nome"] for m in dep["modulos"]}
+        self.assertEqual(modulos, {"lodash"})
+
+        drivers = {d["nome"] for d in dep["drivers"]}
+        self.assertEqual(drivers, {"SQLOLEDB", "jdbc:mysql"})
+
+
+class TesteCensoRobustezDeArquivos(Base):
+    def test_link_simbolico_quebrado_nao_interrompe_censo(self):
+        quebrado = self.raiz / "quebrado.txt"
+        quebrado.symlink_to(self.raiz / "nao-existe-alvo")
+        escrever(self.raiz / "ok.txt", "ola\n")
+        dados = inv.coletar_censo(self.raiz, 10)
+        self.assertEqual(dados["arquivos_examinados"], 2)
+        self.assertEqual(dict(dados["extensoes"])[".txt"], 2)
+
+
+class TesteVerificarRamosAdicionais(Base):
+    def test_verificar_repositorio_totalmente_vazio(self):
+        dados = inv.verificar(self.raiz)
+        self.assertEqual(dados, {"raiz": str(self.raiz), "erros": [], "avisos": [], "estado": "ausente"})
+
+    def test_verificar_ignora_ativacao_quando_barra_no_mesmo_trecho(self):
+        self.stack_minima()
+        escrever(
+            self.raiz / ".agents" / "skills" / "etapa" / "SKILL.md",
+            "---\nname: etapa\ndescription: resumo humano da skill\n"
+            "disable-model-invocation: true\n---\n\n# etapa\n",
+        )
+        escrever(
+            self.raiz / "AGENTS.md",
+            "# Regras\n\n- Para ativar, use `/etapa` quando precisar.\n",
+        )
+        avisos = inv.verificar(self.raiz)["avisos"]
+        self.assertFalse(any("pelo nome" in a for a in avisos), avisos)
+
+
+class TesteValidarAchadoRamosAdicionais(Base):
+    def validar(self, texto: str) -> dict:
+        caminho = self.raiz / "dossie.md"
+        caminho.parent.mkdir(parents=True, exist_ok=True)
+        caminho.write_text(texto, encoding="utf-8")
+        return inv.validar_achado(caminho)
+
+    def test_linha_solta_sem_estrutura_e_ignorada(self):
+        texto = dossie().replace("Achados:\n", "nota solta sem estrutura\n\nAchados:\n", 1)
+        dados = self.validar(texto)
+        self.assertEqual(dados["erros"], [])
+        self.assertEqual(dados["cabecalho"]["Frente"], "persistencia")
+
+    def test_titulo_placeholder_vira_afirmacao_faltando(self):
+        dados = self.validar(dossie(afirmacao="<preencher>"))
+        self.assertEqual(dados["achados"][0]["faltando"][0], "afirmacao")
+        self.assertTrue(any("A1: campo 'afirmacao'" in e for e in dados["erros"]))
+
+    def test_evidencia_totalmente_ausente_nao_duplica_erro(self):
+        texto = dossie().replace(
+            "  evidencia: src/a.py:1, src/b.py:2 (8 ocorrencias em 4 arquivos, de 10 comparaveis)\n", "", 1,
+        )
+        dados = self.validar(texto)
+        self.assertIn("evidencia", dados["achados"][0]["faltando"])
+        self.assertFalse(any("evidencia sem" in e for e in dados["erros"]))
+        self.assertTrue(any("campo 'evidencia'" in e for e in dados["erros"]))
+
+    def test_contraexemplos_totalmente_ausente_nao_duplica_erro(self):
+        texto = dossie().replace("  contraexemplos: 0 | procurei Y em src/\n", "", 1)
+        dados = self.validar(texto)
+        self.assertIn("contraexemplos", dados["achados"][0]["faltando"])
+        self.assertFalse(any("comecar pela quantidade" in e for e in dados["erros"]))
+        self.assertTrue(any("campo 'contraexemplos'" in e for e in dados["erros"]))
+
+    def test_processo_com_exemplares_sem_digito_nao_registra_contagem(self):
+        texto = dossie().replace(
+            "  exemplares: 3 lidos por inteiro | src/a.py, src/b.py\n",
+            "  exemplares: poucos, sem contagem | src/a.py, src/b.py\n", 1,
+        )
+        dados = self.validar(texto)
+        self.assertNotIn("exemplares", dados["processos"][0])
+        self.assertEqual(dados["processos"][0]["faltando"], [])
+
+
+class TesteAuditarComandoRamosAdicionais(Base):
+    def test_rodar_timeout_e_tratado(self):
+        with mock.patch.object(inv.subprocess, "run",
+                               side_effect=inv.subprocess.TimeoutExpired(cmd="x", timeout=300)):
+            resultado = inv._rodar("sleep 999", self.raiz)
+        self.assertEqual(resultado, (-1, "<timeout>"))
+
+    def test_padrao_ja_ancorado_nao_gera_variante_ancora(self):
+        variantes = inv._variantes(r"grep -rn -E '\bid\b' a.txt | wc -l")
+        self.assertNotIn("ancora", {chave for chave, _ in variantes})
+
+    def test_termo_de_classe_de_caracter_nao_gera_ancora(self):
+        variantes = inv._variantes("grep -rn -E '[[:space:]]' a.txt | wc -l")
+        self.assertNotIn("ancora", {chave for chave, _ in variantes})
+
+    def test_escopo_por_extensao_gera_variante(self):
+        variantes = dict(inv._variantes("grep -rn --include=*.py 'foo' src | wc -l"))
+        self.assertIn("escopo", variantes)
+        self.assertNotIn("--include", variantes["escopo"])
+
+    def test_comando_sem_saida_numerica_pula_variantes_sem_quebrar(self):
+        escrever(self.raiz / "a.txt", "id = 1\nuuid = 2\n")
+        dados = inv.auditar_comando("grep -rn -E 'id' a.txt", self.raiz)
+        self.assertIsNone(dados["numero"])
+        self.assertTrue(dados["testes"])
+        self.assertEqual(dados["achados"], [])
+
+
+class TesteImprimirAuditoriaDeComando(unittest.TestCase):
+    def test_comando_nao_numerico_e_codigo_de_erro(self):
+        dados = {"comando": "cat d.txt", "codigo": 2, "numero": None, "saida": "linha",
+                 "testes": [], "achados": []}
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            inv.imprimir_auditoria_de_comando(dados)
+        saida = buf.getvalue()
+        self.assertIn("nao numerico", saida)
+        self.assertIn("AVISO  codigo de saida 2", saida)
+        self.assertIn("Sem divergencia", saida)
+        self.assertIn("amostra:", saida)
+
+
+class TesteMainSaidaTextual(Base):
+    def _saida(self, argv):
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            rc = inv.main(argv)
+        return rc, buf.getvalue()
+
+    def test_stack_saida_textual_com_atencao_de_orcamento(self):
+        self.stack_minima()
+        escrever(self.raiz / "AGENTS.md", "# Regras\n" + "r" * 100)
+        for nome in "abcde":
+            corpo = f"---\nname: {nome}\ndescription: {'d' * 800}\n---\n\n# {nome}\n"
+            escrever(self.raiz / ".agents" / "skills" / nome / "SKILL.md", corpo)
+        escrever(self.raiz / ".agents" / "references" / "sem.md", "# Sem\n\ntexto\n")
+        escrever(self.raiz / "CLAUDE.md", "@AGENTS.md\n")
+        rc, saida = self._saida(["stack", "--raiz", str(self.raiz)])
+        self.assertEqual(rc, 0)
+        self.assertIn("ATENCAO", saida)
+        self.assertIn("[sem evidencias]", saida)
+        self.assertIn("CLAUDE.md", saida)
+
+    def test_stack_saida_textual_com_faltando_e_user_invoked(self):
+        escrever(self.raiz / "AGENTS.md", "# Regras\n")
+        escrever(
+            self.raiz / ".agents" / "skills" / "u" / "SKILL.md",
+            "---\nname: u\ndisable-model-invocation: true\n---\n\n# u\n",
+        )
+        rc, saida = self._saida(["stack", "--raiz", str(self.raiz)])
+        self.assertEqual(rc, 1)
+        self.assertIn("faltando:", saida)
+        self.assertIn("user ", saida)
+        self.assertIn("[sem description]", saida)
+
+    def test_censo_saida_textual_com_sinais_e_excecoes(self):
+        escrever(
+            self.raiz / "legacy.asp",
+            'Set fso = CreateObject("Scripting.FileSystemObject")\n'
+            '<!--#include file="header.asp"-->\nProvider=SQLOLEDB;\n',
+        )
+        escrever(self.raiz / "jquery-1.9.2.min.js", "// jquery\n")
+        for i in range(4):
+            escrever(self.raiz / f"dados{i}.xyz", "conteudo\n")
+        (self.raiz / "src").mkdir(exist_ok=True)
+        for i in range(6):
+            (self.raiz / "src" / f"p{i}.sql").write_bytes("select 'á'\r\n".encode("utf-16"))
+        (self.raiz / "src" / "legado.sql").write_bytes("select 'á'\r\n".encode("latin-1"))
+        rc, saida = self._saida(["censo", "--raiz", str(self.raiz), "--top", "2"])
+        self.assertEqual(rc, 0)
+        self.assertIn("extensoes omitidas", saida)
+        self.assertIn("ATENCAO: repositorio de codificacao mista", saida)
+        self.assertIn("Scripting.FileSystemObject", saida)
+        self.assertIn("jquery 1.9.2", saida)
+
+    def test_censo_saida_textual_sem_sinais(self):
+        escrever(self.raiz / "a.py", "x\n")
+        rc, saida = self._saida(["censo", "--raiz", str(self.raiz)])
+        self.assertEqual(rc, 0)
+        self.assertIn("nenhum", saida)
+
+    def test_verificar_saida_textual_limpa_e_com_erro(self):
+        self.stack_minima()
+        rc, saida = self._saida(["verificar", "--raiz", str(self.raiz)])
+        self.assertEqual(rc, 0)
+        self.assertIn("Sem problemas mecanicos.", saida)
+
+        self.skill("quebrada", com_frontmatter=False)
+        rc2, saida2 = self._saida(["verificar", "--raiz", str(self.raiz)])
+        self.assertEqual(rc2, 2)
+        self.assertIn("ERRO", saida2)
+
+    def test_validar_achado_via_main_sem_arquivo_e_arquivo_inexistente(self):
+        rc1 = inv.main(["validar-achado"])
+        self.assertEqual(rc1, 2)
+        rc2 = inv.main(["validar-achado", "--arquivo", str(self.raiz / "nao-existe.md")])
+        self.assertEqual(rc2, 2)
+
+    def test_validar_achado_saida_textual_com_faltando(self):
+        caminho = escrever(
+            self.raiz / "dossie.md",
+            dossie()
+            .replace("  alcance: src/\n", "", 1)
+            .replace("  sequencia: 1. abre 2. escreve 3. fecha\n", "", 1)
+            .replace("  desvio reconhecivel: abre conexao propria\n", "", 1),
+        )
+        rc, saida = self._saida(["validar-achado", "--arquivo", str(caminho)])
+        self.assertEqual(rc, 2)
+        self.assertIn("faltando: alcance", saida)
+        self.assertIn("faltando: sequencia", saida)
+        self.assertIn("faltando: desvio reconhecivel", saida)
+
+    def test_validar_achado_saida_textual_sem_numeros_nem_faixa(self):
+        texto = dossie().replace(
+            "src/a.py:1, src/b.py:2 (8 ocorrencias em 4 arquivos, de 10 comparaveis)",
+            "varios lugares",
+        )
+        caminho = escrever(self.raiz / "dossie.md", texto)
+        rc, saida = self._saida(["validar-achado", "--arquivo", str(caminho)])
+        self.assertEqual(rc, 2)
+        self.assertIn("A1: toda escrita passa por X", saida)
+        self.assertNotIn("ocorrencias /", saida)
+        self.assertNotIn("classificacao calculada", saida)
+
+    def test_validar_achado_saida_textual_com_classificacao_divergente(self):
+        caminho = escrever(self.raiz / "dossie.md", dossie(classificacao="concorrentes"))
+        rc, saida = self._saida(["validar-achado", "--arquivo", str(caminho)])
+        self.assertEqual(rc, 1)
+        self.assertIn("(declarada: concorrentes)", saida)
+        self.assertIn("AVISO  A1: classificacao declarada", saida)
+
+    def test_auditar_comando_via_main_sem_cmd(self):
+        rc = inv.main(["auditar-comando", "--raiz", str(self.raiz)])
+        self.assertEqual(rc, 2)
+
+    def test_auditar_comando_via_main_com_achado_real(self):
+        escrever(self.raiz / "a.txt", "checkAccess(a)\n# checkAccess(b)\n")
+        rc, saida = self._saida(
+            ["auditar-comando", "--raiz", str(self.raiz),
+             "--cmd", "grep -rn -E 'checkAccess' a.txt | wc -l"],
+        )
+        self.assertEqual(rc, 1)
+        self.assertIn("ALERTA  comentario", saida)
+        self.assertIn("1 alerta(s).", saida)
+
+    def test_auditar_comando_via_main_com_json(self):
+        rc, saida = self._saida(["auditar-comando", "--raiz", str(self.raiz), "--cmd", "echo 1", "--json"])
+        self.assertEqual(rc, 0)
+        self.assertIn('"comando": "echo 1"', saida)
+
+    def test_verificar_saida_textual_apenas_com_aviso(self):
+        self.stack_minima()
+        escrever(self.raiz / ".agents" / "references" / "orfa.md", "# Orfa\n\n## Evidencias\n\nx\n")
+        rc, saida = self._saida(["verificar", "--raiz", str(self.raiz)])
+        self.assertEqual(rc, 1)
+        self.assertIn("AVISO  .agents/references/orfa.md", saida)
+
+    def test_validar_achado_saida_textual_dossie_limpo(self):
+        caminho = escrever(self.raiz / "dossie.md", dossie())
+        rc, saida = self._saida(["validar-achado", "--arquivo", str(caminho)])
+        self.assertEqual(rc, 0)
+        self.assertIn("Sem problemas mecanicos.", saida)
+
+    def test_validar_achado_via_main_com_json(self):
+        caminho = escrever(self.raiz / "dossie.md", dossie())
+        rc, saida = self._saida(["validar-achado", "--arquivo", str(caminho), "--json"])
+        self.assertEqual(rc, 0)
+        self.assertIn('"arquivo"', saida)
+
+    def test_validar_achado_saida_textual_sem_contraexemplos_no_numeros(self):
+        texto = dossie().replace("  contraexemplos: 0 | procurei Y em src/\n", "", 1)
+        caminho = escrever(self.raiz / "dossie.md", texto)
+        rc, saida = self._saida(["validar-achado", "--arquivo", str(caminho)])
+        self.assertEqual(rc, 2)
+        self.assertIn("8 ocorrencias / 4 arquivos\n", saida)
+        self.assertNotIn("contraexemplos\n", saida.split("8 ocorrencias")[1].split("\n")[0])
+
+    def test_validar_achado_saida_textual_processo_sem_exemplares_numerico(self):
+        texto = dossie().replace(
+            "  exemplares: 3 lidos por inteiro | src/a.py, src/b.py\n",
+            "  exemplares: poucos, sem contagem | src/a.py, src/b.py\n", 1,
+        )
+        caminho = escrever(self.raiz / "dossie.md", texto)
+        rc, saida = self._saida(["validar-achado", "--arquivo", str(caminho)])
+        self.assertEqual(rc, 0)
+        self.assertNotIn("exemplares:", saida.split("Processos observados")[1].split("Candidatos")[0])
 
 
 if __name__ == "__main__":

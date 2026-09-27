@@ -1,0 +1,28 @@
+# Acrescente ao .gitlab-ci.yml e preencha a imagem e o comando marcados.
+# Depois, em Settings > Merge requests, ligue "Pipelines must succeed".
+# O relatorio Cobertura aparece no diff do merge request, linha a linha.
+stages:
+  - teste
+
+testes:
+  stage: teste
+  # PREENCHER 1: imagem da linguagem do projeto, fixada por versao e, se
+  # possivel, por digest (imagem@sha256:...). Precisa ter python3 para o gate.
+  image: python:3.12-slim
+  script:
+    # PREENCHER 2: comando de teste com cobertura de ramos, conforme
+    # references/comandos-por-linguagem.md da skill.
+    - echo "substitua pelo comando de teste com cobertura" && exit 1
+    - >
+      python3 .agents/skills/testes-unitarios-cobertura/scripts/verificar_cobertura.py
+      --relatorio coverage.xml --minimo-linhas 90 --minimo-ramos 90
+  coverage: '/Linhas: (\d+(?:\.\d+)?)%/'
+  artifacts:
+    when: always
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH

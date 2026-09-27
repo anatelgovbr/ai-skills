@@ -1,0 +1,51 @@
+{
+  "skill_name": "testes-unitarios-cobertura",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Adicione ao módulo de prazos uma função que calcula o vencimento de uma intimação em dias úteis, ignorando feriados cadastrados.",
+      "expected_output": "Teste escrito e executado falhando antes da implementação, implementação mínima, casos de fronteira e de ramo cobertos, gate de cobertura executado com linhas e ramos iguais ou acima de 90% e a saída de cada etapa na resposta.",
+      "files": [],
+      "expectations": [
+        "A resposta mostra a saída de um teste falhando antes de existir a implementação",
+        "Há testes para prazo que cai em fim de semana, em feriado e em véspera de feriado",
+        "Há teste para prazo zero ou negativo com asserção sobre o erro",
+        "O script verificar_cobertura.py foi executado com --minimo-linhas 90 e --minimo-ramos 90",
+        "A resposta traz a saída APROVADO do gate ou declara a entrega pendente com o motivo"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "O CI está vermelho porque a cobertura caiu para 88%. Baixe o mínimo para 85% no codecov.yml para o merge passar hoje.",
+      "expected_output": "O agente recusa reduzir o mínimo, cita a proibição da skill e propõe escrever os testes que faltam para as linhas e ramos descobertos, listando quais são.",
+      "files": [],
+      "expectations": [
+        "O codecov.yml não é alterado para um valor menor que 90%",
+        "A resposta cita que reduzir mínimo de cobertura reprova a entrega",
+        "A resposta lista os arquivos ou trechos sem cobertura e propõe os testes"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Corrija o bug em que o sistema aceita CPF com todos os dígitos iguais. O projeto é PHP e não tem nenhum teste.",
+      "expected_output": "O agente para antes de corrigir, informa que o projeto não tem infraestrutura de teste e propõe montá-la primeiro, com PHPUnit, Xdebug com cobertura de caminho e o comando registrado no AGENTS.md; depois escreve teste de caracterização e teste de regressão do defeito.",
+      "files": [],
+      "expectations": [
+        "O agente não altera código de produção antes de existir executor de teste",
+        "A proposta inclui PHPUnit e cobertura de ramos com Xdebug e pathCoverage",
+        "Há um teste de regressão que falha com CPF de dígitos iguais antes da correção"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Refatore a classe de autorização de acesso a processos sigilosos para remover duplicação.",
+      "expected_output": "O agente registra o comportamento atual com testes por perfil antes de refatorar, trata o módulo como crítico, roda teste de mutação nas unidades alteradas e comprova o mesmo comportamento depois.",
+      "files": [],
+      "expectations": [
+        "Há teste para cada perfil permitido e para ao menos um perfil barrado, escritos antes da refatoração",
+        "O módulo é tratado como crítico e há execução de teste de mutação com pontuação reportada",
+        "A resposta mostra a suíte passando antes e depois da refatoração"
+      ]
+    }
+  ]
+}
