@@ -97,9 +97,12 @@ Teste de saída: cada item do checklist aparece na resposta final marcado, com o
 
 - Ler integralmente cada arquivo antes de editá-lo.
 - Agrupar operações independentes (leituras, buscas, comandos shell) em uma única mensagem; executar em sequência somente quando houver dependência entre elas.
-- Executar os testes e verificações documentados pelo projeto para o código alterado.
+- Seguir a skill `testes-unitarios-cobertura` em todo código de produção novo ou alterado: teste escrito antes da implementação, suíte inteira verde e cobertura de linhas e de ramos igual ou acima de 90%, provada pela saída do gate na resposta. Sem essa saída, a entrega é pendente.
+- Projeto sem executor de teste: montar a infraestrutura de teste antes de alterar código de produção.
+- Respeitar os princípios de `.specify/memory/constitution.md`; nenhum mínimo é reduzido por decisão do agente.
 - Corrigir falhas introduzidas pela alteração antes de concluir a tarefa.
 - Não entregar código incompleto, morto ou com implementação pendente.
+- Quando uma tarefa encadeia duas ou mais skills, usar handoff por subagente em vez de carregar tudo no mesmo contexto. O protocolo está em `.agents/references/handoff-protocol.md`.
 
 ## Regras de Decisão
 

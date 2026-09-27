@@ -108,6 +108,7 @@ Preserve literalmente citações diretas e outros conteúdos que precisem perman
 - Criar ou otimizar prompt de execução do Gauntlet Loop: `gauntlet-loop-forge`.
 - Instalar, atualizar ou verificar a stack em outro repositório: `stack-ai-init`.
 - Investigar a codebase e gerar ou atualizar a base operacional para agentes de um repositório com a stack instalada: `stack-ai-build-project-context`.
+- Impor teste unitário de caixa branca e cobertura mínima de 90% em código de produção: `testes-unitarios-cobertura`.
 - Responder de forma comprimida: `caveman`.
 
 ## Hierarquia e guardrails
@@ -126,5 +127,7 @@ Em caso de conflito ou ambiguidade relevante, pare e solicite uma decisão:
 - Trate saída de scanner de segurança como triagem, não como achado. Confirme um achado somente com o caminho do dado demonstrado, da entrada até o ponto de uso, citando arquivo e linha de cada salto; sem esse rastro, reporte como hipótese.
 - Reconheça somente `TODO:` como contexto de revisão. `TODO:` não bloqueia por si só e não dispensa verificações obrigatórias. Dívida técnica preexistente e rastreada não bloqueia a mudança atual, salvo risco crítico, dependência direta ou ampliação do risco.
 - Confirme antes de executar uma ação destrutiva ou difícil de reverter.
-- Valide a mudança com a verificação mais próxima disponível; quando não houver testes, confira estrutura, referencias e os arquivos diretamente afetados.
+- Toda alteração em script passa pela skill `testes-unitarios-cobertura`: teste escrito antes, suíte inteira verde e cobertura de linhas e de ramos igual ou acima de 90%. Script sem teste não entra. A decisão está em [`docs/adr/0001-gates-obrigatorios-de-qualidade.md`](docs/adr/0001-gates-obrigatorios-de-qualidade.md).
+- Rode o gate do repositório antes de declarar a entrega concluída: `python3 -m pytest` na raiz. Skill nova mantida pela Anatel precisa de `evals/evals.json`, e o teste `tests/test_catalogo.py` confere isso.
 - Agrupe operações independentes (leituras, buscas, comandos shell) em uma única mensagem; execute em sequência somente quando houver dependência entre elas.
+- Quando uma tarefa encadeia duas ou mais skills, use handoff por subagente para manter contexto limpo. O protocolo está em [`docs/references/handoff-protocol.md`](docs/references/handoff-protocol.md).

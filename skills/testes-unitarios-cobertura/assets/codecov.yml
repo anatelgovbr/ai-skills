@@ -1,0 +1,22 @@
+# Metas de cobertura: 90% no projeto e no codigo novo, sem tolerancia.
+# Projeto legado abaixo de 90%: troque o target de "project" por "auto"
+# (nao pode cair) e registre o plano de recuperacao em decisao de arquitetura.
+codecov:
+  require_ci_to_pass: true
+
+coverage:
+  precision: 2
+  round: down
+  status:
+    project:
+      default:
+        target: 90%
+        threshold: 0%
+    patch:
+      default:
+        target: 90%
+        threshold: 0%
+
+comment:
+  layout: "condensed_header, diff, files"
+  require_changes: false

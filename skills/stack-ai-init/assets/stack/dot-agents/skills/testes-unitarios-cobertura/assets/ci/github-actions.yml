@@ -1,0 +1,42 @@
+# Copie para .github/workflows/testes.yml e preencha os dois passos marcados.
+# Depois, em Settings > Branches, marque o job "testes" como verificacao
+# obrigatoria do ramo principal. Sem isso o gate avisa, mas nao bloqueia.
+name: testes
+
+on:
+  pull_request:
+  push:
+    branches: [main, master]
+
+permissions:
+  contents: read
+
+jobs:
+  testes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # PREENCHER 1: prepare a linguagem do projeto (setup-python, setup-node,
+      # setup-java, shivammathur/setup-php etc.), fixada por SHA de commit.
+
+      # PREENCHER 2: rode a suite com cobertura de ramos. O comando de cada
+      # linguagem esta em references/comandos-por-linguagem.md da skill.
+      - name: Testes com cobertura
+        run: echo "substitua pelo comando de teste com cobertura" && exit 1
+
+      - name: Gate de cobertura (90% linhas e ramos)
+        run: >
+          python3 .agents/skills/testes-unitarios-cobertura/scripts/verificar_cobertura.py
+          --relatorio coverage.xml --minimo-linhas 90 --minimo-ramos 90
+
+      - name: Envio ao Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
+        with:
+          files: coverage.xml
+          fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}
