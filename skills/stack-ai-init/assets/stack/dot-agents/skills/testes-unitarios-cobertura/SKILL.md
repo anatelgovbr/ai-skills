@@ -94,3 +94,11 @@ A resposta que entrega código traz, nesta ordem:
 4. a lista dos casos de caixa branca cobertos por unidade alterada.
 
 Sem esses quatro itens, a entrega é reportada como pendente, com o motivo.
+
+## Handoff
+
+### Recebe de
+- Qualquer skill que altere codigo de producao: espera a lista de arquivos alterados e o objetivo da mudanca.
+
+### Entrega para
+- Revisao de codigo (`code-reviewer` ou equivalente): lista de arquivos testados, saida do gate (linhas, ramos, resultado), e testes adicionados com contagem.

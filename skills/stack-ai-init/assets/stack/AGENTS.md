@@ -102,6 +102,7 @@ Teste de saída: cada item do checklist aparece na resposta final marcado, com o
 - Respeitar os princípios de `.specify/memory/constitution.md`; nenhum mínimo é reduzido por decisão do agente.
 - Corrigir falhas introduzidas pela alteração antes de concluir a tarefa.
 - Não entregar código incompleto, morto ou com implementação pendente.
+- Quando uma tarefa encadeia duas ou mais skills, usar handoff por subagente em vez de carregar tudo no mesmo contexto. O protocolo está em `.agents/references/handoff-protocol.md`.
 
 ## Regras de Decisão
 

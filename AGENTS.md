@@ -130,3 +130,4 @@ Em caso de conflito ou ambiguidade relevante, pare e solicite uma decisão:
 - Toda alteração em script passa pela skill `testes-unitarios-cobertura`: teste escrito antes, suíte inteira verde e cobertura de linhas e de ramos igual ou acima de 90%. Script sem teste não entra. A decisão está em [`docs/adr/0001-gates-obrigatorios-de-qualidade.md`](docs/adr/0001-gates-obrigatorios-de-qualidade.md).
 - Rode o gate do repositório antes de declarar a entrega concluída: `python3 -m pytest` na raiz. Skill nova mantida pela Anatel precisa de `evals/evals.json`, e o teste `tests/test_catalogo.py` confere isso.
 - Agrupe operações independentes (leituras, buscas, comandos shell) em uma única mensagem; execute em sequência somente quando houver dependência entre elas.
+- Quando uma tarefa encadeia duas ou mais skills, use handoff por subagente para manter contexto limpo. O protocolo está em [`docs/references/handoff-protocol.md`](docs/references/handoff-protocol.md).

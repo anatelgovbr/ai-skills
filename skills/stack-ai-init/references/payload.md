@@ -18,7 +18,7 @@ As skills de `skills/` deste mesmo repositorio sao a excecao: toda skill que est
 | Grupo | Arquivos | Conteudo |
 |---|---|---|
 | Raiz | 3 | `AGENTS.md`, `CLAUDE.md`, `.gitignore` |
-| `.agents/references/` | 2 | `speckit.md`, a regra de manutencao das fases; `template-revisao-tecnica.md`, o formato do relatorio de revisao tecnica, com estados, severidades, origem temporal e limite de cada celula |
+| `.agents/references/` | 3 | `speckit.md`, a regra de manutencao das fases; `template-revisao-tecnica.md`, o formato do relatorio de revisao tecnica, com estados, severidades, origem temporal e limite de cada celula; `handoff-protocol.md`, o protocolo de passagem de trabalho entre skills por subagente |
 | `.agents/security/` | 2 | `guia-seguranca.md`, os 19 topicos de risco agnosticos de linguagem; `mapa-cwe-guia.md`, a ponte da `owasp-playbook` |
 | `.agents/skills/` | 773 | 29 skills: os 17 arquivos da `skill-creator`, as 10 fases do SpecKit em `speckit-<fase>/`, os 506 arquivos da `owasp-playbook`, dos quais 505 sao a copia do OWASP Secure Agent Playbook em `upstream/`, e 17 skills de apoio em 240 arquivos: 4 de terceiros (`caveman`, `grill-me`, `grilling` e `writing-for-agents`), 5 da Anthropic (`frontend-design` e as documentais `docx`, `pdf`, `pptx` e `xlsx`, estas com 178 arquivos) e 8 mantidas pela Anatel no `ai-skills` (`ciclo-design`, `conformidade-de-escrita-normativa`, `dicionario-dados-db-scan-codebase-docs`, `escrita-em-linguagem-simples-pt-br`, `gauntlet-loop-forge`, `recapitulacao-resumo-ata-relato-reuniao`, `stack-ai-build-project-context` e `testes-unitarios-cobertura`) |
 | `.claude/` | 1 | `settings.json`, que registra o marketplace local e liga o plugin `stack-ai` |
