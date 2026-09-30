@@ -10,10 +10,10 @@ Esta separação é uma decisão de organização adequada ao projeto, não uma 
 
 | Skill | Origem | Revisão | Licença | Registro |
 |---|---|---|---|---|
-| `caveman` | [JuliusBrussee/caveman](https://github.com/JuliusBrussee/caveman/tree/v1.9.0) | `v1.9.0` | [MIT](https://raw.githubusercontent.com/JuliusBrussee/caveman/v1.9.0/LICENSE) | [`payload.md`](./skills/stack-ai-init/references/payload.md) |
-| `frontend-design` | [Anthropic Skills](https://github.com/anthropics/skills/tree/main/skills/frontend-design) | Sem versionamento na origem; snapshot local no commit `38209b3` | [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0) | [`LICENSE.txt`](./skills/frontend-design/LICENSE.txt) |
-| `skill-creator` | [Anthropic Skills](https://github.com/anthropics/skills/tree/main/skills/skill-creator) | Sem versionamento na origem; snapshot local no commit `38209b3` | [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0) | [`LICENSE.txt`](./skills/skill-creator/LICENSE.txt) |
-| `writing-for-agents` | [mattpocock/skills](https://github.com/mattpocock/skills/tree/v1.2.3/skills/productivity/writing-for-agents) | `v1.2.3` | [MIT](https://raw.githubusercontent.com/mattpocock/skills/v1.2.3/LICENSE) | [`payload.md`](./skills/stack-ai-init/references/payload.md) |
+| `caveman` | [JuliusBrussee/caveman](https://github.com/JuliusBrussee/caveman/tree/v1.9.0) | `v1.9.0` | [MIT](https://raw.githubusercontent.com/JuliusBrussee/caveman/v1.9.0/LICENSE) | [`payload.md`](./.agents/skills/stack-ai-init/references/payload.md) |
+| `frontend-design` | [Anthropic Skills](https://github.com/anthropics/skills/tree/main/skills/frontend-design) | Sem versionamento na origem; snapshot local no commit `38209b3` | [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0) | [`LICENSE.txt`](./.agents/skills/frontend-design/LICENSE.txt) |
+| `skill-creator` | [Anthropic Skills](https://github.com/anthropics/skills/tree/main/skills/skill-creator) | Sem versionamento na origem; snapshot local no commit `38209b3` | [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0) | [`LICENSE.txt`](./.agents/skills/skill-creator/LICENSE.txt) |
+| `writing-for-agents` | [mattpocock/skills](https://github.com/mattpocock/skills/tree/v1.2.3/skills/productivity/writing-for-agents) | `v1.2.3` | [MIT](https://raw.githubusercontent.com/mattpocock/skills/v1.2.3/LICENSE) | [`payload.md`](./.agents/skills/stack-ai-init/references/payload.md) |
 
 ### Avisos das licenças MIT
 
@@ -43,4 +43,4 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ## Skills documentais fornecidas pelo host
 
-As skills documentais `docx`, `pdf`, `pptx` e `xlsx` presentes em `skills/` são materiais proprietários fornecidos pelo host. Os termos aplicáveis do acordo com a Anthropic estão em [`docx/LICENSE.txt`](./skills/docx/LICENSE.txt), [`pdf/LICENSE.txt`](./skills/pdf/LICENSE.txt), [`pptx/LICENSE.txt`](./skills/pptx/LICENSE.txt) e [`xlsx/LICENSE.txt`](./skills/xlsx/LICENSE.txt). Elas não estão sob a GPL-3.0 deste projeto e não devem ser tratadas como conteúdo redistribuível pelo projeto. A presença no checkout não autoriza copiar, alterar, empacotar, sublicenciar ou distribuir esses materiais; preserve os respectivos arquivos de licença e os termos do serviço quando o ambiente os disponibilizar.
+As skills documentais `docx`, `pdf`, `pptx` e `xlsx` presentes em `.agents/skills/` são materiais proprietários fornecidos pelo host. Os termos aplicáveis do acordo com a Anthropic estão em [`docx/LICENSE.txt`](./.agents/skills/docx/LICENSE.txt), [`pdf/LICENSE.txt`](./.agents/skills/pdf/LICENSE.txt), [`pptx/LICENSE.txt`](./.agents/skills/pptx/LICENSE.txt) e [`xlsx/LICENSE.txt`](./.agents/skills/xlsx/LICENSE.txt). Elas não estão sob a GPL-3.0 deste projeto e não devem ser tratadas como conteúdo redistribuível pelo projeto. A presença no checkout não autoriza copiar, alterar, empacotar, sublicenciar ou distribuir esses materiais; preserve os respectivos arquivos de licença e os termos do serviço quando o ambiente os disponibilizar.

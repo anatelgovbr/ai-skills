@@ -75,7 +75,7 @@ Este repositório não repete essas regras. Ele fornece as skills que as ferrame
 
 ## Instalar uma skill
 
-Copie a pasta da skill desejada para o diretório de skills do seu projeto.
+As skills deste repositório ficam em `.agents/skills/`, uma pasta para cada skill. Copie a pasta da skill desejada para o diretório de skills do seu projeto. Se preferir ter todas as skills de uma vez, clone o repositório inteiro.
 
 Nos repositórios que receberam a stack pela skill `stack-ai-init`, esse diretório é `.agents/skills/`, e as três ferramentas suportadas já estão apontadas para ele:
 
@@ -132,20 +132,21 @@ A skill deposita na raiz do repositório de destino:
 - um guia de segurança, em `.agents/security/`
 - as integrações do GitHub Copilot, do OpenCode e do Claude Code
 - a documentação da stack, em `docs/stack-ai/`
+- a pasta de documentação de arquitetura, em `docs/architecture/`, com o modelo e as regras para registrar decisões
 
 Ela não lê o código do destino e não escreve nada sobre o projeto. O que já existe no destino é preservado.
 
-Para conhecer a stack antes de instalar, leia a documentação que ela leva, em [`skills/stack-ai-init/assets/stack/docs/stack-ai/README.md`](./skills/stack-ai-init/assets/stack/docs/stack-ai/README.md).
+Para conhecer a stack antes de instalar, leia a documentação que ela leva, em [`.agents/skills/stack-ai-init/assets/stack/docs/stack-ai/README.md`](./.agents/skills/stack-ai-init/assets/stack/docs/stack-ai/README.md).
 
 Antes de pedir, tenha em mãos o caminho da pasta raiz do repositório de destino, Python 3 instalado na máquina e uma sessão da sua ferramenta de IA com acesso a esta skill.
 
-O jeito mais simples é abrir a sessão neste repositório clonado. Também funciona copiar a pasta `skills/stack-ai-init` para o diretório de skills de um projeto seu.
+O jeito mais simples é abrir a sessão neste repositório clonado. Também funciona copiar a pasta `.agents/skills/stack-ai-init` para o diretório de skills de um projeto seu.
 
 O prompt para pedir a instalação está em [`docs/prompts-exemplo.md`, seção "Instalar a stack em um repositório novo"](./docs/prompts-exemplo.md#instalar-a-stack-em-um-repositório-novo).
 
 A skill simula a instalação, mostra o plano com o que vai criar, o que vai ignorar por já existir e o que vai mesclar, e só escreve depois da sua confirmação.
 
-Ao terminar, ela relata o que foi criado, o que foi preservado e o que ficou pendente. `AGENTS.md`, `CLAUDE.md` e `README.md` do destino nunca são sobrescritos. Rodar de novo no mesmo repositório não muda nada.
+Ao terminar, ela relata o que foi criado, o que foi preservado e o que ficou pendente. `AGENTS.md`, `CLAUDE.md`, `README.md` e o `README.md` de `docs/architecture/` do destino nunca são sobrescritos. Rodar de novo no mesmo repositório não muda nada.
 
 Depois da instalação, três coisas ficam com você:
 

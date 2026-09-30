@@ -134,12 +134,12 @@ Investiga o código de um repositório que já tem a estrutura instalada e trans
 
 ### Enriquecer uma stack recém instalada
 
-**Pré-requisito:** stack instalada e ainda vazia.
+**Pré-requisito:** stack instalada.
 
 **Prompt:**
 
 ```text
-Use a skill `stack-ai-build-project-context` no repositório em <caminho da raiz>. A stack mínima já está instalada e está vazia.
+Use a skill `stack-ai-build-project-context` no repositório em <caminho da raiz>. A stack mínima já está instalada.
 
 Descubra como este sistema é construído e como se desenvolve nele, e me traga o plano antes de escrever qualquer coisa.
 

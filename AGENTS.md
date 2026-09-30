@@ -48,22 +48,29 @@ Teste de saída: cada linha alterada no diff responde a um trecho do pedido ou a
 
 ### 4. Execução orientada a objetivo
 
-**Definir critérios de sucesso. Repetir até a verificação passar.**
+**Definir critérios de sucesso verificáveis. Repetir até a verificação passar.**
 
-Traduzir o pedido em critério verificável:
+Traduzir o pedido em critérios verificáveis:
 - "Adicionar validação" → "listar as entradas inválidas, implementar, provar cada uma com comando".
 - "Corrigir o bug" → "reproduzir com comando, corrigir, repetir o comando até passar".
 - "Refatorar ou otimizar X" → "registrar o comportamento antes, alterar, comprovar o mesmo comportamento depois".
 
-Antes da primeira edição, declarar o plano como checklist, um item por passo:
+Antes da primeira edição, declarar plano com `Impacto Arquitetural` definido em "Decisões Arquiteturais" e `Checklist de Critérios Verificáveis` com um item por passo:
+
 ```
+**Impacto Arquitetural:** <exige novo ADR / exige atualizar ADR / nenhum impacto>
+- Dimensões: <dimensões tocadas>
+- <nome do fator>: <motivo do fator valer para esta mudança>
+- <nome do fator>: <motivo do fator valer para esta mudança>
+
+**Checklist de Critérios Verificáveis:**
 - [ ] [Step] → verify: [check]
 - [ ] [Step] → verify: [check]
 - [ ] [Step] → verify: [check]
 ```
 
 Ao verificar:
-- Executar os gates obrigatórios e os critérios de sucesso.
+- Executar os gates obrigatórios e os critérios de sucesso verificáveis.
 - Repetir correção e verificação até todos passarem.
 - Verificação que depende do desenvolvedor, como smoke manual, entra na resposta como pendente.
 - Informar impedimentos e pendências sem declarar a entrega concluída.
@@ -87,7 +94,7 @@ Preserve literalmente citações diretas e outros conteúdos que precisem perman
 ## Acionamento da stack
 
 - A raiz deste repositório e o contexto geral; o guia de uso e o catálogo ficam no [README.md](README.md).
-- Cada skill publicada fica em `skills/<nome>/SKILL.md`. O nome do diretório é o nome exato usado para acioná-la.
+- Cada skill publicada fica em `.agents/skills/<nome>/SKILL.md`. O nome do diretório é o nome exato usado para acioná-la.
 - Antes de responder, planejar ou editar, classifique o pedido e verifique no catálogo do README se existe uma skill aplicável. Quando existir, acione-a pelo nome exato, leia seu `SKILL.md` e siga o fluxo definido por ela.
 - Para acionamento explicito, use `Use a skill <nome> para <objetivo>` ou o comando `/nome` quando a skill oferecer um comando. Não carregue todas as skills sem necessidade.
 - `caveman` é um modo de acionamento explicito; use o comando indicado no README e não espere que seja escolhido automaticamente.
@@ -128,3 +135,31 @@ Em caso de conflito ou ambiguidade relevante, pare e solicite uma decisão:
 - Confirme antes de executar uma ação destrutiva ou difícil de reverter.
 - Valide a mudança com a verificação mais próxima disponível; quando não houver testes, confira estrutura, referencias e os arquivos diretamente afetados.
 - Agrupe operações independentes (leituras, buscas, comandos shell) em uma única mensagem; execute em sequência somente quando houver dependência entre elas.
+
+## Decisões Arquiteturais
+
+Toda mudança passa por esta triagem e o resultado é explicitado na linha "Impacto Arquitetural" da execução orientada a objetivo da Disciplina Agêntica, informando:
+	- **Com impacto**: `exige novo ADR` ou `exige atualizar ADR`, com lista das Dimensões, nome de cada fator e motivo da mudança que justifica ADR novo ou atualização de ADR;
+	- **Sem impacto**: `nenhum impacto` e o motivo da mudança não envolver fatores que justificam ADR novo ou atualização de ADR.
+
+A mudança exige ADR novo ou atualização **QUANDO** atende às duas condições:
+
+	1. Escolhe entre alternativas viáveis em pelo menos uma dimensão: estrutura, responsabilidade funcional (qual componente ou sistema responde por cada capacidade de negócio, processo ou dado mestre), atributo de qualidade, tecnologia ou dependência externa, interface ou contrato publicado e técnica de construção; e
+	2. Tem pelo menos um destes fatores de significância:
+	   - Difícil de reverter: desfazer exige migrar dados ou mudar, de forma coordenada, outros sistemas, equipes, consumidores ou cópias já distribuídas;
+	   - Transversal: afeta várias partes do sistema ou a interação entre elas;
+	   - Risco ou exigência externa: segurança, privacidade, conformidade legal, auditoria ou pedido de parte interessada crítica;
+	   - Dependência sem controle: dependência externa fora do controle do time;
+	   - Primeira vez: tecnologia ou padrão sem precedente no projeto; e
+	   - Altera ADR: muda decisão registrada em ADR aceita.
+
+Dispensam novo ADR ou atualização: implementação que segue padrão ou ADR vigente, correção que preserva a arquitetura, refatoração sem mudança de interface ou contrato, atualização compatível de dependência, edição do texto de documentação existente, mudança de regra de negócio que não muda qual componente responde por ela e decisão interna de componente autocontido, que fica na documentação do próprio componente.
+
+Estados de uma ADR, em ordem: `proposta -> aceita -> descontinuada`.
+
+- Toda ADR nasce `proposta` e só pode ser editada ou descartada enquanto estiver `proposta`.
+- ADR `aceita` não é editada. Só muda de estado, para `descontinuada`.
+- `exige novo ADR`: nenhuma ADR `proposta` trata do assunto. Se uma ADR `aceita` trata, a nova leva "Substitui: ADR-NNN", e a anterior passa a `descontinuada`, com "Substituída por: ADR-MMM", quando a nova for aceita.
+- `exige atualizar ADR`: uma ADR `proposta` trata do assunto. Edite-a.
+
+Se a mudança tocar uma dimensão, liste `docs/architecture/adr/`, abra só as ADRs cujo título trate do mesmo assunto e confira pelo Status se a mudança segue ou altera uma ADR aceita. Quando a triagem indicar ADR, pare antes de editar, informe a dimensão e o fator, sugira um título curto e aguarde a decisão do desenvolvedor. Com a ADR aprovada, siga as regras de `docs/architecture/adr/README.md`.
