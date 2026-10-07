@@ -34,7 +34,7 @@ Se voce acha que a carga precisa mudar, o caminho e editar `assets/` desta skill
 | Raiz | `AGENTS.md`, `CLAUDE.md`, `.gitignore` |
 | `.agents/references/` | `speckit.md`, a regra de manutencao das fases; `template-revisao-tecnica.md`, o formato do relatorio de revisao tecnica, para a skill de revisao do projeto |
 | `.agents/security/` | `guia-seguranca.md`, 19 topicos de risco agnosticos de linguagem, com rastreio para OWASP Top 10:2025 e CWE; `mapa-cwe-guia.md`, ponte da `owasp-playbook`, com a traducao de CWE para topico e as secoes que o projeto preenche |
-| `.agents/skills/` | 28 skills: a `skill-creator`, as 10 fases do SpecKit em `speckit-<fase>/`, a `owasp-playbook`, com o OWASP Secure Agent Playbook copiado em `upstream/`, e 16 skills de apoio: 4 de terceiros (`caveman`, `grill-me`, `grilling` e `writing-for-agents`), 5 da Anthropic (`frontend-design`, `docx`, `pdf`, `pptx` e `xlsx`) e 7 mantidas pela Anatel no repositorio `ai-skills` (`ciclo-design`, `conformidade-de-escrita-normativa`, `dicionario-dados-db-scan-codebase-docs`, `escrita-em-linguagem-simples-pt-br`, `gauntlet-loop-forge`, `recapitulacao-resumo-ata-relato-reuniao` e `stack-ai-build-project-context`) |
+| `.agents/skills/` | 30 skills: a `skill-creator`, as 10 fases do SpecKit em `speckit-<fase>/`, a `owasp-playbook`, com o OWASP Secure Agent Playbook copiado em `upstream/`, e 18 skills de apoio: 4 de terceiros (`caveman`, `grill-me`, `grilling` e `writing-for-agents`), 5 da Anthropic (`frontend-design`, `docx`, `pdf`, `pptx` e `xlsx`) e 9 mantidas pela Anatel no repositorio `ai-skills` (`ciclo-design`, `configuracao-de-testes-unitarios`, `conformidade-de-escrita-normativa`, `dicionario-dados-db-scan-codebase-docs`, `escrita-em-linguagem-simples-pt-br`, `gauntlet-loop-forge`, `manual-creator-scan-codebase`, `recapitulacao-resumo-ata-relato-reuniao` e `stack-ai-build-project-context`) |
 | `.claude/` | `settings.json`, que registra o marketplace local e liga o plugin `stack-ai` |
 | `.claude-plugin/` | `marketplace.json`, o plugin local que aponta o Claude Code para `.agents/skills/`; o nome do marketplace sai do diretorio de destino |
 | `.github/` | `copilot-instructions.md` |
@@ -43,6 +43,7 @@ Se voce acha que a carga precisa mudar, o caminho e editar `assets/` desta skill
 | `.vscode/` | as tres chaves `chat.*` que apontam o Copilot para `.agents/skills/` |
 | `docs/stack-ai/` | a documentacao da stack para quem usa: indice, conceito, SpecKit, manutencao e prompts genericos |
 | `docs/architecture/` | a documentação de arquitetura do projeto: `README.md` com a organização da pasta, `ADR-TEMPLATE.md` e `adr/README.md`, com as regras de ADR |
+| `docs/requisitos-ancorados/padrao/` | as regras do formato dos requisitos do sistema e os quatro templates; os documentos de requisitos do projeto nascem na raiz de `docs/requisitos-ancorados/`, a partir desses templates |
 
 Inventario completo, exclusoes e o motivo de cada uma: `references/payload.md`.
 

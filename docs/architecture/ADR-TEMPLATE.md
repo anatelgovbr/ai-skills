@@ -4,7 +4,7 @@
 - Data: AAAA-MM-DD
 - Proprietário: pessoa, papel ou equipe responsável
 - Participantes afetados: papéis, equipes ou mantenedores que precisam revisar
-- Escopo: componente, fluxo ou qualidade afetada
+- Escopo: componente, fluxo ou qualidade afetada, com os IDs de `docs/requisitos-ancorados/` afetados quando houver
 - Substitui: nenhuma ou ADR-NNN
 - Substituída por: nenhuma ou ADR-NNN
 
@@ -29,7 +29,7 @@ Descreva benefícios, custos, riscos e razão para adoção ou rejeição.
 
 ## Decisão e justificativa
 
-Registre uma única decisão em linguagem afirmativa e explique por que ela atende melhor aos critérios declarados.
+Registre uma única decisão em linguagem afirmativa e explique por que ela atende melhor aos critérios declarados. Valores de parâmetro, limites e contratos detalhados ficam nos requisitos técnicos do sistema (`docs/requisitos-ancorados/requisitos-tecnicos.md`), e a ADR registra só a decisão.
 
 ## Consequências
 

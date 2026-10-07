@@ -87,12 +87,14 @@ A tabela abaixo lista as skills que a stack instala. Parte vem de terceiros e pa
 | `speckit-<fase>`, uma por fase | Conduzem as fases do fluxo SDD com SpecKit |
 | `skill-creator` | Cria, edita e avalia skills |
 | `dicionario-dados-db-scan-codebase-docs` | Cria, atualiza e verifica dicionários de dados e changelogs estruturais de banco de dados a partir da codebase, dos scripts de banco e da documentação |
+| `manual-creator-scan-codebase` | Cria, atualiza e verifica manuais de uso em Markdown a partir da codebase, com adaptador, personas e plano de capturas de tela |
 | `gauntlet-loop-forge` | Transforma um objetivo, plano, especificação ou prompt existente em um prompt de execução pronto para colar, com critérios de aceite verificáveis, revisão por agente que não construiu o artefato e limite finito de rodadas |
 | `caveman` | Comprime a prosa da resposta preservando termo técnico, código e mensagem de erro |
 | `grill-me` e `grilling` | Entrevistam o desenvolvedor sobre um plano ou design, em rodadas de perguntas com resposta recomendada, antes de implementar |
 | `writing-for-agents` | Orienta a escrita de documento que agente de IA lê: skill, `AGENTS.md`, `CLAUDE.md` e arquivo alcançado por ponteiro de contexto |
 | `owasp-playbook` | Revisão de segurança por procedimento OWASP: 17 plays cobrindo código, Top 10, API, segredos, dependências, infraestrutura como código, mobile, agente de IA, servidor MCP e aplicação LLM, mais o índice do ASVS para código novo |
 | `stack-ai-build-project-context` | Investiga a codebase e gera ou atualiza a base operacional para agentes: `AGENTS.md`, referências e skills do projeto |
+| `configuracao-de-testes-unitarios` | Lê a infraestrutura do projeto e entrega um plano para configurar testes unitários e cobertura, sem meta e sem executar nada |
 | `ciclo-design` | Executa um ciclo crítico de design a partir de uma referência real, com um construtor e três críticos independentes, até a aprovação ou o limite de rodadas |
 | `frontend-design` | Orienta o projeto ou a reformulação de interface frontend com direção visual intencional |
 | `escrita-em-linguagem-simples-pt-br` | Escreve ou reescreve textos em Linguagem Simples, em português brasileiro, para o cidadão ou outro público informado |
@@ -104,7 +106,7 @@ As skills `caveman` e `grill-me` são **modos opcionais**: o agente nunca as aci
 
 A `owasp-playbook` também é **opt-in**: o agente nunca a aciona sozinho. Para pedir, basta uma frase em português, sem conhecer segurança: a skill escolhe os procedimentos pelo que existe no escopo, traduz o resultado pelo guia de segurança e responde com um resumo em linguagem simples antes da tabela técnica. Os prompts estão em [`prompts-exemplo.md`](prompts-exemplo.md#revisão-de-segurança). A pasta `upstream/` dela é cópia literal do projeto de origem e não deve ser editada; o que é do projeto entra pela ponte `.agents/security/mapa-cwe-guia.md`.
 
-O projeto pode ter outras skills além dessas 28, criadas pela própria equipe. Elas ficam no mesmo `.agents/skills/`, são versionadas junto com o repositório e estão descritas no `README.md` da raiz.
+O projeto pode ter outras skills além dessas 30, criadas pela própria equipe. Elas ficam no mesmo `.agents/skills/`, são versionadas junto com o repositório e estão descritas no `README.md` da raiz.
 
 ---
 
@@ -170,6 +172,7 @@ Se você optar por uma ferramenta diferente das listadas acima, confirme antes q
 
 docs/stack-ai/     # Esta documentação
 docs/architecture/ # Documentação de arquitetura do projeto, com as decisões registradas em adr/
+docs/requisitos-ancorados/padrao/ # Regras e templates dos requisitos do sistema, mantidos em docs/requisitos-ancorados/
 AGENTS.md          # Regras do projeto para agentes de IA (leia antes de contribuir)
 CLAUDE.md          # Ponteiro de compatibilidade para AGENTS.md
 ```

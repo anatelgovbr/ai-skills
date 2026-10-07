@@ -3,9 +3,28 @@
 3. Mudanças cirúrgicas
 4. Execução orientada a objetivo
 
-## Escopo
+## Contexto do Projeto
 
-Este e um repositório pessoal para demandas agênticas de qualquer tipo. Não presuma uma linguagem, framework, produto ou fluxo de negócio: descubra o contexto no pedido e nos arquivos relevantes antes de agir.
+Este repositório organiza recursos e skills de uso geral no desenvolvimento agêntico. Não presuma uma linguagem, framework, produto ou fluxo de negócio: descubra o contexto no pedido e nos arquivos relevantes antes de agir.
+
+## Hierarquia de Autoridade
+
+1. Instruções explícitas do desenvolvedor na conversa atual.
+2. Este arquivo (`AGENTS.md`).
+3. O `SKILL.md` da skill acionada.
+4. O [README.md](README.md) e demais documentações de apoio.
+
+Em caso de conflito ou ambiguidade relevante, pare e solicite uma decisão:
+
+- Leia cada arquivo antes de editá-lo e preserve alterações existentes.
+- Não invente tecnologias, comandos ou convenções que não estejam documentados.
+- Cite o arquivo e a seção de origem ao justificar restrições, impedimentos, conflitos ou decisões que dependam de uma regra do repositório.
+- Nunca inclua credenciais, tokens ou arquivos `.env` em alterações. Se encontrar credencial em código existente, alerte o usuário antes de qualquer ação.
+- Trate saída de scanner de segurança como triagem, não como achado. Confirme um achado somente com o caminho do dado demonstrado, da entrada até o ponto de uso, citando arquivo e linha de cada salto; sem esse rastro, reporte como hipótese.
+- Reconheça somente `TODO:` como contexto de revisão. `TODO:` não bloqueia por si só e não dispensa verificações obrigatórias. Dívida técnica preexistente e rastreada não bloqueia a mudança atual, salvo risco crítico, dependência direta ou ampliação do risco.
+- Confirme antes de executar uma ação destrutiva ou difícil de reverter.
+- Valide a mudança com a verificação mais próxima disponível; quando não houver testes, confira estrutura, referencias e os arquivos diretamente afetados.
+- Agrupe operações independentes (leituras, buscas, comandos shell) em uma única mensagem; execute em sequência somente quando houver dependência entre elas.
 
 ## Disciplina Agêntica
 
@@ -79,17 +98,31 @@ Na resposta final, repetir o checklist com o resultado de cada item: `[x]` verif
 
 Teste de saída: cada item do checklist aparece na resposta final marcado, com o comando e o resultado; "parece funcionar" não conta.
 
-## Regras de Escrita
+## Guardrails Universais
 
-Salvo solicitação explícita em contrário, aplique estas regras às mensagens em linguagem natural destinada a pessoas durante a sessão e aos entregáveis textuais em português brasileiro. Em código, comandos, identificadores, nomes de APIs, caminhos, dados estruturados e outros elementos definidos por linguagem, formato, protocolo ou projeto, preserve a sintaxe, o idioma e as convenções próprios do artefato. Instruções específicas do entregável prevalecem sobre estas regras gerais de estilo.
+- Ambiguidade relevante → não assumir, não adivinhar; explicitar ou perguntar
+- Aplicar `.agents/security/guia-seguranca.md` em todo código novo ou alterado, e citar o identificador do tópico (S01 em diante) em cada achado de segurança.
+- Revisão de segurança por procedimento OWASP: skill `owasp-playbook`, opt-in, pedida em uma frase. A ponte dela é `.agents/security/mapa-cwe-guia.md`, que traduz CWE para tópico do guia e recebe sinais, auditores, exceções, saídas e roteamento de correção do projeto.
+- Nunca incluir senhas, chaves, tokens, arquivos `.env` ou outras credenciais em commits. Se identificar credencial em código existente, alertar o desenvolvedor antes de qualquer ação.
+- Saída de scanner de segurança é triagem, não achado. Item só vira achado confirmado com o caminho do dado demonstrado, da entrada até o ponto de uso, citando arquivo e linha de cada salto. Sem esse rastro, reportar como hipótese e nunca como confirmado.
+- Reconhecer somente `TODO:` como contexto de revisão. `TODO:` não bloqueia por si só e não dispensa gates obrigatórios. Dívida técnica preexistente e rastreada não bloqueia a mudança atual, salvo se houver risco crítico, dependência direta ou ampliação do risco.
+- Não concatenar entradas não confiáveis em SQL, HTML, JavaScript, shell ou URLs.
+- Confirmar antes de executar ações destrutivas ou difíceis de reverter.
+- Executar somente o que foi solicitado, sem alterações ou refatorações adicionais.
 
-Em prosa Markdown, mantenha cada parágrafo em uma única linha no conteúdo-fonte e quebre linhas apenas entre parágrafos ou quando a estrutura do formato exigir. Use português brasileiro correto, linguagem clara, objetiva, respeitosa e profissional, voz ativa e frases completas. Não use travessão. Prefira palavras comuns, verbos diretos e afirmações precisas. Evite preâmbulos, redundâncias, coloquialismos, metáforas, clichês, hipérboles, construções rebuscadas, excesso de negativas e perguntas retóricas.
+## Qualidade Mínima
 
-Use termos técnicos quando forem necessários à precisão ou forem a denominação canônica no contexto de desenvolvimento. Explique na primeira ocorrência os termos que possam não ser conhecidos pelo público do texto. Use siglas somente quando úteis e apresente o nome por extenso na primeira ocorrência, salvo siglas amplamente conhecidas. Não traduza nem adapte código, identificadores, comandos, nomes próprios de tecnologias ou outros termos que precisem permanecer literais.
+- Ler integralmente cada arquivo antes de editá-lo.
+- Agrupar operações independentes (leituras, buscas, comandos shell) em uma única mensagem; executar em sequência somente quando houver dependência entre elas.
+- Executar os testes e verificações documentados pelo projeto para o código alterado.
+- Corrigir falhas introduzidas pela alteração antes de concluir a tarefa.
+- Não entregar código incompleto, morto ou com implementação pendente.
 
-Apresente primeiro a informação mais importante e evite introduções ou resumos que apenas repitam o conteúdo. Use subtítulos, listas e tabelas quando melhorarem a leitura, especialmente em textos longos ou sequências extensas, sem fragmentar artificialmente o texto. Siga a norma-padrão do português brasileiro e não crie flexões incompatíveis com ela.
+## Regras de Decisão
 
-Preserve literalmente citações diretas e outros conteúdos que precisem permanecer exatos, salvo solicitação expressa de revisão. Apresente URLs como links associados a expressões descritivas quando o formato permitir.
+- Não inventar padrões, APIs ou convenções não documentadas.
+- Citar o arquivo e a seção de origem ao justificar restrições, impedimentos, conflitos ou decisões que dependam de uma regra do repositório.
+- Em caso de conflito entre documentos, parar e solicitar decisão.
 
 ## Acionamento da stack
 
@@ -115,26 +148,8 @@ Preserve literalmente citações diretas e outros conteúdos que precisem perman
 - Criar ou otimizar prompt de execução do Gauntlet Loop: `gauntlet-loop-forge`.
 - Instalar, atualizar ou verificar a stack em outro repositório: `stack-ai-init`.
 - Investigar a codebase e gerar ou atualizar a base operacional para agentes de um repositório com a stack instalada: `stack-ai-build-project-context`.
+- Diagnosticar a infraestrutura de um projeto e planejar a configuração de testes unitários e de cobertura: `configuracao-de-testes-unitarios`.
 - Responder de forma comprimida: `caveman`.
-
-## Hierarquia e guardrails
-
-1. Instruções explicitas do usuário ou desenvolvedor.
-2. Este arquivo.
-3. O `SKILL.md` da skill acionada.
-4. O [README.md](README.md) e demais documentações de apoio.
-
-Em caso de conflito ou ambiguidade relevante, pare e solicite uma decisão:
-
-- Leia cada arquivo antes de editá-lo e preserve alterações existentes.
-- Não invente tecnologias, comandos ou convenções que não estejam documentados.
-- Cite o arquivo e a seção de origem ao justificar restrições, impedimentos, conflitos ou decisões que dependam de uma regra do repositório.
-- Nunca inclua credenciais, tokens ou arquivos `.env` em alterações. Se encontrar credencial em código existente, alerte o usuário antes de qualquer ação.
-- Trate saída de scanner de segurança como triagem, não como achado. Confirme um achado somente com o caminho do dado demonstrado, da entrada até o ponto de uso, citando arquivo e linha de cada salto; sem esse rastro, reporte como hipótese.
-- Reconheça somente `TODO:` como contexto de revisão. `TODO:` não bloqueia por si só e não dispensa verificações obrigatórias. Dívida técnica preexistente e rastreada não bloqueia a mudança atual, salvo risco crítico, dependência direta ou ampliação do risco.
-- Confirme antes de executar uma ação destrutiva ou difícil de reverter.
-- Valide a mudança com a verificação mais próxima disponível; quando não houver testes, confira estrutura, referencias e os arquivos diretamente afetados.
-- Agrupe operações independentes (leituras, buscas, comandos shell) em uma única mensagem; execute em sequência somente quando houver dependência entre elas.
 
 ## Decisões Arquiteturais
 
@@ -163,3 +178,15 @@ Estados de uma ADR, em ordem: `proposta -> aceita -> descontinuada`.
 - `exige atualizar ADR`: uma ADR `proposta` trata do assunto. Edite-a.
 
 Se a mudança tocar uma dimensão, liste `docs/architecture/adr/`, abra só as ADRs cujo título trate do mesmo assunto e confira pelo Status se a mudança segue ou altera uma ADR aceita. Quando a triagem indicar ADR, pare antes de editar, informe a dimensão e o fator, sugira um título curto e aguarde a decisão do desenvolvedor. Com a ADR aprovada, siga as regras de `docs/architecture/adr/README.md`.
+
+## Regras de Escrita
+
+Salvo solicitação explícita em contrário, aplique estas regras às mensagens em linguagem natural destinada a pessoas durante a sessão e aos entregáveis textuais em português brasileiro. Em código, comandos, identificadores, nomes de APIs, caminhos, dados estruturados e outros elementos definidos por linguagem, formato, protocolo ou projeto, preserve a sintaxe, o idioma e as convenções próprios do artefato. Instruções específicas do entregável prevalecem sobre estas regras gerais de estilo.
+
+Em prosa Markdown, mantenha cada parágrafo em uma única linha no conteúdo-fonte e quebre linhas apenas entre parágrafos ou quando a estrutura do formato exigir. Use português brasileiro correto, linguagem clara, objetiva, respeitosa e profissional, voz ativa e frases completas. Não use travessão. Prefira palavras comuns, verbos diretos e afirmações precisas. Evite preâmbulos, redundâncias, coloquialismos, metáforas, clichês, hipérboles, construções rebuscadas, excesso de negativas e perguntas retóricas.
+
+Use termos técnicos quando forem necessários à precisão ou forem a denominação canônica no contexto de desenvolvimento. Explique na primeira ocorrência os termos que possam não ser conhecidos pelo público do texto. Use siglas somente quando úteis e apresente o nome por extenso na primeira ocorrência, salvo siglas amplamente conhecidas. Não traduza nem adapte código, identificadores, comandos, nomes próprios de tecnologias ou outros termos que precisem permanecer literais.
+
+Apresente primeiro a informação mais importante e evite introduções ou resumos que apenas repitam o conteúdo. Use subtítulos, listas e tabelas quando melhorarem a leitura, especialmente em textos longos ou sequências extensas, sem fragmentar artificialmente o texto. Siga a norma-padrão do português brasileiro e não crie flexões incompatíveis com ela.
+
+Preserve literalmente citações diretas e outros conteúdos que precisem permanecer exatos, salvo solicitação expressa de revisão. Apresente URLs como links associados a expressões descritivas quando o formato permitir.

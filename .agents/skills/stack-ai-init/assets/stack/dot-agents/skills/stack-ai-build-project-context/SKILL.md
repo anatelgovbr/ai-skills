@@ -141,6 +141,7 @@ coisa. Ausencia descoberta no fim custa a rodada inteira:
 | `file` e `iconv` | `which file iconv` | desempate byte a byte quando o perfil de codificacao nao decidir |
 | subagentes | mecanismo do proprio runtime | paralelismo e independencia do Auditor |
 | `skill-creator` | localize o `SKILL.md` dela; nao presuma | a fase de skill inteira |
+| `configuracao-de-testes-unitarios` | localize o `SKILL.md` dela; não presuma | o plano de testes unitários do relatório |
 
 Procure a `skill-creator` antes de declara la ausente: ela costuma estar em `.claude/skills/`,
 em `.agents/skills/`, no diretorio de skills do usuario ou instalada como plugin. Diretorio
@@ -589,6 +590,10 @@ o detalhe vive nos artefatos escritos.
 A secao de automacao sai com no maximo dois itens por tipo. Ela e recomendacao pura, com
 tipo, gatilho e o achado que a motiva; a configuracao fica com o desenvolvedor.
 
+Antes de fechar o relatório, acione a `configuracao-de-testes-unitarios` com o censo da Fase 1
+como entrada. Ela só lê o repositório e devolve o diagnóstico e o plano de testes unitários, que
+entram no relatório como recomendação pura: a rodada não executa nenhum item do plano.
+
 ```text
 Artefatos alterados:
 - <caminho>: <o que entrou, mudou ou saiu>
@@ -614,6 +619,11 @@ Nao investigado por decisao:
 
 Automacao sugerida ao desenvolvedor:
 - <tipo: hook | subagente | comando> | <o que faz> | gatilho: <evento ou pedido> | evidencia: <achado desta rodada> | nao instalada por esta skill
+
+Plano de testes unitários:
+- diagnóstico: <linguagem principal> | <gerenciador de pacotes> | <Docker> | <testes existentes>
+- <item do plano> | onde roda: <serviço do projeto ou máquina> | conferir: <resultado observável>
+- não executado por esta skill
 
 Premissas assumidas por default:
 - <ponto do enquadramento> | assumido: <o que foi assumido> | derivado de: <censo ou contrato da stack>

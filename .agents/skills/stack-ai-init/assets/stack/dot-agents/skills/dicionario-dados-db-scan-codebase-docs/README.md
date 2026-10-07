@@ -18,7 +18,7 @@ A ordem das seções abaixo é a ordem recomendada de uso, e é o que garante a 
 
 Cite a skill `dicionario-dados-db-scan-codebase-docs` pelo nome no prompt, como nos exemplos abaixo. Não é preciso citar o adaptador do alvo: uma vez criado e registrado, a skill já sabe localizá-lo sozinha. Também não é preciso citar critérios de qualidade ou comandos de verificação internos à skill. O que puder ser descoberto no código, a skill descobre sozinha.
 
-Todo trecho entre `<` e `>` é um parâmetro: substitua pela informação real antes de enviar. Campo marcado como `<se souber>` que você não tiver como preencher: apague a linha inteira, nunca deixe o texto entre `<` e `>` dentro do prompt enviado.
+Todo trecho entre `<` e `>` é um parâmetro: substitua pela informação real antes de enviar. Se um campo trouxer uma condição, como "se souber", "se houver", "se existir", "se não for" ou "opcional", e ela não valer para o seu caso, apague a linha inteira; nunca deixe o texto entre `<` e `>` dentro do prompt enviado.
 
 Nenhum prompt precisa ser enviado igual ao template: eles servem a mais de um sistema ou módulo, e você nem sempre terá todos os dados disponíveis no momento. Linha que não se aplica ao seu caso, apague. Mande só o que você realmente tem.
 
@@ -86,14 +86,14 @@ Ao final, liste o que foi alterado e o que foi preservado intencionalmente.
 
 ### Revisar a qualidade do dicionário
 
-Use quando quiser avaliar se um dicionário já existente segue os critérios de qualidade e as convenções da própria skill (completude, consistência, terminologia, distinções documentadas), sem alterar nenhum arquivo e independentemente de a codebase ter mudado.
+Use quando quiser avaliar se um dicionário já existente segue os critérios de qualidade e as convenções da própria skill (completude, consistência, terminologia, distinções documentadas), sem alterar arquivos. A revisão também compara a estrutura documentada com a fonte estrutural e aponta as divergências sem corrigi-las; para incorporar mudanças do código, use "Atualizar o dicionário".
 
 ```text
-Use a skill `dicionario-dados-db-scan-codebase-docs` para revisar a qualidade e a consistência do dicionário de dados do alvo abaixo, sem alterar nenhum arquivo.
+Use a skill `dicionario-dados-db-scan-codebase-docs` para revisar a qualidade e a consistência do dicionário de dados do alvo abaixo.
 
 Alvo: <sistema ou módulo>.
 
-Classifique cada achado como problema de qualidade documental (descrição incompleta, inconsistente, genérica ou fora das convenções da skill) ou como lacuna (elemento sem descrição). Liste claramente qualquer lacuna que impeça considerar a documentação como completa.
+Classifique cada achado como problema de qualidade documental (descrição incompleta, inconsistente, genérica ou fora das convenções da skill), como lacuna (elemento sem descrição) ou como divergência estrutural (tabela ou coluna documentada de forma diferente da fonte estrutural).
 ```
 
 ### Gerar prints de tela como insumo complementar
@@ -105,13 +105,13 @@ Gere os prints de tela do alvo abaixo para servirem de insumo complementar ao di
 
 Alvo: <sistema ou módulo>.
 
-O ambiente de teste já está disponível em <endereço ou instrução para subir o ambiente>. Para autenticar, leia a credencial na <variável de ambiente ou arquivo local não versionado>; se não houver, peça a credencial no momento do uso. Nunca use credencial de produção.
+O ambiente de teste já está disponível em <endereço ou instrução para subir o ambiente>. Para autenticar, leia a credencial na <variável de ambiente ou arquivo local não versionado>; se não houver, pare e me peça para configurá-la nesse local, sem recebê-la pela conversa. Nunca use credencial de produção.
 
 Use <ferramenta de automação de navegador disponível, ex.: Playwright ou Selenium> para rodar um script de automação que:
 
 1. Faça login no ambiente de teste.
-2. Navegue por todas as telas relevantes do alvo, criando os dados de teste (seeds) necessários para preencher cada tela.
-3. Capture um print de cada tela relevante (listagem, formulário vazio, formulário preenchido, modal, estado intermediário).
+2. Navegue pelas telas que leem ou gravam as tabelas do alvo, criando os dados de teste (seeds) necessários para preencher cada tela. Se o ambiente for remoto ou compartilhado, confirme comigo antes de criar dados.
+3. Capture um print de cada uma dessas telas (listagem, formulário vazio, formulário preenchido, modal, estado intermediário).
 4. Salve os PNGs em <pasta de destino>/screenshots/, organizados por subpasta.
 5. Exporte os seeds e dados de teste usados no passo 2 (SQL de insert ou passo a passo reprodutível) em <pasta de destino>/seeds/, para reaproveitar em futuras implementações sem recriar a massa de teste do zero.
 

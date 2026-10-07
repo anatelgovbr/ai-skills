@@ -2,7 +2,7 @@
 
 > Este documento é para quem mantém ou evolui a stack de IA. Se você só quer usar a stack, leia [`stack-de-ia.md`](stack-de-ia.md) e [`speckit.md`](speckit.md).
 
-Aqui estão as mudanças nos arquivos da stack dentro do repositório: `.agents/`, `.claude/`, `.claude-plugin/`, `.github/`, `.opencode/`, `.specify/`, `.vscode/`, `docs/stack-ai/` e `docs/architecture/`. Atualizações das ferramentas locais (Copilot, OpenCode, Claude Code) são responsabilidade de cada ferramenta e documentadas por elas mesmas.
+Aqui estão as mudanças nos arquivos da stack dentro do repositório: `.agents/`, `.claude/`, `.claude-plugin/`, `.github/`, `.opencode/`, `.specify/`, `.vscode/`, `docs/stack-ai/`, `docs/architecture/` e `docs/requisitos-ancorados/padrao/`. Atualizações das ferramentas locais (Copilot, OpenCode, Claude Code) são responsabilidade de cada ferramenta e documentadas por elas mesmas.
 
 Sempre crie uma branch dedicada e abra um Pull Request para revisão antes de incorporar qualquer mudança ao repositório principal.
 
@@ -87,6 +87,7 @@ Os arquivos de configuração pessoal do SpecKit ficam no `.gitignore` e não s�
 | Arquivos `AGENTS.md` e `.github/copilot-instructions.md` | Não se aplica | Ciclo normal do projeto |
 | Pasta `docs/stack-ai/` | Atualizar a versão citada em `speckit.md` e em `stack-de-ia.md` | Espelhar toda alteração na skill `stack-ai-init`, na mesma entrega |
 | Pasta `docs/architecture/` | Não se aplica | O `README.md` da pasta e as ADRs criadas pela equipe são do projeto. O `ADR-TEMPLATE.md` e o `adr/README.md` chegam da stack |
+| Pasta `docs/requisitos-ancorados/` | Não se aplica | Os documentos de requisitos na raiz da pasta são do projeto. A subpasta `padrao/`, com as regras do formato e os templates, chega da stack |
 | Pasta `.agents/skills/owasp-playbook/upstream/` | Não se aplica | Nunca editar o conteúdo; a versão nova chega pela `stack-ai-init`, conforme a seção [Como atualizar o OWASP Secure Agent Playbook](#como-atualizar-o-owasp-secure-agent-playbook) |
 | Arquivo `.agents/skills/owasp-playbook/SKILL.md` | Não se aplica | Nunca receber ajuste do projeto; é o mesmo arquivo em todo repositório, e o que é do projeto vai para a ponte |
 | Arquivo `.agents/security/mapa-cwe-guia.md` | Não se aplica | A tabela de tradução chega da stack; as demais seções são do projeto e são preservadas na atualização |

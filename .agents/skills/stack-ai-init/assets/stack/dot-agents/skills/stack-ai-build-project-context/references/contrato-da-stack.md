@@ -15,6 +15,7 @@ repetidas.
 | Ponteiro de compatibilidade (`CLAUDE.md`, `.github/copilot-instructions.md` ou equivalente) | Faz a ferramenta local encontrar o `AGENTS.md` | Nao |
 | Indice de skills ou registro de auditoria | Lista as skills instaladas, origem e composicao | Nao |
 | `docs/architecture/` | Documentação de arquitetura do destino, com as ADRs em `docs/architecture/adr/` | Não |
+| `docs/requisitos-ancorados/` | Regras de negócio, requisitos funcionais e requisitos técnicos vigentes do sistema; a stack traz só as regras do formato e os templates, em `padrao/` | Não |
 | Demais pastas da stack (`checklists/`, `memory/` e o restante de `security/`) | Usos especificos do repositorio de destino | Nao |
 
 A skill escreve em `AGENTS.md`, `.agents/references/` e `.agents/skills/`, e preenche as quatro secoes de projeto de `.agents/security/mapa-cwe-guia.md` quando o arquivo existir no destino. Nao escreve nas
@@ -55,6 +56,7 @@ contrato de conteudo, nao um espaco opcional, e cada uma tem regra propria:
 | `Qualidade Minima` | regra | topicos `**<assunto>**: <regra>` | o que verificar antes de entregar, com o comando quando existir |
 | `Regras de Decisao` | regra | topicos sem prefixo, imperativos | o que fazer diante de ambiguidade, conflito e pedido fora de escopo |
 | `Decisões Arquiteturais` | regra fixa da stack | prosa com os valores da linha de impacto, as duas condições numeradas, os fatores de significância e as dispensas | texto que chega pronto da instalação e vale igual em todo projeto; a rodada preserva o texto e não acrescenta critério |
+| `Requisitos Ancorados` | regra fixa da stack | parágrafo de abertura com a pasta e o ponteiro para `padrao/README.md`, tópicos `**<momento>**: <regra>` e teste de saída | texto que chega pronto da instalação e vale igual em todo projeto; a rodada preserva o texto e não acrescenta regra |
 | `Regras de Escrita` | regra fixa da stack | paragrafos em prosa, imperativos | texto que chega pronto da instalacao e vale igual em todo projeto; a rodada preserva o texto e nao acrescenta regra |
 
 Tres secoes nao vem no esqueleto e aparecem quando a rodada tem material para elas. Nao as crie

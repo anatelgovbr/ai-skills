@@ -105,6 +105,7 @@ Teste de saída: cada item do checklist aparece na resposta final marcado, com o
 - Ler integralmente cada arquivo antes de editá-lo.
 - Agrupar operações independentes (leituras, buscas, comandos shell) em uma única mensagem; executar em sequência somente quando houver dependência entre elas.
 - Executar os testes e verificações documentados pelo projeto para o código alterado.
+- Escrever cada teste novo no padrão AAA (Arrange, Act, Assert): preparar o cenário (Arrange), executar uma única ação sobre a unidade testada (Act) e verificar o resultado esperado (Assert), com os três blocos separados e visíveis no código e o nome do teste descrevendo o comportamento verificado.
 - Corrigir falhas introduzidas pela alteração antes de concluir a tarefa.
 - Não entregar código incompleto, morto ou com implementação pendente.
 
@@ -141,6 +142,21 @@ Estados de uma ADR, em ordem: `proposta -> aceita -> descontinuada`.
 - `exige atualizar ADR`: uma ADR `proposta` trata do assunto. Edite-a.
 
 Se a mudança tocar uma dimensão, liste `docs/architecture/adr/`, abra só as ADRs cujo título trate do mesmo assunto e confira pelo Status se a mudança segue ou altera uma ADR aceita. Quando a triagem indicar ADR, pare antes de editar, informe a dimensão e o fator, sugira um título curto e aguarde a decisão do desenvolvedor. Com a ADR aprovada, siga as regras de `docs/architecture/adr/README.md`.
+
+## Requisitos Ancorados
+
+`docs/requisitos-ancorados/` descreve o comportamento vigente do sistema: regras de negócio (`RN`), requisitos funcionais (`RF`) e requisitos técnicos (`RT`). Formato, IDs e templates em `docs/requisitos-ancorados/padrao/README.md`.
+
+- **Antes de alterar o sistema**: ler os requisitos de `docs/requisitos-ancorados/` ligados à mudança. Divergência entre requisito e código: parar, citar arquivo e linha dos dois lados e perguntar qual vale; nunca corrigir requisito ou código em silêncio.
+- **Especificação da feature (Spec Kit)**: preencher "Requisitos Ancorados Afetados" com cada ID que a mudança adiciona, altera ou retira; projeto sem requisitos documentados: "Nenhum".
+- **Tarefas (Spec Kit)**: com ID afetado, a última fase inclui a tarefa "Atualizar `docs/requisitos-ancorados/` com os IDs de Requisitos Ancorados Afetados".
+- **Entrega**: na mesma entrega do código, os arquivos de requisitos passam a descrever o novo estado. Requisito retirado sai do arquivo. ID novo usa o número seguinte ao maior já usado, conferido também no histórico do Git; nenhum ID é reutilizado.
+- **Resposta final**: listar cada ID adicionado, alterado ou retirado, com o motivo em uma frase, para a descrição da MR.
+- **Motivo**: os documentos de requisitos não têm campo de origem nem de justificativa; o motivo de cada mudança vai na descrição da MR ou na ADR. Nunca inventar motivo de negócio nem explicar requisito pela leitura do código. Requisito novo sem fonte conhecida: perguntar ao desenvolvedor.
+- **Mudança técnica**: passa pela triagem de "Decisões Arquiteturais"; com ADR, o requisito técnico cita o número da ADR e só muda quando a ADR estiver `aceita`.
+- **Projeto sem requisitos documentados**: não criar os requisitos sem pedido do desenvolvedor; com pedido, documentar só a parte que a mudança toca, a partir dos templates `docs/requisitos-ancorados/padrao/TEMPLATE-*.md`.
+
+Teste de saída: o diff altera `docs/requisitos-ancorados/` sempre que altera comportamento, restrição ou requisito de qualidade descrito ali, ou a resposta explica por que não altera.
 
 ## Regras de Escrita
 

@@ -10,16 +10,24 @@
   - [Atualizar arquivos da stack que ficaram para trás](#atualizar-arquivos-da-stack-que-ficaram-para-trás)
 - [stack-ai-build-project-context](#stack-ai-build-project-context)
   - [Enriquecer uma stack recém instalada](#enriquecer-uma-stack-recém-instalada)
-  - [Mapear como se constrói uma unidade](#mapear-como-se-constrói-uma-unidade)
-  - [Enriquecer só um subsistema](#enriquecer-só-um-subsistema)
   - [Atualizar a stack depois de uma mudança grande](#atualizar-a-stack-depois-de-uma-mudança-grande)
-  - [Avaliar se algo merece virar skill](#avaliar-se-algo-merece-virar-skill)
+- [configuracao-de-testes-unitarios](#configuracao-de-testes-unitarios)
+  - [Projeto sem testes](#projeto-sem-testes)
+  - [Projeto que já tem testes](#projeto-que-já-tem-testes)
+  - [Projeto que roda em Docker](#projeto-que-roda-em-docker)
+  - [Projeto sem Docker](#projeto-sem-docker)
+  - [Analisar o repositório e planejar os testes unitários](#analisar-o-repositório-e-planejar-os-testes-unitários)
 - [dicionario-dados-db-scan-codebase-docs](#dicionario-dados-db-scan-codebase-docs)
   - [Criar o adaptador](#criar-o-adaptador)
   - [Criar o dicionário de dados](#criar-o-dicionário-de-dados)
   - [Atualizar o dicionário](#atualizar-o-dicionário)
   - [Revisar a qualidade do dicionário](#revisar-a-qualidade-do-dicionário)
   - [Gerar prints de tela como insumo complementar](#gerar-prints-de-tela-como-insumo-complementar)
+- [manual-creator-scan-codebase](#manual-creator-scan-codebase)
+  - [Preparar o adaptador do manual](#preparar-o-adaptador-do-manual)
+  - [Criar um manual de uso](#criar-um-manual-de-uso)
+  - [Atualizar um manual de uso](#atualizar-um-manual-de-uso)
+  - [Verificar um manual sem escrita](#verificar-um-manual-sem-escrita)
 - [gauntlet-loop-forge](#gauntlet-loop-forge)
   - [Criar o prompt a partir de uma ideia](#criar-o-prompt-a-partir-de-uma-ideia)
   - [Criar o prompt a partir de uma especificação](#criar-o-prompt-a-partir-de-uma-especificação)
@@ -32,7 +40,7 @@
 - [recapitulacao-resumo-ata-relato-reuniao](#recapitulacao-resumo-ata-relato-reuniao)
   - [Registrar uma reunião a partir da transcrição](#registrar-uma-reunião-a-partir-da-transcrição)
   - [Registrar uma reunião a partir da gravação no Teams](#registrar-uma-reunião-a-partir-da-gravação-no-teams)
-- [reescrita-em-linguagem-simples-pt-br](#reescrita-em-linguagem-simples-pt-br)
+- [escrita-em-linguagem-simples-pt-br](#escrita-em-linguagem-simples-pt-br)
   - [Reescrever um texto colado](#reescrever-um-texto-colado)
   - [Reescrever um arquivo ou uma página](#reescrever-um-arquivo-ou-uma-página)
 - [conformidade-de-escrita-normativa](#conformidade-de-escrita-normativa)
@@ -45,7 +53,7 @@
 
 Este arquivo reúne prompts prontos para as skills deste repositório. São templates para adaptar ao seu caso e enviar, não ilustrações.
 
-Antes de usar qualquer prompt daqui, copie a pasta da skill para o diretório de skills do seu projeto, como explica o `README.md` na raiz. O prompt cita a skill pelo nome, e o agente só encontra a skill se ela estiver instalada no projeto em que você está trabalhando.
+Antes de usar qualquer prompt daqui, copie a pasta da skill para o diretório de skills do seu projeto, como explica o `README.md` na raiz. O prompt cita a skill pelo nome, e o agente só encontra a skill se ela estiver instalada no projeto em que você está trabalhando. A exceção é a `stack-ai-init`, que você também pode rodar a partir deste repositório clonado, informando o caminho do destino.
 
 As skills deste repositório são agnósticas: nenhuma delas depende da linguagem, do sistema ou da estrutura de um projeto específico. Por isso os prompts abaixo valem em qualquer repositório, e o que é específico do seu caso entra nos parâmetros.
 
@@ -57,7 +65,7 @@ O `AGENTS.md` do projeto é carregado em toda sessão e concentra as regras dele
 
 O `AGENTS.md` e as skills definem as regras de execução. Os prompts informam o objetivo, o alvo e as escolhas específicas de cada pedido.
 
-**Parâmetros.** Nos blocos para copiar, os campos entre `<` e `>` são informações que você deve preencher. Se um campo disser "se souber", "se houver", "se existir" ou "opcional" e você não tiver a informação, apague a linha inteira. Substitua os demais campos antes de enviar e nunca envie um prompt com texto entre `<` e `>` ainda dentro dele. Quando faltar uma informação necessária, descreva o que você sabe; o agente pode investigar ou pedir o dado que falta. Datas, identificadores e nomes de arquivos de saída são gerados pelo agente.
+**Parâmetros.** Nos blocos para copiar, os campos entre `<` e `>` são informações que você deve preencher. Se um campo trouxer uma condição, como "se souber", "se houver", "se existir", "se não for" ou "opcional", e ela não valer para o seu caso, apague a linha inteira. Substitua os demais campos antes de enviar e nunca envie um prompt com texto entre `<` e `>` ainda dentro dele. Quando faltar uma informação necessária, descreva o que você sabe; o agente pode investigar ou pedir o dado que falta. Datas, identificadores e nomes de arquivos de saída são gerados pelo agente.
 
 **Adapte à vontade.** Nenhum prompt precisa ser enviado igual ao template. Apague a linha que não se aplica ao seu caso e mande só o que você tem de fato: quanto mais informação e validação você der, mais assertivo o agente tende a ser, mas um prompt enxuto também funciona.
 
@@ -75,7 +83,7 @@ Troque cada valor por um texto genérico, mantendo claro o que está errado. Amb
 
 **Vocabulário.** Onde os prompts pedem "a raiz do repositório", leia a pasta principal do projeto, aquela que contém todas as outras.
 
-**A sessão continua.** Todo prompt daqui é só o ponto de partida da sessão, não uma interação única. Depois do resultado, continue na mesma janela para ajustar, aprofundar ou corrigir o que vier. Se quiser guardar o conteúdo da sessão (achados, relatório, decisão), peça ao agente para salvar em um arquivo Markdown (`.md`) na pasta `specs/`, que é local e não versionada.
+**A sessão continua.** Todo prompt daqui é só o ponto de partida da sessão, não uma interação única. Depois do resultado, continue na mesma janela para ajustar, aprofundar ou corrigir o que vier. Se quiser guardar o conteúdo da sessão (achados, relatório, decisão), peça ao agente para salvar em um arquivo Markdown (`.md`) na pasta `specs/`. Ela fica fora do versionamento quando o `.gitignore` do projeto a ignora, como faz a `stack-ai-init` quando o projeto ainda não tem essa pasta.
 
 ---
 
@@ -118,8 +126,7 @@ A autorização é obrigatória: sem ela, a skill preserva o que encontrar.
 **Prompt:**
 
 ```text
-Use a skill `stack-ai-init` no repositório em <caminho da raiz> para atualizar os arquivos
-da stack que estão desatualizados.
+Use a skill `stack-ai-init` no repositório em <caminho da raiz> para atualizar os arquivos da stack que estão desatualizados.
 
 Autorizo substituir os arquivos da stack que divergirem da versão distribuída hoje.
 ```
@@ -141,39 +148,17 @@ Investiga o código de um repositório que já tem a estrutura instalada e trans
 ```text
 Use a skill `stack-ai-build-project-context` no repositório em <caminho da raiz>. A stack mínima já está instalada.
 
-Descubra como este sistema é construído e como se desenvolve nele, e me traga o plano antes de escrever qualquer coisa.
+Descubra como este sistema é construído e como se desenvolve nele.
 
 O que eu já sei sobre ele:
 - o que o sistema faz: <se souber>
 - partes que costumam dar problema para quem chega: <se souber>
 - pontos que eu considero fora do escopo desta rodada: <se houver>
-
-Trate os itens acima como pista, não como conclusão: confirme cada um contra o código e me avise se algum divergir.
-```
-
-### Mapear como se constrói uma unidade
-
-Use quando o que você quer é a receita de implementação, não o retrato do sistema inteiro.
-
-**Prompt:**
-
-```text
-Use a skill `stack-ai-build-project-context` no repositório em <caminho da raiz>, focada em como se cria <página, endpoint, relatório, procedure> neste sistema.
-
-Leia exemplares recentes e antigos por inteiro, reconstrua a sequência com o que é obrigatório e o que varia, e me proponha a skill de fluxo correspondente junto com os guardrails que ela deve carregar.
-```
-
-### Enriquecer só um subsistema
-
-**Prompt:**
-
-```text
-Use a skill `stack-ai-build-project-context` no repositório em <caminho da raiz>, com escopo limitado a <subsistema, módulo ou conjunto de diretórios>.
-
-Não investigue o resto do repositório nesta rodada. Se encontrar algo relevante fora do escopo, registre como pergunta no relatório em vez de investigar.
 ```
 
 ### Atualizar a stack depois de uma mudança grande
+
+Use quando o sistema mudou e o conhecimento que a skill escreveu precisa acompanhar. Para atualizar os arquivos que a `stack-ai-init` distribui, use [Atualizar arquivos da stack que ficaram para trás](#atualizar-arquivos-da-stack-que-ficaram-para-trás).
 
 **Pré-requisito:** stack já com conteúdo escrito em rodadas anteriores.
 
@@ -182,19 +167,74 @@ Não investigue o resto do repositório nesta rodada. Se encontrar algo relevant
 ```text
 Use a skill `stack-ai-build-project-context` no repositório em <caminho da raiz>. A stack já tem conteúdo.
 
-Leia o que já está registrado antes de investigar e me traga só o delta: o que mudou, o que passou a existir e, principalmente, o que hoje contradiz algum artefato já escrito. Rode os comandos registrados nas evidências como estão escritos e me diga quais não reproduzem o próprio número.
-
 Contexto da mudança: <o que mudou no sistema, se souber>
 ```
 
-### Avaliar se algo merece virar skill
+---
+
+## configuracao-de-testes-unitarios
+
+Lê o projeto e devolve um plano para configurar os testes unitários e a cobertura, sem meta de cobertura. A skill só lê: quem executa o plano é você, com o agente, depois de aprovar.
+
+Os prompts de situação, com ou sem testes, e os de ambiente, com ou sem Docker, se combinam: junte em um só pedido as linhas que descrevem o seu projeto.
+
+### Projeto sem testes
+
+Use quando o projeto nunca teve teste automatizado.
 
 **Prompt:**
 
 ```text
-Use a skill `stack-ai-build-project-context` no repositório em <caminho da raiz> para avaliar se <tarefa recorrente> justifica uma skill própria.
+Use a skill `configuracao-de-testes-unitarios` para planejar a configuração de testes unitários no repositório em <caminho da raiz>.
+- Situação do projeto: ainda não tem nenhum teste
+```
 
-Procure no código e no histórico a evidência de recorrência e a sequência que os exemplares mostram. Se a evidência não sustentar uma skill, me diga isso e proponha o destino correto em vez de criar a skill mesmo assim.
+### Projeto que já tem testes
+
+Use quando o projeto já tem testes e você quer saber como rodá-los e como medir quanto do código eles exercitam.
+
+**Prompt:**
+
+```text
+Use a skill `configuracao-de-testes-unitarios` no repositório em <caminho da raiz>.
+- Situação do projeto: já tem testes
+```
+
+### Projeto que roda em Docker
+
+Use quando a aplicação sobe em contêiner, pelo Docker.
+
+**Prompt:**
+
+```text
+Use a skill `configuracao-de-testes-unitarios` para planejar a configuração de testes unitários no repositório em <caminho da raiz>.
+- Ambiente: a aplicação roda em Docker
+- Serviço da aplicação: <nome do serviço, se souber>
+```
+
+### Projeto sem Docker
+
+Use quando a aplicação roda direto na máquina, sem contêiner.
+
+**Prompt:**
+
+```text
+Use a skill `configuracao-de-testes-unitarios` para planejar a configuração de testes unitários no repositório em <caminho da raiz>.
+- Ambiente: o projeto não usa Docker e roda direto na máquina
+```
+
+### Analisar o repositório e planejar os testes unitários
+
+Use quando, além do plano de configuração, você quer saber por onde começar a escrever os testes. Essa análise fica fora do que a skill entrega e vem depois do plano.
+
+**Prompt:**
+
+```text
+Use a skill `configuracao-de-testes-unitarios` para analisar o repositório em <caminho da raiz> e montar o plano de configuração dos testes unitários.
+
+Depois de entregar o plano, traga uma análise com:
+- Testável sem refatoração: as unidades que já podem ser testadas isoladamente, sem mexer no código, com o caminho de cada uma
+- Partes críticas: as que merecem prioridade nos primeiros testes, com o caminho e o motivo de cada uma; considere crítica a unidade com regra de negócio, cálculo ou validação, priorizando as que mais mudaram no histórico do versionamento
 ```
 
 ---
@@ -291,16 +331,16 @@ Ao final, liste o que foi alterado e o que foi preservado intencionalmente.
 
 **Pré-requisito:** dicionário já publicado para esse alvo.
 
-Use quando quiser avaliar se ele segue os critérios de qualidade e as convenções da própria skill (completude, consistência, terminologia, distinções documentadas), sem alterar arquivos. A revisão olha só o dicionário, mesmo que o código tenha mudado depois da última atualização.
+Use quando quiser avaliar se ele segue os critérios de qualidade e as convenções da própria skill (completude, consistência, terminologia, distinções documentadas), sem alterar arquivos. A revisão também compara a estrutura documentada com a fonte estrutural e aponta as divergências sem corrigi-las; para incorporar mudanças do código, use "Atualizar o dicionário".
 
 **Prompt:**
 
 ```text
-Use a skill `dicionario-dados-db-scan-codebase-docs` para revisar a qualidade e a consistência do dicionário de dados do alvo abaixo, sem alterar nenhum arquivo.
+Use a skill `dicionario-dados-db-scan-codebase-docs` para revisar a qualidade e a consistência do dicionário de dados do alvo abaixo.
 
 Alvo: <sistema ou módulo>.
 
-Classifique cada achado como problema de qualidade documental (descrição incompleta, inconsistente, genérica ou fora das convenções da skill) ou como lacuna (elemento sem descrição). Liste claramente qualquer lacuna que impeça considerar a documentação como completa.
+Classifique cada achado como problema de qualidade documental (descrição incompleta, inconsistente, genérica ou fora das convenções da skill), como lacuna (elemento sem descrição) ou como divergência estrutural (tabela ou coluna documentada de forma diferente da fonte estrutural).
 ```
 
 ### Gerar prints de tela como insumo complementar
@@ -316,13 +356,13 @@ Gere os prints de tela do alvo abaixo para servirem de insumo complementar ao di
 
 Alvo: <sistema ou módulo>.
 
-O ambiente de teste já está disponível em <endereço ou instrução para subir o ambiente>. Para autenticar, leia a credencial na <variável de ambiente ou arquivo local não versionado>; se não houver, peça a credencial no momento do uso. Nunca use credencial de produção.
+O ambiente de teste já está disponível em <endereço ou instrução para subir o ambiente>. Para autenticar, leia a credencial na <variável de ambiente ou arquivo local não versionado>; se não houver, pare e me peça para configurá-la nesse local, sem recebê-la pela conversa. Nunca use credencial de produção.
 
 Use <ferramenta de automação de navegador disponível, ex.: Playwright ou Selenium> para rodar um script de automação que:
 
 1. Faça login no ambiente de teste.
-2. Navegue por todas as telas relevantes do alvo, criando os dados de teste (seeds) necessários para preencher cada tela.
-3. Capture um print de cada tela relevante (listagem, formulário vazio, formulário preenchido, modal, estado intermediário).
+2. Navegue pelas telas que leem ou gravam as tabelas do alvo, criando os dados de teste (seeds) necessários para preencher cada tela. Se o ambiente for remoto ou compartilhado, confirme comigo antes de criar dados.
+3. Capture um print de cada uma dessas telas (listagem, formulário vazio, formulário preenchido, modal, estado intermediário).
 4. Salve os PNGs em <pasta de destino>/screenshots/, organizados por subpasta.
 5. Exporte os seeds e dados de teste usados no passo 2 (SQL de insert ou passo a passo reprodutível) em <pasta de destino>/seeds/, para reaproveitar em futuras implementações sem recriar a massa de teste do zero.
 
@@ -331,9 +371,70 @@ Ao final, liste as telas que não conseguiu capturar e o motivo de cada uma.
 
 ---
 
+## manual-creator-scan-codebase
+
+Cria e mantém manuais de uso em `docs/manuais/<slug_do_manual>.md`, com imagens em `docs/manuais/imagens-<slug_do_manual>/`. Primeiro combina entrevista e inspeção da codebase para preparar o adaptador do sistema; depois conecta tarefas e personas às telas, campos, textos, regras e permissões para redigir o manual em linguagem simples. O pedido de manual inclui criar o adaptador necessário, e também é possível preparar somente o adaptador.
+
+Informe o público e as tarefas que conhece. A skill investiga antes de perguntar pelas lacunas e não presume que um perfil de acesso define sozinho uma persona. O renderizador e a logo permitem verificar a apresentação do Markdown; ter acesso ao código não comprova a versão implantada nem substitui observação de conteúdo dinâmico. Não anexe capturas com dados pessoais ou credenciais.
+
+A varredura funcional também planeja onde os prints ajudam a explicar telas, campos e decisões. Quando faltar uma captura necessária, a skill deixa um aviso padronizado no ponto correspondente, com o caminho no sistema e o contexto de coleta. Você ou o desenvolvedor obtém os prints manualmente depois. Na verificação sem escrita, essas posições são apenas reportadas.
+
+### Preparar o adaptador do manual
+
+Use quando quiser preparar a investigação sem gerar o manual ainda.
+
+```text
+Use a skill `manual-creator-scan-codebase` para criar ou atualizar somente o adaptador de <sistema ou módulo> neste repositório.
+
+Público e tarefas: <o que já souber sobre quem usa e o que precisa fazer>.
+Versão, idioma e configuração: <se souber>.
+Local de leitura e renderizador Markdown: <se souber>.
+Logo e materiais complementares: <arquivos locais, se houver>.
+
+Confira no código as convenções informadas, inclusive como rastrear caminhos visíveis, telas, estados e personas para orientar a coleta manual de prints. Entreviste-me sobre as lacunas relevantes e registre o adaptador completo. Não gere o manual nem insira avisos nele nesta etapa.
+```
+
+### Criar um manual de uso
+
+```text
+Use a skill `manual-creator-scan-codebase` para criar o manual de uso de <sistema ou módulo> neste repositório.
+
+Público: <grupos de usuários e seus objetivos>.
+Tarefas no alcance: <tarefas ou funcionalidades>.
+Versão e idioma da interface: <se souber>.
+Local de leitura e renderizador Markdown: <onde o manual será lido>.
+Logo: <caminho do arquivo ou indicação da logo existente no projeto>.
+Materiais complementares: <documentos ou capturas locais, se houver>.
+Ambiente para conferência: <fonte e alcance autorizados, se houver>.
+
+Prepare primeiro o adaptador e só depois faça a varredura funcional completa do alcance e redija o manual a partir das regras e dos textos comprovados. Articule o texto com as capturas disponíveis; onde faltar um print necessário, insira o aviso padronizado junto à explicação pertinente, com o caminho comprovado no sistema e o contexto para coleta manual. Ao final, apresente as lacunas, os prints pendentes e diferencie a conferência no código da observação na interface.
+```
+
+### Atualizar um manual de uso
+
+```text
+Use a skill `manual-creator-scan-codebase` para atualizar o manual em <docs/manuais/nome-do-manual.md> conforme a codebase atual.
+
+Mudança a documentar: <funcionalidades, versão ou commits, se souber>.
+Público ou configuração que mudou: <se houver>.
+Novas capturas ou materiais: <arquivos locais, se houver>.
+
+Revalide o adaptador antes de escrever e altere somente o conteúdo afetado por mudanças comprovadas. Reavalie no alcance as telas, caminhos e posições didáticas dos prints: confira novas capturas antes de substituir os avisos correspondentes e sinalize prints necessários ainda ausentes pelo padrão da skill. Preserve as seções ainda corretas, os nomes de imagens e as âncoras válidas; relate necessidades fora do alcance sem editá-las. Informe limitações do verificador em Markdown legado e pendências funcionais ou visuais.
+```
+
+### Verificar um manual sem escrita
+
+```text
+Use a skill `manual-creator-scan-codebase` para verificar o manual em <docs/manuais/nome-do-manual.md> contra a codebase atual e as convenções da skill.
+
+Confira cobertura de tarefas e personas, campos, regras, mensagens, imagens e navegação. Confronte as telas encontradas no código com as posições dos prints no manual, os avisos de captura pendente e a fidelidade dos caminhos no sistema. Para cada print necessário ausente, reporte a seção, o ponto de inserção, o aviso sugerido e o contexto para coleta manual. Não altere nenhum arquivo, inclusive manual, imagens, adaptador e registro. Reporte os critérios verificados, as evidências e o que não puder confirmar.
+```
+
+---
+
 ## gauntlet-loop-forge
 
-A skill `gauntlet-loop-forge` recebe um prompt que você já tem e devolve o mesmo prompt com a técnica de loop de verificação acrescentada. Ela só escreve o prompt e para: executar é um pedido separado, em uma janela nova.
+A skill `gauntlet-loop-forge` monta um prompt com a técnica de loop de verificação a partir do que você tiver: uma ideia, uma especificação ou um prompt que já existe. Ela só escreve o prompt e para: executar é um pedido separado, em uma janela nova.
 
 Para agregar a técnica, acrescente esta linha ao início ou ao fim de qualquer prompt deste arquivo, antes de enviar:
 
@@ -360,17 +461,15 @@ Use quando o ponto de partida é um objetivo na sua cabeça, sem prompt e sem do
 **Prompt:**
 
 ```text
-Use a skill `gauntlet-loop-forge` para transformar o objetivo abaixo em um prompt com loop de verificação, pronto para colar. Não execute o trabalho descrito, só produza o prompt.
+Use a skill `gauntlet-loop-forge` para transformar o objetivo abaixo em um prompt com loop de verificação, pronto para colar.
 
 Objetivo: <o que precisa existir no final, em uma ou duas frases>
 Onde o prompt vai rodar: <Claude Code, Codex, outro agente, ou chat comum>
-Padrão de qualidade que eu já tenho: <se souber, ex.: "a suíte de testes atual precisa continuar passando", "quero no nível de <exemplo concreto>">
+Padrão de qualidade que eu já tenho: <se souber, ex.: "a suíte de testes atual precisa continuar passando", "quero no nível do relatório de pedidos que já existe">
 Material que serve de fonte da verdade: <se houver: arquivos, issue, especificação, repositório>
 O que não pode mudar: <se houver: comportamento, formato, compatibilidade>
 O que os agentes podem fazer no ambiente: <ler, rodar teste, editar arquivo, acessar rede, publicar, gastar>
 Ações que exigem minha aprovação: <se houver>
-
-Me pergunte em rodadas o que ainda faltar antes de escrever o prompt.
 ```
 
 ### Criar o prompt a partir de uma especificação
@@ -382,7 +481,7 @@ Use quando já existe um documento, uma issue ou um repositório que manda no re
 **Prompt:**
 
 ```text
-Use a skill `gauntlet-loop-forge` para transformar <arquivo, issue ou especificação> em um prompt com loop de verificação, pronto para colar. Não execute o trabalho descrito, só produza o prompt.
+Use a skill `gauntlet-loop-forge` para transformar <arquivo, issue ou especificação> em um prompt com loop de verificação, pronto para colar.
 
 Trate <arquivo, issue ou especificação> como fonte da verdade: extraia dali os critérios de aceite, as restrições e o que está fora de escopo antes de me perguntar qualquer coisa. Me avise se encontrar contradição em vez de escolher um lado sozinho.
 
@@ -506,7 +605,7 @@ Use a skill `recapitulacao-resumo-ata-relato-reuniao` para registrar a reunião 
 
 ---
 
-## reescrita-em-linguagem-simples-pt-br
+## escrita-em-linguagem-simples-pt-br
 
 Reescreve um texto em Linguagem Simples, em português do Brasil, para o público que você informar ou para o cidadão, quando você não informar. Preserva fatos, condições, datas, valores, prazos, responsáveis e trechos entre aspas; não acrescenta interpretação nem informação de fora. Aceita texto colado, arquivo, anexo e URL de página, inclusive várias URLs, e devolve só o texto reescrito.
 
@@ -515,7 +614,7 @@ Reescreve um texto em Linguagem Simples, em português do Brasil, para o públic
 **Prompt:**
 
 ```text
-Use a skill `reescrita-em-linguagem-simples-pt-br` para reescrever o texto abaixo.
+Use a skill `escrita-em-linguagem-simples-pt-br` para reescrever o texto abaixo.
 
 Público-alvo: <se não for o cidadão, ex.: "servidores da área de contratos">
 
@@ -529,7 +628,7 @@ Para várias páginas, liste as URLs na ordem em que quer os textos: a skill ree
 **Prompt:**
 
 ```text
-Use a skill `reescrita-em-linguagem-simples-pt-br` para reescrever <caminho do arquivo, anexo ou URL da página>.
+Use a skill `escrita-em-linguagem-simples-pt-br` para reescrever <caminho do arquivo, anexo ou URL da página>.
 
 Público-alvo: <se não for o cidadão>
 ```
@@ -557,5 +656,5 @@ Use a skill `conformidade-de-escrita-normativa` para analisar a conformidade da 
 ```text
 Use a skill `conformidade-de-escrita-normativa` para analisar a conformidade da redação dos dispositivos abaixo, sem presumir o restante da minuta.
 
-<cole aqui os dispositivos, ex.: do art. 3º ao art. 7º>
+<cole aqui o texto dos dispositivos, ex.: o texto do art. 3º ao art. 7º>
 ```

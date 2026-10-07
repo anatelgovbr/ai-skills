@@ -98,6 +98,22 @@
 - **FR-006**: System MUST authenticate users via [NEEDS CLARIFICATION: auth method not specified - email/password, SSO, OAuth?]
 - **FR-007**: System MUST retain user data for [NEEDS CLARIFICATION: retention period not specified]
 
+### Requisitos Ancorados Afetados
+
+<!--
+  Consultar docs/requisitos-ancorados/ e listar cada ID que esta feature adiciona,
+  altera ou retira. Os FR-001 acima são locais desta especificação; os IDs ancorados
+  levam a sigla do sistema (RF-<SIGLA>-NNN, RN-<SIGLA>-NNN, RT-<SIGLA>-NNN).
+  ID novo usa o número seguinte ao maior já usado, inclusive os retirados,
+  que ficam no histórico do Git.
+  Na entrega, os arquivos de docs/requisitos-ancorados/ passam a descrever o novo estado.
+  Regras em docs/requisitos-ancorados/padrao/README.md. Projeto sem requisitos documentados: escrever "Nenhum".
+-->
+
+| ID | Mudança | Resumo |
+|----|---------|--------|
+| [RF-<SIGLA>-NNN] | [adicionado / alterado / retirado] | [o que muda, em uma frase] |
+
 ### Key Entities *(include if feature involves data)*
 
 - **[Entity 1]**: [What it represents, key attributes without implementation]

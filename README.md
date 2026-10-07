@@ -97,12 +97,14 @@ Para origem, revisão e licença das skills de terceiros, consulte [`THIRD_PARTY
 |---|---|---|
 | `caveman` | Comprimir o formato das respostas | `/caveman`, `/caveman lite` ou `/caveman ultra` |
 | `ciclo-design` | Executar ciclo crítico de design com referência real | Automático ou `/ciclo-design` |
+| `configuracao-de-testes-unitarios` | Diagnosticar a infraestrutura de um projeto e planejar a configuração de testes unitários e de cobertura, sem meta | Automático ou pelo nome exato |
 | `conformidade-de-escrita-normativa` | Analisar a conformidade de redação de minutas de atos normativos brasileiros e entregar apenas o relatório de conformidade | Automático ou pelo nome exato |
 | `dicionario-dados-db-scan-codebase-docs` | Gerar ou verificar dicionários de dados e changelogs estruturais | Automático ou pelo nome exato |
 | `docx` | Criar, editar ou analisar documentos Word | Automático ou pelo nome exato |
 | `escrita-em-linguagem-simples-pt-br` | Escrever ou reescrever textos em Linguagem Simples para o cidadão ou outro público-alvo informado | Automático ou pelo nome exato |
 | `frontend-design` | Projetar ou reformular interface frontend | Automático ou pelo nome exato |
 | `gauntlet-loop-forge` | Criar ou otimizar prompt de execução do Gauntlet Loop | Automático ou pelo nome exato |
+| `manual-creator-scan-codebase` | Criar, atualizar ou verificar manuais de uso em Markdown a partir da codebase, com adaptador e personas | Automático ou pelo nome exato |
 | `pdf` | Criar, editar ou analisar arquivos PDF | Automático ou pelo nome exato |
 | `pptx` | Criar, editar ou analisar apresentações PowerPoint | Automático ou pelo nome exato |
 | `recapitulacao-resumo-ata-relato-reuniao` | Produzir recapitulação e lista de ações de reunião a partir de transcrição, gravação, anotações ou URL do Teams | Automático ou pelo nome exato |
@@ -133,6 +135,7 @@ A skill deposita na raiz do repositório de destino:
 - as integrações do GitHub Copilot, do OpenCode e do Claude Code
 - a documentação da stack, em `docs/stack-ai/`
 - a pasta de documentação de arquitetura, em `docs/architecture/`, com o modelo e as regras para registrar decisões
+- as regras e os templates para documentar os requisitos do sistema, em `docs/requisitos-ancorados/padrao/`
 
 Ela não lê o código do destino e não escreve nada sobre o projeto. O que já existe no destino é preservado.
 
@@ -181,12 +184,11 @@ A skill faz o inventário da stack, o censo do código e a investigação, e apr
 
 Ela escreve só o que foi aprovado e entrega um relatório com o que entrou em cada arquivo, o que ficou de fora e por quê, e as perguntas em aberto. Ela não faz commit: a revisão final é sua, no diff do versionamento.
 
-A skill pode rodar de novo quantas vezes for preciso, e em cada rodada ela lê o que já está registrado e traz só a diferença. Os prompts para essas situações estão em `docs/prompts-exemplo.md`:
+O relatório traz também um plano para configurar os testes unitários do projeto, feito pela skill `configuracao-de-testes-unitarios` a partir do que o projeto já tem. A rodada não executa esse plano. Ele fica para você seguir com o agente, se quiser.
+
+A skill pode rodar de novo quantas vezes for preciso, e em cada rodada ela lê o que já está registrado e traz só a diferença. O prompt para essa situação está em `docs/prompts-exemplo.md`:
 
 - [Atualizar a stack depois de uma mudança grande](./docs/prompts-exemplo.md#atualizar-a-stack-depois-de-uma-mudança-grande)
-- [Enriquecer só um subsistema](./docs/prompts-exemplo.md#enriquecer-só-um-subsistema)
-- [Mapear como se constrói uma unidade](./docs/prompts-exemplo.md#mapear-como-se-constrói-uma-unidade)
-- [Avaliar se algo merece virar skill](./docs/prompts-exemplo.md#avaliar-se-algo-merece-virar-skill)
 
 ## Referências
 

@@ -28,6 +28,17 @@
   - [Atualizar o dicionário](#atualizar-o-dicionário)
   - [Revisar a qualidade do dicionário](#revisar-a-qualidade-do-dicionário)
   - [Gerar prints de tela como insumo complementar](#gerar-prints-de-tela-como-insumo-complementar)
+- [Manual de uso](#manual-de-uso)
+  - [Preparar o adaptador do manual](#preparar-o-adaptador-do-manual)
+  - [Criar um manual de uso](#criar-um-manual-de-uso)
+  - [Atualizar um manual de uso](#atualizar-um-manual-de-uso)
+  - [Verificar um manual sem escrita](#verificar-um-manual-sem-escrita)
+- [Testes unitários](#testes-unitários)
+  - [Projeto sem testes](#projeto-sem-testes)
+  - [Projeto que já tem testes](#projeto-que-já-tem-testes)
+  - [Projeto que roda em Docker](#projeto-que-roda-em-docker)
+  - [Projeto sem Docker](#projeto-sem-docker)
+  - [Analisar o repositório e planejar os testes unitários](#analisar-o-repositório-e-planejar-os-testes-unitários)
 - [Documentos para agentes de IA](#documentos-para-agentes-de-ia)
   - [Revisar o AGENTS.md do projeto](#revisar-o-agentsmd-do-projeto)
   - [Revisar a escrita de uma skill](#revisar-a-escrita-de-uma-skill)
@@ -64,7 +75,7 @@ Nos blocos para copiar, os campos entre `<` e `>` são informações que você d
 
 Os demais campos aparecem em um prompt só e o próprio texto entre `<` e `>` diz o que preencher. Datas de relatórios, identificadores de achados e nomes de arquivos de saída são gerados pelo agente.
 
-Se um campo disser "se souber", "se houver", "se existir" ou "opcional" e você não tiver a informação, apague a linha inteira. Substitua os demais campos antes de enviar e nunca envie um prompt com texto entre `<` e `>` ainda dentro dele. Quando faltar uma informação necessária, descreva o que você sabe; o agente pode investigar ou pedir o dado que falta.
+Se um campo trouxer uma condição, como "se souber", "se houver", "se existir", "se não for" ou "opcional", e ela não valer para o seu caso, apague a linha inteira. Substitua os demais campos antes de enviar e nunca envie um prompt com texto entre `<` e `>` ainda dentro dele. Quando faltar uma informação necessária, descreva o que você sabe; o agente pode investigar ou pedir o dado que falta.
 
 Nenhum prompt precisa ser enviado igual ao template. Apague a linha que não se aplica ao seu caso e mande só o que você tem de fato: quanto mais informação e validação você der, mais assertivo o agente tende a ser, mas um prompt enxuto também funciona.
 
@@ -80,7 +91,7 @@ Troque cada valor por um texto genérico, mantendo claro o que está errado. Amb
 
 Se a regra de negócio não estiver documentada no repositório, escreva a regra no próprio prompt.
 
-Todo prompt deste arquivo é só o ponto de partida da sessão, não uma interação única: depois do resultado, continue na mesma janela para ajustar, aprofundar ou corrigir o que vier. Se quiser guardar o conteúdo da sessão (achados, relatório, decisão), peça ao agente para salvar em um arquivo Markdown (`.md`) na pasta `specs/`, que é local e não versionada.
+Todo prompt deste arquivo é só o ponto de partida da sessão, não uma interação única: depois do resultado, continue na mesma janela para ajustar, aprofundar ou corrigir o que vier. Se quiser guardar o conteúdo da sessão (achados, relatório, decisão), peça ao agente para salvar em um arquivo Markdown (`.md`) na pasta `specs/`. Ela fica fora do versionamento quando o `.gitignore` do projeto a ignora, como faz a `stack-ai-init` quando o projeto ainda não tem essa pasta.
 
 ---
 
@@ -94,7 +105,7 @@ Qualquer prompt com automação de navegador exige um ambiente de teste do siste
 
 ## Loop de verificação
 
-A skill `gauntlet-loop-forge` recebe um prompt que você já tem e devolve o mesmo prompt com a técnica de loop de verificação acrescentada. Ela só escreve o prompt e para: executar é um pedido separado, em uma janela nova.
+A skill `gauntlet-loop-forge` monta um prompt com a técnica de loop de verificação a partir do que você tiver: uma ideia, uma especificação ou um prompt que já existe. Ela só escreve o prompt e para: executar é um pedido separado, em uma janela nova.
 
 Para agregar a técnica, acrescente esta linha ao início ou ao fim de qualquer prompt deste arquivo, antes de enviar:
 
@@ -240,7 +251,7 @@ Critério de aceite:
 
 Acesso ao ambiente de teste:
 - endereço: <URL do ambiente de teste>
-- autenticação: leia a credencial de teste em <variável de ambiente ou arquivo local não versionado>; se precisar de outro perfil, peça a credencial no momento do uso
+- autenticação: leia a credencial de teste em <variável de ambiente ou arquivo local não versionado>; se precisar de outro perfil, pare e me peça para configurar a credencial dele nesse local, sem recebê-la pela conversa
 
 Passos:
 1. Abra a seguinte tela ou fluxo: <tela ou fluxo onde o bug ocorre>. Se a reprodução exigir um estado específico na base (registro, status, permissão), prepare esse estado você mesmo antes de tentar reproduzir o problema.
@@ -722,7 +733,7 @@ Alvo do relatório: <caminho da pasta ou do arquivo>.
 
 Para cada achado, gere uma tarefa com: título objetivo, arquivo e linha, ação mínima, critério de aceite (o controle volta a passar) e dependência entre tarefas, se houver. Ordene as tarefas da maior para a menor severidade (BLOQUEANTE, ALTA, MEDIA e BAIXA).
 
-Salve a especificação e a lista de tarefas em um arquivo Markdown (`.md`) na pasta `specs/`, que é local e não versionada.
+Salve a especificação e a lista de tarefas em um arquivo Markdown (`.md`) na pasta `specs/`.
 
 Pare aqui. Se eu pedir para implementar agora, use o prompt "Investigar e corrigir bug" deste arquivo para cada tarefa, achado por achado, com minha confirmação antes de cada um.
 ```
@@ -736,7 +747,7 @@ Alvo do relatório: src/pedidos/.
 
 Para cada achado, gere uma tarefa com: título objetivo, arquivo e linha, ação mínima, critério de aceite (o controle volta a passar) e dependência entre tarefas, se houver. Ordene as tarefas da maior para a menor severidade (BLOQUEANTE, ALTA, MEDIA e BAIXA).
 
-Salve a especificação e a lista de tarefas em um arquivo Markdown (`.md`) na pasta `specs/`, que é local e não versionada.
+Salve a especificação e a lista de tarefas em um arquivo Markdown (`.md`) na pasta `specs/`.
 
 Pare aqui. Se eu pedir para implementar agora, use o prompt "Investigar e corrigir bug" deste arquivo para cada tarefa, achado por achado, com minha confirmação antes de cada um.
 ```
@@ -820,15 +831,15 @@ Ao final, liste o que foi alterado e o que foi preservado intencionalmente.
 
 ### Revisar a qualidade do dicionário
 
-Use quando quiser avaliar se um dicionário já existente segue os critérios de qualidade e as convenções da própria skill (completude, consistência, terminologia, distinções documentadas), sem alterar arquivos. A revisão olha só o dicionário, mesmo que o código tenha mudado depois da última atualização.
+Use quando quiser avaliar se um dicionário já existente segue os critérios de qualidade e as convenções da própria skill (completude, consistência, terminologia, distinções documentadas), sem alterar arquivos. A revisão também compara a estrutura documentada com a fonte estrutural e aponta as divergências sem corrigi-las; para incorporar mudanças do código, use "Atualizar o dicionário".
 
 **Prompt:**
 
 ```text
-Use a skill `dicionario-dados-db-scan-codebase-docs` para revisar a qualidade e a consistência do dicionário de dados do alvo abaixo, sem alterar nenhum arquivo.
+Use a skill `dicionario-dados-db-scan-codebase-docs` para revisar a qualidade e a consistência do dicionário de dados do alvo abaixo.
 - Alvo: <sistema ou módulo>
 
-Classifique cada achado como problema de qualidade documental (descrição incompleta, inconsistente, genérica ou fora das convenções da skill) ou como lacuna (elemento sem descrição). Liste claramente qualquer lacuna que impeça considerar a documentação como completa.
+Classifique cada achado como problema de qualidade documental (descrição incompleta, inconsistente, genérica ou fora das convenções da skill), como lacuna (elemento sem descrição) ou como divergência estrutural (tabela ou coluna documentada de forma diferente da fonte estrutural).
 ```
 
 ### Gerar prints de tela como insumo complementar
@@ -843,17 +854,153 @@ Pré-requisito: veja "Pré-requisitos de automação de navegador", no início d
 Gere os prints de tela do alvo abaixo para servirem de insumo complementar ao dicionário de dados (skill `dicionario-dados-db-scan-codebase-docs`).
 - Alvo: <sistema ou módulo>
 
-O ambiente de teste já está disponível em <endereço ou instrução para subir o ambiente>. Para autenticar, leia a credencial na <variável de ambiente ou arquivo local não versionado>; se não houver, peça a credencial no momento do uso. Nunca use credencial de produção.
+O ambiente de teste já está disponível em <endereço ou instrução para subir o ambiente>. Para autenticar, leia a credencial na <variável de ambiente ou arquivo local não versionado>; se não houver, pare e me peça para configurá-la nesse local, sem recebê-la pela conversa. Nunca use credencial de produção.
 
 Use <ferramenta de automação de navegador disponível, ex.: Playwright ou Selenium> para rodar um script de automação que:
 
 1. Faça login no ambiente de teste.
-2. Navegue por todas as telas relevantes do alvo, criando os dados de teste (seeds) necessários para preencher cada tela.
-3. Capture um print de cada tela relevante (listagem, formulário vazio, formulário preenchido, modal, estado intermediário).
+2. Navegue pelas telas que leem ou gravam as tabelas do alvo, criando os dados de teste (seeds) necessários para preencher cada tela. Se o ambiente for remoto ou compartilhado, confirme comigo antes de criar dados.
+3. Capture um print de cada uma dessas telas (listagem, formulário vazio, formulário preenchido, modal, estado intermediário).
 4. Salve os PNGs em <pasta de destino>/screenshots/, organizados por subpasta.
 5. Exporte os seeds e dados de teste usados no passo 2 (SQL de insert ou passo a passo reprodutível) em <pasta de destino>/seeds/, para reaproveitar em futuras implementações sem recriar a massa de teste do zero.
 
 Ao final, liste as telas que não conseguiu capturar e o motivo de cada uma.
+```
+
+---
+
+## Manual de uso
+
+A skill `manual-creator-scan-codebase` cria e mantém manuais de uso em `docs/manuais/<slug_do_manual>.md`, com imagens em `docs/manuais/imagens-<slug_do_manual>/`. Primeiro combina entrevista e inspeção da codebase para preparar o adaptador do sistema; depois conecta tarefas e personas às telas, campos, textos, regras e permissões para redigir o manual em linguagem simples. O pedido de manual inclui criar o adaptador necessário, e também é possível preparar somente o adaptador.
+
+Informe o público e as tarefas que conhece. A skill investiga antes de perguntar pelas lacunas e não presume que um perfil de acesso define sozinho uma persona. O renderizador e a logo permitem verificar a apresentação do Markdown; ter acesso ao código não comprova a versão implantada nem substitui observação de conteúdo dinâmico. Não anexe capturas com dados pessoais ou credenciais.
+
+A varredura funcional também planeja onde os prints ajudam a explicar telas, campos e decisões. Quando faltar uma captura necessária, a skill deixa um aviso padronizado no ponto correspondente, com o caminho no sistema e o contexto de coleta. Você ou o desenvolvedor obtém os prints manualmente depois. Na verificação sem escrita, essas posições são apenas reportadas.
+
+### Preparar o adaptador do manual
+
+Use quando quiser preparar a investigação sem gerar o manual ainda.
+
+**Prompt:**
+
+```text
+Use a skill `manual-creator-scan-codebase` para criar ou atualizar somente o adaptador de <sistema ou módulo> neste repositório.
+
+Público e tarefas: <o que já souber sobre quem usa e o que precisa fazer>.
+Versão, idioma e configuração: <se souber>.
+Local de leitura e renderizador Markdown: <se souber>.
+Logo e materiais complementares: <arquivos locais, se houver>.
+
+Confira no código as convenções informadas, inclusive como rastrear caminhos visíveis, telas, estados e personas para orientar a coleta manual de prints. Entreviste-me sobre as lacunas relevantes e registre o adaptador completo. Não gere o manual nem insira avisos nele nesta etapa.
+```
+
+### Criar um manual de uso
+
+**Prompt:**
+
+```text
+Use a skill `manual-creator-scan-codebase` para criar o manual de uso de <sistema ou módulo> neste repositório.
+
+Público: <grupos de usuários e seus objetivos>.
+Tarefas no alcance: <tarefas ou funcionalidades>.
+Versão e idioma da interface: <se souber>.
+Local de leitura e renderizador Markdown: <onde o manual será lido>.
+Logo: <caminho do arquivo ou indicação da logo existente no projeto>.
+Materiais complementares: <documentos ou capturas locais, se houver>.
+Ambiente para conferência: <fonte e alcance autorizados, se houver>.
+
+Prepare primeiro o adaptador e só depois faça a varredura funcional completa do alcance e redija o manual a partir das regras e dos textos comprovados. Articule o texto com as capturas disponíveis; onde faltar um print necessário, insira o aviso padronizado junto à explicação pertinente, com o caminho comprovado no sistema e o contexto para coleta manual. Ao final, apresente as lacunas, os prints pendentes e diferencie a conferência no código da observação na interface.
+```
+
+### Atualizar um manual de uso
+
+**Prompt:**
+
+```text
+Use a skill `manual-creator-scan-codebase` para atualizar o manual em <docs/manuais/nome-do-manual.md> conforme a codebase atual.
+
+Mudança a documentar: <funcionalidades, versão ou commits, se souber>.
+Público ou configuração que mudou: <se houver>.
+Novas capturas ou materiais: <arquivos locais, se houver>.
+
+Revalide o adaptador antes de escrever e altere somente o conteúdo afetado por mudanças comprovadas. Reavalie no alcance as telas, caminhos e posições didáticas dos prints: confira novas capturas antes de substituir os avisos correspondentes e sinalize prints necessários ainda ausentes pelo padrão da skill. Preserve as seções ainda corretas, os nomes de imagens e as âncoras válidas; relate necessidades fora do alcance sem editá-las. Informe limitações do verificador em Markdown legado e pendências funcionais ou visuais.
+```
+
+### Verificar um manual sem escrita
+
+**Prompt:**
+
+```text
+Use a skill `manual-creator-scan-codebase` para verificar o manual em <docs/manuais/nome-do-manual.md> contra a codebase atual e as convenções da skill.
+
+Confira cobertura de tarefas e personas, campos, regras, mensagens, imagens e navegação. Confronte as telas encontradas no código com as posições dos prints no manual, os avisos de captura pendente e a fidelidade dos caminhos no sistema. Para cada print necessário ausente, reporte a seção, o ponto de inserção, o aviso sugerido e o contexto para coleta manual. Não altere nenhum arquivo, inclusive manual, imagens, adaptador e registro. Reporte os critérios verificados, as evidências e o que não puder confirmar.
+```
+
+---
+
+## Testes unitários
+
+A skill `configuracao-de-testes-unitarios` lê o projeto e devolve um plano para configurar os testes unitários e a cobertura, sem meta. A skill só lê: quem executa o plano é você, com o agente, depois de aprovar.
+
+Os prompts de situação, com ou sem testes, e os de ambiente, com ou sem Docker, se combinam: junte em um só pedido as linhas que descrevem o seu projeto.
+
+### Projeto sem testes
+
+Use quando o projeto nunca teve teste automatizado.
+
+**Prompt:**
+
+```text
+Use a skill `configuracao-de-testes-unitarios` para planejar a configuração de testes unitários neste repositório.
+- Situação do projeto: ainda não tem nenhum teste
+```
+
+### Projeto que já tem testes
+
+Use quando o projeto já tem testes e você quer saber como rodá-los e como medir quanto do código eles exercitam.
+
+**Prompt:**
+
+```text
+Use a skill `configuracao-de-testes-unitarios` neste repositório.
+- Situação do projeto: já tem testes
+```
+
+### Projeto que roda em Docker
+
+Use quando a aplicação sobe em contêiner, pelo Docker.
+
+**Prompt:**
+
+```text
+Use a skill `configuracao-de-testes-unitarios` para planejar a configuração de testes unitários neste repositório.
+- Ambiente: a aplicação roda em Docker
+- Serviço da aplicação: <nome do serviço, se souber>
+```
+
+### Projeto sem Docker
+
+Use quando a aplicação roda direto na máquina, sem contêiner.
+
+**Prompt:**
+
+```text
+Use a skill `configuracao-de-testes-unitarios` para planejar a configuração de testes unitários neste repositório.
+- Ambiente: o projeto não usa Docker e roda direto na máquina
+```
+
+### Analisar o repositório e planejar os testes unitários
+
+Use quando, além do plano de configuração, você quer saber por onde começar a escrever os testes. Essa análise fica fora do que a skill entrega e vem depois do plano.
+
+**Prompt:**
+
+```text
+Use a skill `configuracao-de-testes-unitarios` para analisar este repositório e montar o plano de configuração dos testes unitários.
+
+Depois de entregar o plano, traga uma análise com:
+- Testável sem refatoração: as unidades que já podem ser testadas isoladamente, sem mexer no código, com o caminho de cada uma
+- Partes críticas: as que merecem prioridade nos primeiros testes, com o caminho e o motivo de cada uma; considere crítica a unidade com regra de negócio, cálculo ou validação, priorizando as que mais mudaram no histórico do versionamento
 ```
 
 ---
