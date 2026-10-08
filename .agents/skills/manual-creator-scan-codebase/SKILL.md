@@ -5,8 +5,8 @@ description: >
   varredura da codebase, com adaptador próprio do repositório, personas, telas e regras
   funcionais. Use quando o pedido envolver manual do usuário, instruções de operação
   ou documentação de funcionalidades para pessoas baseada no código, inclusive preparar
-  somente o adaptador ou conferir um manual existente. Publica em docs/manuais com imagens
-  locais separadas por manual.
+  somente o adaptador ou conferir um manual existente. Publica no destino declarado pelo
+  adaptador, com imagens locais.
 ---
 
 # manual-creator-scan-codebase
@@ -15,9 +15,8 @@ Transforme evidências do sistema em instruções que ajudem pessoas a realizar 
 
 ## Contrato de saída
 
-- Salve cada manual em `docs/manuais/<slug_do_manual>.md`, diretamente na pasta de manuais. Esses caminhos são relativos à raiz do repositório de uso, não à raiz do disco.
-- Guarde todas as imagens, inclusive a logo, em `docs/manuais/imagens-<slug_do_manual>/`. O slug é o mesmo nome-base do arquivo `.md`.
-- Referencie arquivos dessa subpasta por caminhos relativos, como `imagens-meu-manual/tela-consulta.png`. Nunca incorpore imagens em base64 ou por URI `data:` no Markdown, no HTML ou em definições de referência. Use arquivos locais, sem depender de imagens remotas.
+- Salve cada manual, com o nome `<slug_do_manual>.md`, na pasta de publicação declarada pelo adaptador, e todas as imagens, inclusive a logo, na pasta de imagens declarada por ele, ao lado do manual. O destino padrão a registrar no adaptador está em [formato-manual.md](references/formato-manual.md); destino indeterminado bloqueia a escrita. Esses caminhos são relativos à raiz do repositório de uso, não à raiz do disco.
+- Referencie arquivos da pasta de imagens por caminhos relativos ao manual, como `imagens-meu-manual/tela-consulta.png`. Nunca incorpore imagens em base64 ou por URI `data:` no Markdown, no HTML ou em definições de referência. Use arquivos locais, sem depender de imagens remotas.
 - Entregue logo centralizada no topo, um título principal, sumário de tópicos e subtópicos e conteúdo organizado por tarefas, conforme [formato-manual.md](references/formato-manual.md). Use uma logo comprovada do sistema ou fornecida pelo responsável; sua ausência é uma pergunta de entrevista, não licença para inventar uma marca.
 - Ilustre as funcionalidades conforme o plano de capturas derivado da varredura. Em cada posição que precisar de print ainda indisponível, insira o aviso padronizado de `formato-manual.md`, com o caminho no sistema, para coleta manual posterior pelo usuário ou desenvolvedor.
 
@@ -72,10 +71,10 @@ Conclua com um manual coerente com a matriz de evidências. Afirmações operaci
 Execute o verificador de leitura, com Python 3.9 ou posterior e somente a biblioteca padrão, para o perfil descrito em `formato-manual.md`:
 
 ```text
-python <skill>/scripts/verificar_manual.py docs/manuais/<slug_do_manual>.md --raiz-repo <raiz_do_repositorio>
+python <skill>/scripts/verificar_manual.py <pasta-de-publicacao>/<slug_do_manual>.md --raiz-repo <raiz_do_repositorio> [--pasta-imagens <pasta>]
 ```
 
-`<skill>` é a raiz da skill instalada. O caminho do manual é relativo a `--raiz-repo`, ou absoluto dentro dela. Saída: 0 para conformidade estrutural sem avisos de captura pendente detectados, 1 para pendências de captura, não conformidade ou formato não suportado e 2 para entrada inválida. Somente ocorrências M09 produzem `PENDENTE`; outras ocorrências produzem `FAIL`. A ferramenta não altera arquivos, acessa rede, renderiza HTML nem comprova a semântica ou a cobertura de capturas. Rode a suíte abaixo somente ao alterar o próprio verificador:
+`<skill>` é a raiz da skill instalada. `<pasta-de-publicacao>` e `<pasta>` vêm do adaptador; passe `--pasta-imagens` somente quando ele declarar pasta de imagens diferente do padrão `imagens-<slug_do_manual>`. O caminho do manual é relativo a `--raiz-repo`, ou absoluto dentro dela. Saída: 0 para conformidade estrutural sem avisos de captura pendente detectados, 1 para pendências de captura, não conformidade ou formato não suportado e 2 para entrada inválida. Somente ocorrências M09 produzem `PENDENTE`; outras ocorrências produzem `FAIL`. A ferramenta não altera arquivos, acessa rede, renderiza HTML nem comprova a semântica ou a cobertura de capturas. Rode a suíte abaixo somente ao alterar o próprio verificador:
 
 ```text
 python -m unittest discover -s <skill>/scripts -p "test_*.py"

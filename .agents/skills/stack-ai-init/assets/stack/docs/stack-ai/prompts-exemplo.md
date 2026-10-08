@@ -871,7 +871,7 @@ Ao final, liste as telas que não conseguiu capturar e o motivo de cada uma.
 
 ## Manual de uso
 
-A skill `manual-creator-scan-codebase` cria e mantém manuais de uso em `docs/manuais/<slug_do_manual>.md`, com imagens em `docs/manuais/imagens-<slug_do_manual>/`. Primeiro combina entrevista e inspeção da codebase para preparar o adaptador do sistema; depois conecta tarefas e personas às telas, campos, textos, regras e permissões para redigir o manual em linguagem simples. O pedido de manual inclui criar o adaptador necessário, e também é possível preparar somente o adaptador.
+A skill `manual-creator-scan-codebase` cria e mantém manuais de uso no destino declarado pelo adaptador, que por padrão é `docs/manuais/<slug_do_manual>.md`, com imagens em `docs/manuais/imagens-<slug_do_manual>/`. Primeiro combina entrevista e inspeção da codebase para preparar o adaptador do sistema; depois conecta tarefas e personas às telas, campos, textos, regras e permissões para redigir o manual em linguagem simples. O pedido de manual inclui criar o adaptador necessário, e também é possível preparar somente o adaptador.
 
 Informe o público e as tarefas que conhece. A skill investiga antes de perguntar pelas lacunas e não presume que um perfil de acesso define sozinho uma persona. O renderizador e a logo permitem verificar a apresentação do Markdown; ter acesso ao código não comprova a versão implantada nem substitui observação de conteúdo dinâmico. Não anexe capturas com dados pessoais ou credenciais.
 

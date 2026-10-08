@@ -6,6 +6,8 @@ Use Markdown UTF-8, com uma linha por parágrafo, espaços entre blocos e hierar
 
 Escolha o slug a partir do nome do manual, com letras minúsculas sem acento, números e hífens: `[a-z0-9]+(?:-[a-z0-9]+)*`. Preserve o slug de um manual existente que já siga esse contrato; colisão entre manuais exige escolha do responsável. Não use barra, caminho absoluto ou `..` como parte do slug.
 
+O destino fica no adaptador: a pasta de publicação do manual e a pasta de imagens, ao lado do manual. O destino padrão para registrar no adaptador é a pasta `docs/manuais/`, com uma pasta de imagens por manual:
+
 ```text
 docs/manuais/
 ├── manual-solicitacoes.md
@@ -14,9 +16,20 @@ docs/manuais/
     └── formulario-solicitacao.png
 ```
 
+Quando o responsável escolhe outro destino, o adaptador registra a escolha. Um exemplo é uma pasta por sistema ou módulo, com a pasta `imagens/` dividida pelos manuais dela; nesse caso, use nomes de imagem que não colidam entre eles:
+
+```text
+docs/manuais/
+└── solicitacoes/
+    ├── manual-solicitacoes.md
+    └── imagens/
+        ├── logo.svg
+        └── formulario-solicitacao.png
+```
+
 Use nomes descritivos de imagem sem espaços e caminhos com `/`. Imagens admitidas no perfil do verificador: PNG, JPG, JPEG, SVG, WEBP e GIF. Confira conteúdo, proveniência e legibilidade antes de publicar; extensão e existência do arquivo não comprovam isso. Preserve capturas fiéis e mascare dados sensíveis sem alterar os labels e estados que servem de evidência.
 
-No corpo, use imagens inline simples, como `![Formulário com o campo Assunto e a ação Salvar](imagens-manual-solicitacoes/formulario-solicitacao.png)`, com texto alternativo informativo e legenda quando ela acrescentar contexto. Todo recurso visual deve existir dentro da subpasta do próprio manual, inclusive após resolver links simbólicos. Diagrama necessário deve ser salvo como imagem nessa mesma pasta e não deve substituir os passos textuais.
+No corpo, use imagens inline simples, como `![Formulário com o campo Assunto e a ação Salvar](imagens-manual-solicitacoes/formulario-solicitacao.png)`, com texto alternativo informativo e legenda quando ela acrescentar contexto. Todo recurso visual deve existir dentro da pasta de imagens declarada para o manual, inclusive após resolver links simbólicos. Diagrama necessário deve ser salvo como imagem nessa mesma pasta e não deve substituir os passos textuais.
 
 Base64 e URI `data:` são proibidos em qualquer parte do arquivo, inclusive HTML, comentários e referências. Não use imagem remota, caminho do disco, recurso fora da subpasta correspondente ou atalho simbólico para arquivo externo.
 
@@ -140,7 +153,7 @@ Descreva os demais passos e o resultado comprovados.
 
 ## Limites do verificador
 
-`../scripts/verificar_manual.py` confere o destino, slug, bloco inicial de logo, H1, hierarquia ATX, âncoras, sumário completo, imagens inline ou HTML da logo e o formato dos avisos acima. Confere texto alternativo e arquivos locais existentes e rejeita URI `data:` no arquivo inteiro. Cada aviso válido produz M09 e código 1; somente avisos pendentes, sem erro estrutural, produzem o resumo `PENDENTE`. Aviso malformado produz M06. A ferramenta não lê o conteúdo das imagens, não renderiza, não verifica links externos e não prova regras, cobertura, permissões, qualidade da escrita ou centralização visual.
+`../scripts/verificar_manual.py` confere o nome em slug, a pasta de imagens informada, bloco inicial de logo, H1, hierarquia ATX, âncoras, sumário completo, imagens inline ou HTML da logo e o formato dos avisos acima. Confere texto alternativo e arquivos locais existentes e rejeita URI `data:` no arquivo inteiro. Cada aviso válido produz M09 e código 1; somente avisos pendentes, sem erro estrutural, produzem o resumo `PENDENTE`. Aviso malformado produz M06. A ferramenta não lê o conteúdo das imagens, não renderiza, não verifica links externos e não prova regras, cobertura, permissões, qualidade da escrita ou centralização visual.
 
 Código 0 não demonstra que todos os prints necessários existem, que estão no lugar didático adequado ou que o caminho informado é verdadeiro. Essas verificações exigem confrontar manual, matriz e plano de capturas. Um aviso com caminho ainda não confirmado mantém também a pendência funcional, mesmo que sua estrutura seja válida.
 

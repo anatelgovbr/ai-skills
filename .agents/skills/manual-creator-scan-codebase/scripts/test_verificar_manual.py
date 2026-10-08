@@ -68,6 +68,32 @@ class TestManual(unittest.TestCase):
         self.assertEqual(self.run_check(), [])
         self.assertEqual(verificar(self.root, "docs/manuais/manual-teste.md"), [])
 
+    def montar_em_pasta_de_modulo(self, content):
+        directory = self.root / "docs" / "manuais" / "modulo-teste"
+        (directory / "imagens").mkdir(parents=True)
+        for name in ("logo.svg", "campo.svg"):
+            (directory / "imagens" / name).write_text('<svg xmlns="http://www.w3.org/2000/svg"></svg>', encoding="utf-8")
+        manual = directory / "manual-teste.md"
+        manual.write_text(content, encoding="utf-8")
+        return manual
+
+    def test_destino_e_pasta_de_imagens_declarados(self):
+        manual = self.montar_em_pasta_de_modulo(VALID.replace("imagens-manual-teste/", "imagens/"))
+        self.assertEqual(verificar(self.root, manual, "imagens"), [])
+        self.assertEqual(verificar(self.root, "docs/manuais/modulo-teste/manual-teste.md", "imagens"), [])
+
+    def test_manual_usa_somente_a_pasta_de_imagens_declarada(self):
+        manual = self.montar_em_pasta_de_modulo(VALID)
+        self.assertTrue(any(i[0] == "M05" for i in verificar(self.root, manual, "imagens")))
+        self.assertTrue(any(i[0] == "M05" for i in verificar(self.root, manual)))
+        self.assertTrue(any(i[0] == "M05" for i in self.run_check(VALID.replace("imagens-manual-teste/", "imagens/"))))
+
+    def test_pasta_de_imagens_invalida(self):
+        self.manual.write_text(VALID, encoding="utf-8")
+        for pasta in ("../imagens", "a/b", ".", ".."):
+            with self.subTest(pasta=pasta), self.assertRaises(EntradaInvalida):
+                verificar(self.root, self.manual, pasta)
+
     def test_logo_com_align_legado(self):
         self.assertEqual(self.run_check(VALID.replace('style="text-align: center;"', 'align="center"')), [])
 
@@ -260,7 +286,13 @@ class TestManual(unittest.TestCase):
 
     def test_entrada_invalida(self):
         self.manual.write_text(VALID, encoding="utf-8")
-        for path in ("README.md", "docs/manuais/../outro.md"):
+        fora = tempfile.TemporaryDirectory()
+        self.addCleanup(fora.cleanup)
+        externo = Path(fora.name) / "manual-externo.md"
+        externo.write_text(VALID, encoding="utf-8")
+        with self.assertRaises(EntradaInvalida):
+            verificar(self.root, externo)
+        for path in ("README.md",):
             candidate = self.root / path
             candidate.parent.mkdir(parents=True, exist_ok=True)
             candidate.write_text(VALID, encoding="utf-8")

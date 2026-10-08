@@ -75,17 +75,20 @@ def ancora_github(title):
     ).replace(" ", "-")
 
 
-def verificar(raiz_repo, manual):
+def verificar(raiz_repo, manual, pasta_imagens=None):
     root = Path(raiz_repo).resolve(strict=True)
     if not root.is_dir():
         raise EntradaInvalida("A raiz do repositório deve ser uma pasta existente.")
     supplied = Path(manual)
     path = (supplied if supplied.is_absolute() else root / supplied).resolve(strict=True)
-    destination = (root / "docs" / "manuais").resolve()
-    if not destination.is_relative_to(root) or path.parent != destination or not path.is_file():
-        raise EntradaInvalida("O manual deve ser um arquivo diretamente em docs/manuais da raiz informada.")
+    if not path.is_relative_to(root) or not path.is_file():
+        raise EntradaInvalida("O manual deve ser um arquivo dentro da raiz informada.")
     if path.suffix != ".md" or not SLUG.fullmatch(path.stem):
         raise EntradaInvalida("Use nome de manual em slug, com extensão .md.")
+    nome_pasta = pasta_imagens or "imagens-" + path.stem
+    if not re.fullmatch(r"[A-Za-z0-9_-][A-Za-z0-9_.-]*", nome_pasta):
+        raise EntradaInvalida("A pasta de imagens deve ser um nome simples, ao lado do manual.")
+    folder = path.parent / nome_pasta
     with path.open("rb") as stream:
         data = stream.read(MAX_BYTES + 1)
     if len(data) > MAX_BYTES:
@@ -116,7 +119,6 @@ def verificar(raiz_repo, manual):
     text, unclosed = ocultar(original)
     if unclosed:
         report("M06", 1, "Bloco de código não encerrado; cobertura estrutural incompleta.")
-    folder = path.parent / ("imagens-" + path.stem)
     if folder.resolve() != folder:
         report("M05", 1, "A pasta de imagens não pode redirecionar para outro destino.")
 
@@ -254,13 +256,14 @@ def verificar(raiz_repo, manual):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("manual", help="Arquivo em docs/manuais, relativo à raiz ou absoluto.")
+    parser.add_argument("manual", help="Manual no destino declarado pelo adaptador, relativo à raiz ou absoluto.")
     parser.add_argument("--raiz-repo", required=True, help="Raiz do repositório de uso.")
+    parser.add_argument("--pasta-imagens", help="Pasta de imagens declarada pelo adaptador, ao lado do manual; padrão: imagens-<slug>.")
     args = parser.parse_args()
     try:
-        issues = verificar(args.raiz_repo, args.manual)
+        issues = verificar(args.raiz_repo, args.manual, args.pasta_imagens)
     except (EntradaInvalida, OSError, ValueError):
-        print("ENTRADA_INVALIDA: confira raiz, destino, slug, UTF-8 e limite de 4 MiB.", file=sys.stderr)
+        print("ENTRADA_INVALIDA: confira raiz, slug, pasta de imagens, UTF-8 e limite de 4 MiB.", file=sys.stderr)
         return 2
     for code, line, message in issues:
         print(f"{code}: linha {line}: {message}")
