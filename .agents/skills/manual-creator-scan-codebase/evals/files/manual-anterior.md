@@ -1,6 +1,4 @@
-<p align="center">
-  <img src="imagens-manual-solicitacoes/logo.svg" alt="Logo do sistema Solicitações" width="240">
-</p>
+![Logo do sistema Solicitações](imagens-manual-solicitacoes/logo.svg)
 
 # Manual de solicitações
 

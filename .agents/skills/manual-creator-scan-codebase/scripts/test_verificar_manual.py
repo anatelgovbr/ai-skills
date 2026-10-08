@@ -11,9 +11,7 @@ from unittest.mock import patch
 from verificar_manual import EntradaInvalida, main, verificar
 
 
-VALID = '''<p style="text-align: center;">
-  <img src="imagens-manual-teste/logo.svg" alt="Logo de teste" width="240">
-</p>
+VALID = '''![Logo de teste](imagens-manual-teste/logo.svg)
 
 # Manual de teste
 
@@ -94,8 +92,12 @@ class TestManual(unittest.TestCase):
             with self.subTest(pasta=pasta), self.assertRaises(EntradaInvalida):
                 verificar(self.root, self.manual, pasta)
 
-    def test_logo_com_align_legado(self):
-        self.assertEqual(self.run_check(VALID.replace('style="text-align: center;"', 'align="center"')), [])
+    def test_logo_em_html_recusada(self):
+        for bloco in ('<p align="center">', '<p style="text-align: center;">'):
+            with self.subTest(bloco=bloco):
+                html = bloco + '\n  <img src="imagens-manual-teste/logo.svg" alt="Logo de teste" width="240">\n</p>'
+                codes = {i[0] for i in self.run_check(VALID.replace("![Logo de teste](imagens-manual-teste/logo.svg)", html))}
+                self.assertTrue({"M04", "M06"} <= codes)
 
     def test_data_de_revisao_nao_e_uri_data(self):
         for phrase in ("Data: 5 de outubro de 2026.", "Data: 06/10/2026.", "Formato da data: dd/mm/aaaa."):
@@ -174,11 +176,13 @@ class TestManual(unittest.TestCase):
         complete = pending.replace(NOTICE, "![Campo Assunto](imagens-manual-teste/campo.svg)")
         self.assertEqual(self.run_check(complete), [])
 
-    def test_ancora_explicita_para_outro_renderizador(self):
-        content = VALID.replace("(#campos-e-opções)", "(#campos)").replace(
-            "### Campos e opções", '<a name="campos"></a>\n\n### Campos e opções'
-        )
-        self.assertEqual(self.run_check(content), [])
+    def test_ancora_explicita_em_html_recusada(self):
+        for ancora in ('<a name="campos"></a>', '<a id="campos"></a>'):
+            content = VALID.replace("(#campos-e-opções)", "(#campos)").replace(
+                "### Campos e opções", ancora + "\n\n### Campos e opções"
+            )
+            with self.subTest(ancora=ancora):
+                self.assertTrue(any(i[0] == "M06" for i in self.run_check(content)))
 
     def test_base64_em_diferentes_construcoes(self):
         cases = (
@@ -209,7 +213,7 @@ class TestManual(unittest.TestCase):
         for content in (
             VALID.replace("campo.svg", "ausente.png"),
             VALID.replace("![Campo Assunto]", "![]"),
-            VALID.replace('alt="Logo de teste"', 'alt=""'),
+            VALID.replace("![Logo de teste]", "![]"),
         ):
             with self.subTest(content=content):
                 self.assertTrue(any(i[0] == "M05" for i in self.run_check(content)))
@@ -243,7 +247,7 @@ class TestManual(unittest.TestCase):
             VALID.replace("### Campos e opções", "#### Campos e opções"),
             VALID + "\n# Segundo título\n",
             VALID + "\n## Como consultar\n\nOutro texto.\n",
-            VALID.replace('style="text-align: center;"', 'style="text-align: left;"'),
+            VALID.replace("![Logo de teste](imagens-manual-teste/logo.svg)\n", ""),
             "Introdução fora do lugar.\n\n" + VALID,
         ):
             with self.subTest(content=content):

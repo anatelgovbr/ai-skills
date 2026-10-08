@@ -5,7 +5,7 @@ Autoridade sobre: o que a skill distribui, o que fica de fora e por que, como a 
 ## Onde a carga fica
 
 ```text
-assets/stack/          os 827 arquivos, com os nomes com ponto mapeados para dot-
+assets/stack/          os 828 arquivos, com os nomes com ponto mapeados para dot-
 assets/estrutura.json  diretorios vazios e symlinks a recriar na instalacao
 ```
 
@@ -22,7 +22,7 @@ A pasta `docs/architecture/` segue a mesma regra, com uma diferença: as ADRs re
 | Raiz | 3 | `AGENTS.md`, `CLAUDE.md`, `.gitignore` |
 | `.agents/references/` | 2 | `speckit.md`, a regra de manutencao das fases; `template-revisao-tecnica.md`, o formato do relatorio de revisao tecnica, com estados, severidades, origem temporal e limite de cada celula |
 | `.agents/security/` | 2 | `guia-seguranca.md`, os 19 topicos de risco agnosticos de linguagem; `mapa-cwe-guia.md`, a ponte da `owasp-playbook` |
-| `.agents/skills/` | 776 | 30 skills: os 17 arquivos da `skill-creator`, as 10 fases do SpecKit em `speckit-<fase>/`, os 506 arquivos da `owasp-playbook`, dos quais 505 sao a copia do OWASP Secure Agent Playbook em `upstream/`, e 18 skills de apoio em 243 arquivos: 4 de terceiros (`caveman`, `grill-me`, `grilling` e `writing-for-agents`), 5 da Anthropic (`frontend-design` e as documentais `docx`, `pdf`, `pptx` e `xlsx`, estas com 178 arquivos) e 9 mantidas pela Anatel no `ai-skills` (`ciclo-design`, `configuracao-de-testes-unitarios`, `conformidade-de-escrita-normativa`, `dicionario-dados-db-scan-codebase-docs`, `escrita-em-linguagem-simples-pt-br`, `gauntlet-loop-forge`, `manual-creator-scan-codebase`, `recapitulacao-resumo-ata-relato-reuniao` e `stack-ai-build-project-context`) |
+| `.agents/skills/` | 777 | 30 skills: os 17 arquivos da `skill-creator`, as 10 fases do SpecKit em `speckit-<fase>/`, os 506 arquivos da `owasp-playbook`, dos quais 505 sao a copia do OWASP Secure Agent Playbook em `upstream/`, e 18 skills de apoio em 243 arquivos: 4 de terceiros (`caveman`, `grill-me`, `grilling` e `writing-for-agents`), 5 da Anthropic (`frontend-design` e as documentais `docx`, `pdf`, `pptx` e `xlsx`, estas com 178 arquivos) e 9 mantidas pela Anatel no `ai-skills` (`ciclo-design`, `configuracao-de-testes-unitarios`, `conformidade-de-escrita-normativa`, `dicionario-dados-db-scan-codebase-docs`, `escrita-em-linguagem-simples-pt-br`, `gauntlet-loop-forge`, `manual-creator-scan-codebase`, `recapitulacao-resumo-ata-relato-reuniao` e `stack-ai-build-project-context`) |
 | `.claude/` | 1 | `settings.json`, que registra o marketplace local e liga o plugin `stack-ai` |
 | `.claude-plugin/` | 1 | `marketplace.json`, o plugin local que aponta o Claude Code para `.agents/skills/`; traz `{{MARKETPLACE}}` no lugar do nome |
 | `.github/` | 1 | `copilot-instructions.md` |

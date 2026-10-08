@@ -29,7 +29,7 @@ Labels, ajuda e ações ficam nas strings de `formulario` e `tela_consulta`. Cr�
 
 ## Publicação e recursos
 
-Manual: `docs/manuais/manual-solicitacoes.md`. Imagens: `docs/manuais/imagens-manual-solicitacoes/`. Copie a logo fictícia aprovada de `recursos/logo.svg`. Leitura escolhida pelo responsável: GitHub Flavored Markdown com `<p align="center">`. Use âncoras automáticas do GitHub e confira-as no renderizador. Não existem capturas reais nem dados pessoais.
+Manual: `docs/manuais/manual-solicitacoes.md`. Imagens: `docs/manuais/imagens-manual-solicitacoes/`. Copie a logo fictícia aprovada de `recursos/logo.svg`. Leitura escolhida pelo responsável: GitHub Flavored Markdown, com o manual em Markdown puro. Use âncoras automáticas do GitHub e confira-as no renderizador. Não existem capturas reais nem dados pessoais.
 
 ## Validação e limites
 

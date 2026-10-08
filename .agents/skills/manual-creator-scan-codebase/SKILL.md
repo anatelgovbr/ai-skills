@@ -17,7 +17,7 @@ Transforme evidências do sistema em instruções que ajudem pessoas a realizar 
 
 - Salve cada manual, com o nome `<slug_do_manual>.md`, na pasta de publicação declarada pelo adaptador, e todas as imagens, inclusive a logo, na pasta de imagens declarada por ele, ao lado do manual. O destino padrão a registrar no adaptador está em [formato-manual.md](references/formato-manual.md); destino indeterminado bloqueia a escrita. Esses caminhos são relativos à raiz do repositório de uso, não à raiz do disco.
 - Referencie arquivos da pasta de imagens por caminhos relativos ao manual, como `imagens-meu-manual/tela-consulta.png`. Nunca incorpore imagens em base64 ou por URI `data:` no Markdown, no HTML ou em definições de referência. Use arquivos locais, sem depender de imagens remotas.
-- Entregue logo centralizada no topo, um título principal, sumário de tópicos e subtópicos e conteúdo organizado por tarefas, conforme [formato-manual.md](references/formato-manual.md). Use uma logo comprovada do sistema ou fornecida pelo responsável; sua ausência é uma pergunta de entrevista, não licença para inventar uma marca.
+- Entregue o manual em Markdown puro, sem HTML, com a logo no topo, um título principal, sumário de tópicos e subtópicos e conteúdo organizado por tarefas, conforme [formato-manual.md](references/formato-manual.md). Use uma logo comprovada do sistema ou fornecida pelo responsável; sua ausência é uma pergunta de entrevista, não licença para inventar uma marca.
 - Ilustre as funcionalidades conforme o plano de capturas derivado da varredura. Em cada posição que precisar de print ainda indisponível, insira o aviso padronizado de `formato-manual.md`, com o caminho no sistema, para coleta manual posterior pelo usuário ou desenvolvedor.
 
 ## Referências de execução
@@ -90,11 +90,11 @@ Confira todos os critérios, registrando resultado e evidência. Em verificaçã
 | M04 Organização e escrita | Logo, título, sumário completo, hierarquia, passos e regras de escrita conferidos; explicações acessíveis ao público |
 | M05 Imagens | Arquivos na subpasta própria, referências resolvidas, texto alternativo e zero base64; autenticidade, pertinência e ausência de dados sensíveis conferidas |
 | M06 Estrutura e navegação | Nenhuma ocorrência estrutural no verificador: código 0 ou código 1 exclusivamente por M09; em legado, limites automáticos declarados e verificações restantes feitas explicitamente |
-| M07 Leitura visual | Manual aberto no renderizador declarado, logo centrada, imagens legíveis, tabelas e todos os destinos do sumário conferidos |
+| M07 Leitura visual | Manual aberto no renderizador declarado, logo exibida, imagens legíveis, tabelas e todos os destinos do sumário conferidos |
 | M08 Preservação | Diff limitado ao alcance; alterações anteriores e seções não afetadas preservadas; verificação sem escrita comprovada |
 | M09 Cobertura de capturas | Manual conciliado com o plano: cada posição necessária tem captura autêntica, pertinente e atual; agrupamentos e inaplicabilidades justificados; avisos restantes identificados como pendências |
 
-M07 exige observação no renderizador: confira o destaque dos avisos, e não considere uma tag de centralização como prova visual da logo. Para fluxos dependentes de configuração ou ambiente, M03 exige conferência nessa fonte adequada; caminho de acesso não confirmado continua lacuna funcional. M09 não passa com captura necessária ainda pendente, nem pela simples ausência de avisos: compare sempre o plano com o manual. Sem a evidência necessária, reporte o critério pendente e a entrega parcial. Pare de corrigir quando os critérios aplicáveis passarem; pendência não vira aprovação por tempo ou número de tentativas.
+M07 exige observação no renderizador: confira o destaque dos avisos e a exibição da logo. Para fluxos dependentes de configuração ou ambiente, M03 exige conferência nessa fonte adequada; caminho de acesso não confirmado continua lacuna funcional. M09 não passa com captura necessária ainda pendente, nem pela simples ausência de avisos: compare sempre o plano com o manual. Sem a evidência necessária, reporte o critério pendente e a entrega parcial. Pare de corrigir quando os critérios aplicáveis passarem; pendência não vira aprovação por tempo ou número de tentativas.
 
 ### 6. Reportar
 

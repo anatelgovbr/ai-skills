@@ -6,21 +6,15 @@ import html
 import re
 import sys
 import unicodedata
-from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
 
 SLUG = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
 HEADING = re.compile(r"^(#{1,6}) (.+?)\s*$")
-ANCHOR = re.compile(r'<a (?:name|id)="([a-z0-9]+(?:-[a-z0-9]+)*)"></a>')
 IMAGE = re.compile(r"!\[([^\[\]\n]*)\]\(([^()\s]+)\)")
 LINK = re.compile(r"(?<!!)\[([^\[\]\n]+)\]\(([^()\s]+)\)")
-LOGO = re.compile(
-    r"\A\s*<p\s+(?:align=['\"]center['\"]|"
-    r"style=['\"]\s*text-align\s*:\s*center\s*;?\s*['\"])\s*>"
-    r"\s*(<img\s+[^<>]+>)\s*</p>(?=\s|$)", re.IGNORECASE
-)
+LOGO = re.compile(r"\A\s*!\[([^\[\]\n]*)\]\(([^()\s]+)\)[ \t]*(?=\n|\Z)")
 NOTICE_MARKER = "[NECESSÁRIO INSERIR IMAGEM DE PRINT DA TELA DESTA FUNCIONALIDADE]"
 NOTICE = re.compile(
     r"> \*\*"
@@ -33,22 +27,6 @@ MAX_BYTES = 4 * 1024 * 1024
 
 class EntradaInvalida(ValueError):
     pass
-
-
-class ImagemHTML(HTMLParser):
-    def __init__(self):
-        super().__init__(convert_charrefs=True)
-        self.images = []
-        self.invalid = False
-
-    def handle_starttag(self, tag, attrs):
-        if tag != "img" or len(dict(attrs)) != len(attrs):
-            self.invalid = True
-            return
-        values = dict(attrs)
-        if set(values) - {"src", "alt", "width", "height"}:
-            self.invalid = True
-        self.images.append((values.get("alt") or "", values.get("src") or ""))
 
 
 def ocultar(text):
@@ -146,14 +124,9 @@ def verificar(raiz_repo, manual, pasta_imagens=None):
 
     logo = LOGO.match(text)
     if not logo:
-        report("M04", 1, "Falta bloco inicial de logo com declaração de centralização suportada.")
+        report("M04", 1, "Falta logo inicial como imagem Markdown antes do título.")
     else:
-        parser = ImagemHTML()
-        parser.feed(logo[1])
-        if parser.invalid or len(parser.images) != 1:
-            report("M06", 1, "HTML da logo fora do perfil; confira manualmente.")
-        for alt, source in parser.images:
-            check_image(alt, source, original.count("\n", 0, logo.start(1)) + 1)
+        check_image(logo[1], logo[2], original.count("\n", 0, logo.start(1)) + 1)
         text = re.sub(r"[^\n]", " ", text[:logo.end()]) + text[logo.end():]
 
     lines = text.splitlines()
@@ -178,17 +151,9 @@ def verificar(raiz_repo, manual, pasta_imagens=None):
         if index not in notices and re.search(r"\\\[.*\\\]", re.sub(r"`[^`]*`", "", line)):
             report("M06", index + 1, "Colchetes escapados viram fórmula em renderizadores com LaTeX; use colchetes sem barra ou &#91; e &#93;.")
     headings = []
-    pending = None
     ids = set()
     for index, line in enumerate(lines):
         if not line.strip():
-            continue
-        anchor = ANCHOR.fullmatch(line)
-        if anchor:
-            if pending:
-                report("M06", index + 1, "Mais de uma âncora explícita antes do título.")
-            pending = anchor[1]
-            lines[index] = ""
             continue
         match = HEADING.fullmatch(line)
         if not match and re.match(r"^ {0,3}#{1,6}(?:[ \t]+|$)", line):
@@ -197,8 +162,7 @@ def verificar(raiz_repo, manual, pasta_imagens=None):
             level, title = len(match[1]), match[2].strip()
             if any(c in title for c in "`*[]<>#"):
                 report("M06", index + 1, "Título com formatação fora do perfil suportado.")
-            identity = pending or ancora_github(title)
-            pending = None
+            identity = ancora_github(title)
             if identity in ids:
                 report("M06", index + 1, "Âncora repetida; use títulos e âncoras únicos.")
             ids.add(identity)
@@ -207,13 +171,8 @@ def verificar(raiz_repo, manual, pasta_imagens=None):
             if index and lines[index - 1].strip() or index + 1 < len(lines) and lines[index + 1].strip():
                 report("M04", index + 1, "Separe o título dos blocos vizinhos por linhas em branco.")
             headings.append((level, title, identity, index))
-        elif pending:
-            report("M06", index + 1, "Âncora explícita sem título imediatamente seguinte.")
-            pending = None
         if re.match(r"^ {0,3}(?:=+|-+)\s*$", line) and index and lines[index - 1].strip():
             report("M06", index + 1, "Título Setext ou separador ambíguo fora do perfil suportado.")
-    if pending:
-        report("M06", len(lines), "Âncora explícita sem título.")
     for index in notices:
         if len(headings) < 3 or index <= headings[2][3]:
             report("M06", index + 1, "O aviso deve ficar em uma seção de conteúdo, após o Sumário.")
@@ -245,7 +204,7 @@ def verificar(raiz_repo, manual, pasta_imagens=None):
     if "![" in remainder:
         report("M06", 1, "Imagem por referência ou sintaxe não suportada; cobertura automática incompleta.")
     if re.search(r"<(?:/?[A-Za-z]|!|\?)", remainder):
-        report("M06", 1, "HTML adicional ou comentário não encerrado fora do perfil; cobertura automática incompleta.")
+        report("M06", 1, "HTML fora do perfil de Markdown puro, ou comentário não encerrado.")
     if re.search(r"\[[^\]\n]+\]:", remainder):
         report("M06", 1, "Link por referência fora do perfil; cobertura automática incompleta.")
     for match in LINK.finditer(body):

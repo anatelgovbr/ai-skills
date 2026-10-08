@@ -35,17 +35,13 @@ Base64 e URI `data:` são proibidos em qualquer parte do arquivo, inclusive HTML
 
 ## Logo e renderizador
 
-Coloque a logo antes do título, com texto alternativo que identifique o sistema. Markdown não tem sintaxe nativa portátil para centralização. Declare no adaptador o renderizador e o HTML que ele aceita, e confira o resultado nele. Use HTML somente para a logo e, se necessário, âncoras explícitas.
+Coloque a logo antes do título, como imagem Markdown simples, com texto alternativo que identifique o sistema:
 
-Quando o renderizador aceitar CSS inline, a forma moderna do perfil é:
-
-```html
-<p style="text-align: center;">
-  <img src="imagens-manual-solicitacoes/logo.svg" alt="Logo do sistema Solicitações" width="240">
-</p>
+```markdown
+![Logo do sistema Solicitações](imagens-manual-solicitacoes/logo.svg)
 ```
 
-Em renderizador que preserve `align` e remova CSS inline, o perfil de compatibilidade pode usar `<p align="center">` no mesmo bloco. Esse atributo é obsoleto em HTML; use-o somente com suporte comprovado no renderizador do alvo, não como recomendação universal. As duas formas são verificáveis estruturalmente, mas apenas a leitura renderizada comprova a centralização. Não acrescente CSS externo, script, iframe ou extensão de publicação só para compor o manual. Se o renderizador não aceitar nenhuma forma disponível, reporte a limitação e peça decisão sobre o local de leitura.
+O manual é Markdown puro: não use HTML em nenhuma parte dele, nem para a logo, nem para âncoras. Sem HTML, a logo não é centralizada nem tem largura definida, e o tamanho exibido é o do arquivo, limitado pelo renderizador; use logo e capturas no tamanho de exibição, conforme o padrão de geração de capturas declarado no adaptador. Não acrescente CSS, script, iframe ou extensão de publicação só para compor o manual. Declare no adaptador o renderizador e confira o resultado nele.
 
 ## Título, sumário e seções
 
@@ -55,7 +51,7 @@ Faça `## Sumário` como primeira seção H2 depois do título. Use uma lista de
 
 Escreva títulos ATX (`##`, `###` e assim por diante), sem saltar níveis. Prefira até H4 e títulos únicos, completos e sem formatação inline para facilitar a navegação. Se o renderizador seguir as âncoras do GitHub, converta o título para minúsculas, remova pontuação exceto `_` e `-`, preserve acentos e troque espaços por `-`. Confirme os fragmentos no renderizador, em especial títulos com acentos.
 
-Quando a convenção de âncora for outra, use âncoras explícitas suportadas pelo renderizador, como `<a name="registrar-solicitacao"></a>` ou `<a id="registrar-solicitacao"></a>`, em linha própria imediatamente antes do título, separada por linha em branco. Cada âncora usa slug único. O verificador reconhece essas duas formas simples e as âncoras automáticas do perfil GitHub; outras formas exigem conferência documentada, sem alegação de suporte automático.
+O verificador reconhece somente as âncoras automáticas do perfil GitHub. Se o renderizador gerar âncoras de outra forma, reporte a limitação e peça decisão sobre o local de leitura, porque âncora em HTML fica fora do perfil.
 
 ## Organização por tarefas
 
@@ -95,9 +91,7 @@ Avisos são instruções de revisão para completar o manual, não conteúdo def
 Substitua os dados de exemplo pelos do alvo e acrescente ao sumário cada título criado. O exemplo abaixo contém somente a estrutura, não prova funcional.
 
 ```markdown
-<p style="text-align: center;">
-  <img src="imagens-manual-solicitacoes/logo.svg" alt="Logo do sistema Solicitações" width="240">
-</p>
+![Logo do sistema Solicitações](imagens-manual-solicitacoes/logo.svg)
 
 # Manual de solicitações
 
@@ -153,15 +147,15 @@ Descreva os demais passos e o resultado comprovados.
 
 ## Limites do verificador
 
-`../scripts/verificar_manual.py` confere o nome em slug, a pasta de imagens informada, bloco inicial de logo, H1, hierarquia ATX, âncoras, sumário completo, imagens inline ou HTML da logo e o formato dos avisos acima. Confere texto alternativo e arquivos locais existentes e rejeita URI `data:` no arquivo inteiro. Cada aviso válido produz M09 e código 1; somente avisos pendentes, sem erro estrutural, produzem o resumo `PENDENTE`. Aviso malformado produz M06. A ferramenta não lê o conteúdo das imagens, não renderiza, não verifica links externos e não prova regras, cobertura, permissões, qualidade da escrita ou centralização visual.
+`../scripts/verificar_manual.py` confere o nome em slug, a pasta de imagens informada, logo inicial em Markdown, H1, hierarquia ATX, âncoras, sumário completo, imagens inline, HTML fora de comentários e o formato dos avisos acima. Confere texto alternativo e arquivos locais existentes e rejeita URI `data:` no arquivo inteiro. Cada aviso válido produz M09 e código 1; somente avisos pendentes, sem erro estrutural, produzem o resumo `PENDENTE`. Aviso malformado produz M06. A ferramenta não lê o conteúdo das imagens, não renderiza, não verifica links externos e não prova regras, cobertura, permissões, qualidade da escrita ou exibição visual.
 
 Código 0 não demonstra que todos os prints necessários existem, que estão no lugar didático adequado ou que o caminho informado é verdadeiro. Essas verificações exigem confrontar manual, matriz e plano de capturas. Um aviso com caminho ainda não confirmado mantém também a pendência funcional, mesmo que sua estrutura seja válida.
 
-O perfil não admite links ou imagens por referência, títulos Setext, títulos com formatação inline, recuo ou tabulação nos marcadores de título, HTML além das formas explicitamente descritas ou atalhos de sumário. Em documento legado, a ferramenta deve reportar a construção não suportada, sem alterá-la; complete as checagens à parte e declare sua cobertura. A ausência de um parser completo de Markdown não autoriza emitir PASS para sintaxe desconhecida.
+O perfil não admite links ou imagens por referência, títulos Setext, títulos com formatação inline, recuo ou tabulação nos marcadores de título, HTML ou atalhos de sumário. Em documento legado, a ferramenta deve reportar a construção não suportada, sem alterá-la; complete as checagens à parte e declare sua cobertura. A ausência de um parser completo de Markdown não autoriza emitir PASS para sintaxe desconhecida.
 
 ## Fontes consultadas
 
-Pesquisa em 5 de outubro de 2026, usada para definir o perfil desta skill e revisitar a articulação entre texto e capturas. Logo centralizada e aviso de revisão destacado são escolhas deste contrato, não regras gerais dos guias.
+Pesquisa em 5 de outubro de 2026, usada para definir o perfil desta skill e revisitar a articulação entre texto e capturas. Logo no topo, Markdown puro e aviso de revisão destacado são escolhas deste contrato, não regras gerais dos guias.
 
 | Fonte primária | Aplicação e limite |
 |---|---|
@@ -172,5 +166,4 @@ Pesquisa em 5 de outubro de 2026, usada para definir o perfil desta skill e revi
 | [Microsoft: instruções passo a passo](https://learn.microsoft.com/en-us/style-guide/procedures-instructions/writing-step-by-step-instructions) | Procedimentos numerados, ações separadas e contexto inicial quando necessário |
 | [Microsoft: formatação de elementos em instruções](https://learn.microsoft.com/en-us/style-guide/procedures-instructions/formatting-text-in-instructions) | Destaque de elementos da interface e distinção entre texto de uso e código |
 | [Microsoft: interações com a interface](https://learn.microsoft.com/en-us/style-guide/procedures-instructions/describing-interactions-with-ui) | Verbos de ação que funcionem com diferentes métodos de entrada |
-| [CommonMark: blocos HTML](https://spec.commonmark.org/0.31.2/#html-blocks) e [GFM: especificação](https://github.github.com/gfm/) | HTML pode ser interpretado, mas plataformas podem sanitizá-lo; não comprova aceitação de estilos e atributos |
-| [MDN: elemento de parágrafo HTML](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/p) | O atributo `align` é obsoleto; a centralização exige escolha condicionada ao renderizador |
+| [CommonMark: blocos HTML](https://spec.commonmark.org/0.31.2/#html-blocks) e [GFM: especificação](https://github.github.com/gfm/) | HTML pode ser interpretado, mas plataformas podem sanitizá-lo; o perfil usa só a sintaxe Markdown |

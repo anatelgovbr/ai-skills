@@ -24,7 +24,7 @@
       "id": 2,
       "prompt": "Atualize docs/manuais/manual-solicitacoes.md para a versão atual do Sistema Solicitações. O adaptador já está registrado, mas foi conferido na versão 1.0.0. O alcance da edição é a mudança do registro: o campo Descrição virou Assunto e o limite passou de 120 para 200 caracteres, com ajuda e críticas atuais. No trecho afetado, reavalie a ilustração da tela e indique pelo padrão da skill onde devo inserir o print que obterei manualmente, com o caminho no sistema. Preserve integralmente a seção Consultar solicitações, seus passos e as imagens ainda válidas; necessidades fora desse alcance entram somente no relatório. Não existe ambiente navegável autorizado; reporte pendências de observação.",
       "expected_output": "Adaptador revalidado contra a fonte corrente 2.0.0; mudanças restritas a versão e registro, com aviso Markdown para coleta manual do formulário; consulta e logo preservadas; necessidades externas e captura pendente reportadas sem confirmação visual simulada.",
-      "files": ["evals/files/solicitacoes", "evals/files/manual-anterior.md", "evals/files/adaptador-anterior.md"],
+      "files": ["evals/files/solicitacoes", "evals/files/manual-anterior.md", "evals/files/imagens-manual-solicitacoes", "evals/files/adaptador-anterior.md"],
       "expectations": [
         "Revalidação do adaptador com a versão corrente 2.0.0 e as convenções existentes, sem reutilizar a versão histórica como corrente.",
         "Registro usa Assunto, limite de 200 caracteres, ajuda e críticas corretas, sem alterar o identificador interno descricao.",
@@ -39,7 +39,7 @@
       "id": 3,
       "prompt": "Verifique o manual existente em docs/manuais/manual-solicitacoes.md contra o Sistema Solicitações atual, sem alterar nenhum arquivo. Não há adaptador registrado. O manual ainda descreve Descrição e o limite de 120 caracteres; também contém uma imagem com URI data e outra com referência a imagens-outro. Confira também se as telas funcionais encontradas no código estão ilustradas nos pontos pertinentes: para cada print necessário ausente, indique no relatório seção, ponto, aviso sugerido pelo padrão da skill, caminho comprovado e contexto para coleta manual. Confira o que puder, identifique os limites e não crie adaptador nem repare o manual.",
       "expected_output": "Somente relatório: violações, diferenças e limites declarados; plano de posições de captura e avisos sugeridos com caminhos comprovados; todos os arquivos permanecem idênticos e nenhuma conformidade integral é alegada.",
-      "files": ["evals/files/solicitacoes", "evals/files/manual-anterior.md"],
+      "files": ["evals/files/solicitacoes", "evals/files/manual-anterior.md", "evals/files/imagens-manual-solicitacoes"],
       "expectations": [
         "Todos os arquivos do repositório de teste permanecem com os mesmos hashes; nenhum adaptador é criado.",
         "URI data ou base64 e imagem de outra subpasta reportados como violações.",
