@@ -5,13 +5,15 @@ Autoridade sobre: o que a skill distribui, o que fica de fora e por que, como a 
 ## Onde a carga fica
 
 ```text
-assets/stack/          os 828 arquivos, com os nomes com ponto mapeados para dot-
+assets/stack/          os 646 arquivos, com os nomes com ponto mapeados para dot-
 assets/estrutura.json  diretorios vazios e symlinks a recriar na instalacao
 ```
 
 `assets/stack/` e a fonte de verdade da stack e nao um gerador. Quem mantem edita esses arquivos direto. O instalador so copia o que esta la.
 
-As skills de `.agents/skills/` deste mesmo repositorio sao a excecao: toda skill que esta la, menos a propria `stack-ai-init`, esta tambem na carga, em `.agents/skills/stack-ai-init/assets/stack/dot-agents/skills/<nome>/`, e a copia e feita a mao, sem script de sincronizacao. Sao 17: `caveman`, `ciclo-design`, `configuracao-de-testes-unitarios`, `conformidade-de-escrita-normativa`, `dicionario-dados-db-scan-codebase-docs`, `docx`, `escrita-em-linguagem-simples-pt-br`, `frontend-design`, `gauntlet-loop-forge`, `manual-creator-scan-codebase`, `pdf`, `pptx`, `recapitulacao-resumo-ata-relato-reuniao`, `skill-creator`, `stack-ai-build-project-context`, `writing-for-agents` e `xlsx`. A carga nao leva o `LICENSE.txt` das skills: ela e uma instalacao da stack, nao a mantenedora, e origem, versao e licenca ficam registradas no `ai-skills`. Para conferir que fonte e copia continuam iguais, rode a partir da raiz do repositorio `diff -rq -x __pycache__ -x LICENSE.txt -x README.md .agents/skills/<nome> .agents/skills/stack-ai-init/assets/stack/dot-agents/skills/<nome>`; o comando precisa voltar vazio.
+Das skills de `.agents/skills/` deste repositório, somente nove entram na carga, em `.agents/skills/stack-ai-init/assets/stack/dot-agents/skills/<nome>/`: `caveman`, `configuracao-de-testes-unitarios`, `dicionario-dados-db-scan-codebase-docs`, `frontend-design`, `gauntlet-loop-forge`, `manual-creator-scan-codebase`, `skill-creator`, `stack-ai-build-project-context` e `writing-for-agents`. A cópia é feita à mão, sem script de sincronizacao. A carga nao leva o `LICENSE.txt` das skills: ela e uma instalacao da stack, nao a mantenedora, e origem, versão e licenca ficam registradas no `ai-skills`. Para conferir a paridade, rode a partir da raiz do repositorio `diff -rq -x __pycache__ -x LICENSE.txt -x README.md .agents/skills/<nome> .agents/skills/stack-ai-init/assets/stack/dot-agents/skills/<nome>`; o comando precisa voltar vazio, salvo a excecao abaixo.
+
+A copia distribuida de `manual-creator-scan-codebase/SKILL.md` omite somente as duas frases finais que delegam a revisao da escrita a uma skill fora da selecao minima. A fonte em `.agents/skills/manual-creator-scan-codebase/` continua com essa integracao. Ao copiar uma versão nova, reaplique essa omissao antes de conferir a paridade; essa deve ser a unica diferenca de conteudo entre os dois `SKILL.md`, e os demais arquivos devem continuar iguais.
 
 A pasta `docs/architecture/` segue a mesma regra, com uma diferença: as ADRs registram decisões do `ai-skills` e ficam fora da carga. A fonte é `docs/architecture/` na raiz deste repositório, e a cópia na carga fica em `assets/stack/docs/architecture/`. A conferência é `diff -rq -x 'ADR-0*' docs/architecture .agents/skills/stack-ai-init/assets/stack/docs/architecture`, que precisa voltar vazio.
 
@@ -20,9 +22,9 @@ A pasta `docs/architecture/` segue a mesma regra, com uma diferença: as ADRs re
 | Grupo | Arquivos | Conteudo |
 |---|---|---|
 | Raiz | 3 | `AGENTS.md`, `CLAUDE.md`, `.gitignore` |
-| `.agents/references/` | 2 | `speckit.md`, a regra de manutencao das fases; `template-revisao-tecnica.md`, o formato do relatorio de revisao tecnica, com estados, severidades, origem temporal e limite de cada celula |
+| `.agents/references/` | 2 | `speckit.md`, a regra de manutenção das fases; `template-revisao-tecnica.md`, o formato do relatorio de revisao tecnica, com estados, severidades, origem temporal e limite de cada celula |
 | `.agents/security/` | 2 | `guia-seguranca.md`, os 19 topicos de risco agnosticos de linguagem; `mapa-cwe-guia.md`, a ponte da `owasp-playbook` |
-| `.agents/skills/` | 777 | 30 skills: os 17 arquivos da `skill-creator`, as 10 fases do SpecKit em `speckit-<fase>/`, os 506 arquivos da `owasp-playbook`, dos quais 505 sao a copia do OWASP Secure Agent Playbook em `upstream/`, e 18 skills de apoio em 243 arquivos: 4 de terceiros (`caveman`, `grill-me`, `grilling` e `writing-for-agents`), 5 da Anthropic (`frontend-design` e as documentais `docx`, `pdf`, `pptx` e `xlsx`, estas com 178 arquivos) e 9 mantidas pela Anatel no `ai-skills` (`ciclo-design`, `configuracao-de-testes-unitarios`, `conformidade-de-escrita-normativa`, `dicionario-dados-db-scan-codebase-docs`, `escrita-em-linguagem-simples-pt-br`, `gauntlet-loop-forge`, `manual-creator-scan-codebase`, `recapitulacao-resumo-ata-relato-reuniao` e `stack-ai-build-project-context`) |
+| `.agents/skills/` | 595 | 22 skills: os 17 arquivos da `skill-creator`, as 10 fases do SpecKit em `speckit-<fase>/`, os 506 arquivos da `owasp-playbook`, dos quais 505 sao a copia do OWASP Secure Agent Playbook em `upstream/`, e 10 skills de apoio em 62 arquivos: 4 de terceiros (`caveman`, `grill-me`, `grilling` e `writing-for-agents`), a `frontend-design` da Anthropic e 5 mantidas pela Anatel no `ai-skills` (`configuracao-de-testes-unitarios`, `dicionario-dados-db-scan-codebase-docs`, `gauntlet-loop-forge`, `manual-creator-scan-codebase` e `stack-ai-build-project-context`) |
 | `.claude/` | 1 | `settings.json`, que registra o marketplace local e liga o plugin `stack-ai` |
 | `.claude-plugin/` | 1 | `marketplace.json`, o plugin local que aponta o Claude Code para `.agents/skills/`; traz `{{MARKETPLACE}}` no lugar do nome |
 | `.github/` | 1 | `copilot-instructions.md` |
@@ -51,11 +53,11 @@ Dois arquivos sao da carga: o `SKILL.md`, agnostico, que e o mesmo em qualquer r
 
 | Item | Valor instalado |
 |---|---|
-| Versao | v0.2.7 |
+| versão | v0.2.7 |
 | Commit de origem | `79fea6b9115b55687818f8c4073844ee9ba907a6` |
 | Data do commit | 2026-06-02 |
-| Licenca do playbook | CC-BY-4.0, em `upstream/LICENSE.md` |
-| Licenca dos dados OWASP em `upstream/data/` e `upstream/plugins/*/data/` | CC-BY-SA-4.0, em `upstream/THIRD_PARTY_NOTICES.md` |
+| Licença do playbook | CC-BY-4.0, em `upstream/LICENSE.md` |
+| Licença dos dados OWASP em `upstream/data/` e `upstream/plugins/*/data/` | CC-BY-SA-4.0, em `upstream/THIRD_PARTY_NOTICES.md` |
 
 A copia leva os 17 plays. Fica de fora so o que e formato de ferramenta ou insumo de teste:
 
@@ -104,30 +106,29 @@ O upstream traz symlinks `references -> data` dentro de `plugins/code-security-s
 
 ## As demais skills de terceiros
 
-Nove skills de apoio sao copia de material de terceiro, e a versao instalada fica registrada aqui:
+Cinco skills de apoio sao copia de material de terceiro, e a versão instalada fica registrada aqui:
 
-| Skill | Versao instalada | Origem | Licenca |
+| Skill | Versão instalada | Origem | Licenca |
 |---|---|---|---|
 | `caveman` | v1.9.0 | [JuliusBrussee/caveman](https://github.com/JuliusBrussee/caveman) | MIT |
 | `frontend-design` | sem versionamento na origem | [anthropics/skills](https://github.com/anthropics/skills/tree/main/skills/frontend-design) | Apache-2.0, em `.agents/skills/frontend-design/LICENSE.txt` deste repositorio |
-| `docx`, `pdf`, `pptx` e `xlsx` | sem versionamento na origem | Anthropic, fornecidas pelo host | termos proprietarios em `.agents/skills/<nome>/LICENSE.txt` deste repositorio; o texto restringe copia, retencao fora dos servicos da Anthropic, obra derivada e distribuicao a terceiros |
 | `grill-me` | v1.2.3 | [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/productivity) | MIT |
 | `grilling` | v1.2.3 | [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/productivity) | MIT |
 | `writing-for-agents` | v1.2.3 | [mattpocock/skills](https://github.com/mattpocock/skills/tree/main/skills/productivity) | MIT |
 
-Para atualizar uma delas, substitua a pasta da skill inteira pela versao nova da origem, em `.agents/skills/<nome>/` e na carga, registre a versao nesta tabela, e rode os testes e uma instalacao em destino descartavel, como em qualquer alteracao da carga.
+Para atualizar uma delas, substitua a pasta da skill inteira pela versão nova da origem, em `.agents/skills/<nome>/` e na carga, registre a versão nesta tabela, e rode os testes e uma instalacao em destino descartavel, como em qualquer alteracao da carga.
 
 ## A documentacao em docs/stack-ai/
 
 Cinco arquivos `.md` que explicam a stack para quem vai usar: o indice, o conceito, o SpecKit, a manutencao e os prompts genericos. E a unica parte da carga escrita para pessoa, e nao para agente.
 
-O conteudo e generico e nao cita projeto nenhum. Ele descreve so o que esta nesta carga: os dez diretorios instalados e as 30 skills. Regra de projeto continua no `AGENTS.md`, e a regra que o agente segue ao editar uma fase continua em `.agents/references/speckit.md`, que a documentacao cita em vez de repetir.
+O conteudo e generico e nao cita projeto nenhum. Ele descreve so o que esta nesta carga: os dez diretorios instalados e as 22 skills. Regra de projeto continua no `AGENTS.md`, e a regra que o agente segue ao editar uma fase continua em `.agents/references/speckit.md`, que a documentacao cita em vez de repetir.
 
 A pasta e namespaced de proposito. O destino quase sempre ja tem `docs/`, e um subdiretorio proprio nunca colide com o que ja esta la.
 
 Ela existe porque a carga nao escreve no `README.md` do destino. Sem um lugar proprio, a explicacao da stack nao teria como chegar em repositorio nenhum.
 
-Nenhuma integracao recebe arquivo do SpecKit. O workflow de cada fase existe uma vez so, em `.agents/skills/speckit-<fase>/SKILL.md`, que e o nivel onde a descoberta de skill procura, entao a ferramenta chega nele apontando so para `.agents/skills`. Os scripts que as fases chamam vao em `.specify/scripts/`, nas duas variantes: `bash/` para Linux, macOS e WSL e `powershell/` para Windows. Sao seis de cada lado, equivalentes um a um, da mesma versao do SpecKit. A carga leva os dois conjuntos porque o time e misto.
+Nenhuma integracao recebe arquivo do SpecKit. O workflow de cada fase existe uma vez so, em `.agents/skills/speckit-<fase>/SKILL.md`, que e o nivel onde a descoberta de skill procura, entao a ferramenta chega nele apontando so para `.agents/skills`. Os scripts que as fases chamam vao em `.specify/scripts/`, nas duas variantes: `bash/` para Linux, macOS e WSL e `powershell/` para Windows. Sao seis de cada lado, equivalentes um a um, da mesma versão do SpecKit. A carga leva os dois conjuntos porque o time e misto.
 
 ## A documentação de arquitetura em docs/architecture/
 
@@ -156,11 +157,14 @@ A pasta não tem fonte na raiz deste repositório, ao contrário de `docs/archit
 | `.claude/settings.local.json` | configuracao local do desenvolvedor, ja no `.gitignore` |
 | `.opencode/node_modules/`, `package.json`, `package-lock.json` | dependencias instaladas pelo npm, nunca versionadas |
 | `.agents/skills/stack-ai-init/` | ela mesma; distribuir o instalador levaria a carga junto, recursivamente |
-| `LICENSE.txt` das skills e `THIRD_PARTY_NOTICES.md` | a carga e uma instalacao da stack no destino e nao mantem as skills; origem, versao e licenca ficam no `ai-skills`, em `THIRD_PARTY_NOTICES.md` da raiz e neste arquivo. A pasta `upstream/` da `owasp-playbook` e copia literal e conserva os dela |
+| `ciclo-design`, `conformidade-de-escrita-normativa`, `docx`, `escrita-em-linguagem-simples-pt-br`, `pdf`, `pptx`, `recapitulacao-resumo-ata-relato-reuniao` e `xlsx` | ficam mantidas em `.agents/skills/` na raiz do `ai-skills`; estao fora da selecao minima de apoio ao desenvolvimento e nao sao distribuidas nem instaladas pela dupla `stack-ai-init` e `stack-ai-build-project-context` |
+| `LICENSE.txt` das skills e `THIRD_PARTY_NOTICES.md` | a carga e uma instalacao da stack no destino e nao mantem as skills; origem, versão e licenca ficam no `ai-skills`, em `THIRD_PARTY_NOTICES.md` da raiz e neste arquivo. A pasta `upstream/` da `owasp-playbook` e copia literal e conserva os dela |
 | `specs/`, `.git/`, `__pycache__/` | trabalho do repositorio, nao artefato da stack |
 | Partes do OWASP Secure Agent Playbook listadas na secao "A skill owasp-playbook" | formato de ferramenta ou insumo de teste |
 
 `.agents/references/` entra na carga com o `speckit.md` e o `template-revisao-tecnica.md`. O `contrato-da-stack.md` da `stack-ai-build-project-context` declara a pasta peca obrigatoria da stack, entao ela sempre chega no destino com esses dois arquivos.
+
+A exclusao da carga impede novas copias dessas oito skills; o instalador nao apaga skills ja presentes em destinos antigos. A `stack-ai-build-project-context` enriquece a stack com evidencia do proprio destino e nao copia o catalogo do `ai-skills`.
 
 ## Por que os nomes viram dot-
 
@@ -234,7 +238,7 @@ Edite `assets/stack/` direto, com o nome mapeado para `dot-` onde houver ponto. 
 O fluxo de qualquer mudanca:
 
 1. Editar o arquivo em `assets/stack/`, ou criar o diretorio da skill nova.
-2. Se a skill tambem vive em `.agents/skills/<nome>/`, editar a fonte la, copiar a pasta inteira para `assets/stack/dot-agents/skills/<nome>/` e conferir com o `diff -rq` da secao "Onde a carga fica".
+2. Se a skill esta na selecao da secao "Onde a carga fica" e tambem vive em `.agents/skills/<nome>/`, editar a fonte la, copiar a pasta inteira para `assets/stack/dot-agents/skills/<nome>/` e conferir com o `diff -rq` daquela secao, reaplicando a excecao documentada do manual. Skills fora da selecao continuam somente na raiz do `ai-skills`.
 3. Se a mudanca envolver diretorio vazio ou symlink, declarar em `assets/estrutura.json`. As duas listas estao vazias hoje.
 4. Rodar os testes: `cd scripts && python3 -m unittest test_instalar_stack`.
 5. Instalar em um destino descartavel e conferir: `python3 scripts/instalar_stack.py instalar --destino <pasta vazia>`.

@@ -18,6 +18,7 @@ import subprocess
 import json
 import os
 import re
+import shlex
 import sys
 from collections import Counter
 from pathlib import Path
@@ -211,7 +212,7 @@ def coletar_stack(raiz: Path) -> dict:
             texto = ler_texto(arquivo)
             titulo = next((l.lstrip("# ").strip() for l in texto.splitlines() if l.startswith("#")), "")
             refs.append({
-                "arquivo": str(arquivo.relative_to(raiz)),
+                "arquivo": arquivo.relative_to(raiz).as_posix(),
                 "titulo": titulo,
                 "linhas": len(texto.splitlines()),
                 "tem_evidencias": bool(RE_TITULO_EVIDENCIAS.search(texto)),
@@ -227,8 +228,8 @@ def coletar_stack(raiz: Path) -> dict:
             bloco = RE_FRONTMATTER.match(texto_skill)
             user_invoked = bool(bloco and RE_USER_INVOKED.search(bloco.group(1)))
             skills.append({
-                "diretorio": str(skill_md.parent.relative_to(dir_skills)),
-                "arquivo": str(skill_md.relative_to(raiz)),
+                "diretorio": skill_md.parent.relative_to(dir_skills).as_posix(),
+                "arquivo": skill_md.relative_to(raiz).as_posix(),
                 "name": campos.get("name", ""),
                 "tem_descricao": bool(campos.get("description")),
                 "user_invoked": user_invoked,
@@ -239,15 +240,15 @@ def coletar_stack(raiz: Path) -> dict:
 
     ponteiros = [p for p in PONTEIROS if (raiz / p).is_file()]
     indices = [
-        str(c.relative_to(raiz))
+        c.relative_to(raiz).as_posix()
         for c in (dir_skills / "README.md", raiz / ".agents" / "README.md", dir_refs / "README.md")
         if c.is_file()
     ]
 
     pecas = {
-        "agents_md": str(agents.relative_to(raiz)) if agents else None,
-        "references": str(dir_refs.relative_to(raiz)) if dir_refs.is_dir() else None,
-        "skills": str(dir_skills.relative_to(raiz)) if dir_skills.is_dir() else None,
+        "agents_md": agents.relative_to(raiz).as_posix() if agents else None,
+        "references": dir_refs.relative_to(raiz).as_posix() if dir_refs.is_dir() else None,
+        "skills": dir_skills.relative_to(raiz).as_posix() if dir_skills.is_dir() else None,
     }
     presentes = sum(1 for v in pecas.values() if v)
     estado = "minima_presente" if presentes == 3 else ("ausente" if presentes == 0 else "parcial")
@@ -525,13 +526,13 @@ def coletar_censo(raiz: Path, top: int) -> dict:
             perfil["terminacoes"][detectar_terminacao(amostra, codificacao)] += 1
             exemplos = perfil["exemplos"].setdefault(codificacao, [])
             if len(exemplos) < 3:
-                exemplos.append(str(rel))
-            coletar_sinais(sinais, str(rel), arquivo.name, texto_da_amostra(amostra, codificacao))
+                exemplos.append(rel.as_posix())
+            coletar_sinais(sinais, rel.as_posix(), arquivo.name, texto_da_amostra(amostra, codificacao))
 
         if arquivo.name in MANIFESTOS:
-            manifestos.add(str(rel))
+            manifestos.add(rel.as_posix())
         if arquivo.name in CONFIGS_QUALIDADE or arquivo.name.startswith(".eslintrc"):
-            qualidade.add(str(rel))
+            qualidade.add(rel.as_posix())
         partes = {p.lower() for p in rel.parts[:-1]}
         pasta_rel = "/".join(rel.parts[:-1]) or "<raiz>"
         if partes & PISTAS_TESTE:
@@ -541,7 +542,7 @@ def coletar_censo(raiz: Path, top: int) -> dict:
         if partes & PISTAS_MIGRACAO or ext == ".sql":
             migracoes.add(pasta_rel)
         if ext in (".md", ".rst", ".adoc") and len(rel.parts) <= 3:
-            documentos.append(str(rel))
+            documentos.append(rel.as_posix())
 
     ci = [c for c in CI_CAMINHOS if (raiz / c).exists()]
 
@@ -577,23 +578,23 @@ def verificar(raiz: Path) -> dict:
             # pasta auxiliar. Sem SKILL.md em nenhum nivel, avisa em vez de errar.
             if not any(topo.rglob("SKILL.md")):
                 avisos.append(
-                    f"{topo.relative_to(raiz)}: diretorio sem SKILL.md em nenhum nivel"
+                    f"{topo.relative_to(raiz).as_posix()}: diretorio sem SKILL.md em nenhum nivel"
                 )
         for skill_md in sorted(dir_skills.rglob("SKILL.md")):
             skill_dir = skill_md.parent
             campos = frontmatter(ler_texto(skill_md))
             if not campos:
-                erros.append(f"{skill_md.relative_to(raiz)}: frontmatter ausente ou invalido")
+                erros.append(f"{skill_md.relative_to(raiz).as_posix()}: frontmatter ausente ou invalido")
                 continue
             if not campos.get("name"):
                 # Parte dos harnesses deriva o nome do diretorio; ausencia e risco, nao quebra.
-                avisos.append(f"{skill_md.relative_to(raiz)}: campo name ausente")
+                avisos.append(f"{skill_md.relative_to(raiz).as_posix()}: campo name ausente")
             elif campos["name"] != skill_dir.name:
                 erros.append(
-                    f"{skill_md.relative_to(raiz)}: name '{campos['name']}' diverge do diretorio '{skill_dir.name}'"
+                    f"{skill_md.relative_to(raiz).as_posix()}: name '{campos['name']}' diverge do diretorio '{skill_dir.name}'"
                 )
             if not campos.get("description"):
-                erros.append(f"{skill_md.relative_to(raiz)}: campo description ausente")
+                erros.append(f"{skill_md.relative_to(raiz).as_posix()}: campo description ausente")
 
     fontes = [raiz / p for p in NOMES_AGENTS]
     if (raiz / ".agents").is_dir():
@@ -605,7 +606,7 @@ def verificar(raiz: Path) -> dict:
         for alvo in RE_LINK_AGENTS.findall(ler_texto(arquivo)):
             referenciados.add(alvo)
             if not (raiz / alvo).exists():
-                erros.append(f"{arquivo.relative_to(raiz)}: aponta para '{alvo}', que nao existe")
+                erros.append(f"{arquivo.relative_to(raiz).as_posix()}: aponta para '{alvo}', que nao existe")
 
     orc = estado["orcamento"]
     if orc["descricoes_acima_do_agents"]:
@@ -639,7 +640,7 @@ def verificar(raiz: Path) -> dict:
                 if f"/{nome}" in linha or f"skills/{nome}" in linha:
                     continue
                 avisos.append(
-                    f"{arquivo.relative_to(raiz)}:{numero}: manda ativar '{nome}' pelo nome, e ela e "
+                    f"{arquivo.relative_to(raiz).as_posix()}:{numero}: manda ativar '{nome}' pelo nome, e ela e "
                     f"user-invoked; sem description no contexto o modelo nao a ve. Aponte o caminho: "
                     f"`{nomes_user[nome]}`"
                 )
@@ -906,16 +907,16 @@ RE_PADRAO = re.compile(r"""-(?:E|F|P)?\s*(['"])(.+?)\1""")
 RE_INCLUDE_EXT = re.compile(r"--include=(['\"]?)\*\.([A-Za-z0-9]+)\1")
 
 
-def _rodar(comando: str, raiz: Path) -> tuple[int, str]:
-    """Executa o comando como esta escrito e devolve (codigo, saida)."""
+def _rodar(comando: str, raiz: Path) -> tuple[int, str, str]:
+    """Executa o comando como esta escrito e preserva stdout e stderr."""
     try:
         r = subprocess.run(comando, shell=True, cwd=str(raiz), capture_output=True,
                            text=True, timeout=300)
-        return r.returncode, (r.stdout or "").strip()
+        return r.returncode, (r.stdout or "").strip(), (r.stderr or "").strip()
     except subprocess.TimeoutExpired:
-        return -1, "<timeout>"
+        return -1, "", "<timeout>"
     except Exception as exc:  # pragma: no cover
-        return -1, f"<erro: {exc}>"
+        return -1, "", f"<erro: {exc}>"
 
 
 def _numero(saida: str):
@@ -923,6 +924,33 @@ def _numero(saida: str):
     if len(linhas) == 1 and linhas[0].isdigit():
         return int(linhas[0])
     return None
+
+
+def _contagem_valida(comando: str, codigo: int, numero, erro: str) -> bool:
+    """grep -c devolve 1 com contagem zero quando nao encontra correspondencias."""
+    if numero is None or erro:
+        return False
+    if codigo == 0:
+        return True
+    if codigo != 1 or numero != 0 or "\n" in comando or "\r" in comando:
+        return False
+    # Preserva aspas para distinguir um argumento "|" de um operador do shell.
+    # Escapes de operadores ou aspas ficam inconclusivos: dependem do shell usado.
+    if re.search(r"""[\\^][|;&'\"]""", comando):
+        return False
+    try:
+        lexer = shlex.shlex(comando, posix=False, punctuation_chars="|;&")
+        lexer.commenters = ""
+        tokens = list(lexer)
+    except ValueError:
+        return False
+    # Comentarios, agrupamentos e expansoes fora de aspas exigem interpretar o shell.
+    if any(t in (";", "&&", "||", "&") or
+           (not t.startswith(("'", '"')) and re.search(r"[#()$`%!]", t)) for t in tokens):
+        return False
+    ultimo = tokens[max((i + 1 for i, t in enumerate(tokens) if t == "|"), default=0):]
+    return bool(ultimo and Path(ultimo[0]).name == "grep" and
+                any(re.fullmatch(r"-[A-Za-z]*c[A-Za-z]*", t) for t in ultimo[1:]))
 
 
 def _variantes(comando: str) -> list:
@@ -979,18 +1007,22 @@ def _variantes(comando: str) -> list:
 def auditar_comando(comando: str, raiz: Path) -> dict:
     """Roda o comando publicado e as variantes que expoem armadilhas de medicao."""
     raiz = raiz.resolve()
-    rc, saida = _rodar(comando, raiz)
+    rc, saida, erro = _rodar(comando, raiz)
     base = _numero(saida)
     achados, testes = [], []
+    inconclusiva = not _contagem_valida(comando, rc, base, erro)
     legenda = {k: (d, c) for k, d, c in
                [(a[0], a[1], a[2]) for a in ARMADILHAS]}
 
-    for chave, variante in _variantes(comando):
-        vrc, vsaida = _rodar(variante, raiz)
+    for chave, variante in ([] if inconclusiva else _variantes(comando)):
+        vrc, vsaida, verro = _rodar(variante, raiz)
         valor = _numero(vsaida)
+        valido = _contagem_valida(variante, vrc, valor, verro)
         testes.append({"armadilha": chave, "comando": variante,
-                       "devolveu": valor if valor is not None else vsaida[:60]})
-        if valor is None or base is None:
+                       "devolveu": valor if valor is not None else vsaida[:60],
+                       "codigo": vrc, "erro": verro[:200], "valido": valido})
+        if not valido:
+            inconclusiva = True
             continue
         if chave == "comentario":
             if valor > 0:
@@ -1001,7 +1033,8 @@ def auditar_comando(comando: str, raiz: Path) -> dict:
                             "descricao": legenda[chave][0], "correcao": legenda[chave][1]})
 
     return {"comando": comando, "codigo": rc, "numero": base,
-            "saida": saida[:200], "testes": testes, "achados": achados}
+            "saida": saida[:200], "erro": erro[:200], "testes": testes, "achados": achados,
+            "inconclusiva": inconclusiva or not testes}
 
 
 def imprimir_auditoria_de_comando(dados: dict) -> None:
@@ -1011,12 +1044,18 @@ def imprimir_auditoria_de_comando(dados: dict) -> None:
         print("  AVISO  a auditoria automatica compara numeros; use um comando que termine em 'wc -l'")
     else:
         print(f"  devolveu: {dados['numero']}")
-    if dados["codigo"] not in (0, 1):
-        print(f"  AVISO  codigo de saida {dados['codigo']}: o comando falhou como esta escrito")
+    if dados["erro"]:
+        print(f"  AVISO  {dados['erro']}")
     print()
     for t in dados["testes"]:
         print(f"  teste {t['armadilha']:<11} -> {t['devolveu']}")
+        if not t["valido"]:
+            print(f"  AVISO  controle sem contagem valida (codigo {t['codigo']}): {t['erro']}")
     print()
+    if dados["inconclusiva"]:
+        print("Auditoria inconclusiva: o comando ou um controle nao produziu comparacao valida.")
+        _imprimir_nao_cobertas()
+        return
     if not dados["achados"]:
         print("Sem divergencia entre o comando e as variantes de controle.")
         _imprimir_nao_cobertas()
@@ -1048,6 +1087,7 @@ def _imprimir_nao_cobertas() -> None:
     for q in NAO_COBERTAS:
         print(f"  - {q}")
     print("  Detalhe e teste de cada uma em references/armadilhas-de-medicao.md")
+    print("  O shell atual nao comprova falhas silenciosas em etapas intermediarias de pipelines.")
 
 
 def imprimir_stack(dados: dict) -> None:
@@ -1243,7 +1283,7 @@ def main(argv=None) -> int:
             print(json.dumps(dados, indent=2, ensure_ascii=False))
         else:
             imprimir_auditoria_de_comando(dados)
-        return 1 if dados["achados"] else 0
+        return 2 if dados["inconclusiva"] else (1 if dados["achados"] else 0)
 
     if args.comando == "stack":
         dados = coletar_stack(raiz)

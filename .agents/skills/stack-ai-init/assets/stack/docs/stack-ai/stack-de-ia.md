@@ -95,18 +95,13 @@ A tabela abaixo lista as skills que a stack instala. Parte vem de terceiros e pa
 | `owasp-playbook` | Revisão de segurança por procedimento OWASP: 17 plays cobrindo código, Top 10, API, segredos, dependências, infraestrutura como código, mobile, agente de IA, servidor MCP e aplicação LLM, mais o índice do ASVS para código novo |
 | `stack-ai-build-project-context` | Investiga a codebase e gera ou atualiza a base operacional para agentes: `AGENTS.md`, referências e skills do projeto |
 | `configuracao-de-testes-unitarios` | Lê a infraestrutura do projeto e entrega um plano para configurar testes unitários e cobertura, sem meta e sem executar nada |
-| `ciclo-design` | Executa um ciclo crítico de design a partir de uma referência real, com um construtor e três críticos independentes, até a aprovação ou o limite de rodadas |
 | `frontend-design` | Orienta o projeto ou a reformulação de interface frontend com direção visual intencional |
-| `escrita-em-linguagem-simples-pt-br` | Escreve ou reescreve textos em Linguagem Simples, em português brasileiro, para o cidadão ou outro público informado |
-| `recapitulacao-resumo-ata-relato-reuniao` | Produz recapitulação, resumo, ata ou lista de ações de reunião a partir de transcrição, gravação, anotações ou URL do Teams |
-| `conformidade-de-escrita-normativa` | Analisa a conformidade de redação de minutas de atos normativos brasileiros e entrega o relatório de conformidade |
-| `docx`, `pdf`, `pptx` e `xlsx` | Criam, editam ou analisam documentos Word, arquivos PDF, apresentações PowerPoint e planilhas |
 
 As skills `caveman` e `grill-me` são **modos opcionais**: o agente nunca as aciona sozinho, e elas só entram se você invocar. O `caveman` comprime as respostas e o `grill-me` interroga um plano ou um pedido antes de você aprová-lo. O uso delas está em [`prompts-exemplo.md`](prompts-exemplo.md), na seção de modos auxiliares.
 
 A `owasp-playbook` também é **opt-in**: o agente nunca a aciona sozinho. Para pedir, basta uma frase em português, sem conhecer segurança: a skill escolhe os procedimentos pelo que existe no escopo, traduz o resultado pelo guia de segurança e responde com um resumo em linguagem simples antes da tabela técnica. Os prompts estão em [`prompts-exemplo.md`](prompts-exemplo.md#revisão-de-segurança). A pasta `upstream/` dela é cópia literal do projeto de origem e não deve ser editada; o que é do projeto entra pela ponte `.agents/security/mapa-cwe-guia.md`.
 
-O projeto pode ter outras skills além dessas 30, criadas pela própria equipe. Elas ficam no mesmo `.agents/skills/`, são versionadas junto com o repositório e estão descritas no `README.md` da raiz.
+O projeto pode ter outras skills além dessas 22, criadas pela própria equipe. Elas ficam no mesmo `.agents/skills/`, são versionadas junto com o repositório e estão descritas no `README.md` da raiz.
 
 ---
 

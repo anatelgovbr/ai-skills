@@ -1,12 +1,7 @@
 ---
 name: manual-creator-scan-codebase
 description: >
-  Cria, atualiza e verifica manuais de uso de sistemas em Markdown por entrevista e
-  varredura da codebase, com adaptador próprio do repositório, personas, telas e regras
-  funcionais. Use quando o pedido envolver manual do usuário, instruções de operação
-  ou documentação de funcionalidades para pessoas baseada no código, inclusive preparar
-  somente o adaptador ou conferir um manual existente. Publica no destino declarado pelo
-  adaptador, com imagens locais.
+  Cria, atualiza e verifica manuais de uso de sistemas em Markdown por entrevista e varredura da codebase, com adaptador próprio do repositório, personas, telas e regras funcionais. Use quando o pedido envolver manual do usuário, instruções de operação ou documentação de funcionalidades para pessoas baseada no código, inclusive preparar somente o adaptador ou conferir manual existente. Publica no destino declarado pelo adaptador, com imagens locais. Sempre utiliza "Regras de Escrita".
 ---
 
 # manual-creator-scan-codebase
@@ -119,5 +114,3 @@ Use termos técnicos quando forem necessários à precisão ou forem a denomina�
 Apresente primeiro a informação mais importante e evite introduções ou resumos que apenas repitam o conteúdo. Use subtítulos, listas e tabelas quando melhorarem a leitura, especialmente em textos longos ou sequências extensas, sem fragmentar artificialmente o texto. Siga a norma-padrão do português brasileiro e não crie flexões incompatíveis com ela.
 
 Preserve literalmente citações diretas e outros conteúdos que precisem permanecer exatos, salvo solicitação expressa de revisão. Apresente URLs como links associados a expressões descritivas quando o formato permitir.
-
-No manual, escreva para a persona, que conhece o próprio trabalho, mas não o código: frases curtas, voz ativa e as palavras que a persona usa no trabalho. A linguagem simples muda a forma das explicações, não a precisão do conteúdo: mantenha literais também os nomes que a persona vê ou digita em outra tela, como os de permissões no sistema de perfis, e mantenha as regras de campo e as ressalvas de versão comprovadas. Quando a skill `escrita-em-linguagem-simples-pt-br` estiver instalada, use-a para revisar as explicações do manual. Nessa revisão, informe a persona como Público-alvo e mantenha literais os rótulos em negrito.
