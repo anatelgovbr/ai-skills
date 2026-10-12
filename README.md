@@ -129,7 +129,7 @@ A skill não sobrescreve nada nesse caso: preserva o que existe, mescla o que d�
 A skill deposita na raiz do repositório de destino:
 
 - os arquivos que os agentes leem, `AGENTS.md` e `CLAUDE.md`
-- as skills deste catálogo e outras de apoio, em `.agents/skills/`
+- a seleção mínima de skills de apoio ao desenvolvimento, em `.agents/skills/`, conforme o [inventário da carga](./.agents/skills/stack-ai-init/references/payload.md#inventario)
 - as fases do SpecKit, em `.specify/`
 - um guia de segurança, em `.agents/security/`
 - as integrações do GitHub Copilot, do OpenCode e do Claude Code
@@ -138,6 +138,8 @@ A skill deposita na raiz do repositório de destino:
 - as regras e os templates para documentar os requisitos do sistema, em `docs/requisitos-ancorados/padrao/`
 
 Ela não lê o código do destino e não escreve nada sobre o projeto. O que já existe no destino é preservado.
+
+O catálogo do `ai-skills` inclui skills que ficam fora dessa seleção mínima e continuam mantidas na raiz deste projeto. A `stack-ai-build-project-context` enriquece a instalação com o conhecimento do destino, sem instalar as skills excluídas da carga.
 
 Para conhecer a stack antes de instalar, leia a documentação que ela leva, em [`.agents/skills/stack-ai-init/assets/stack/docs/stack-ai/README.md`](./.agents/skills/stack-ai-init/assets/stack/docs/stack-ai/README.md).
 
@@ -194,10 +196,9 @@ A skill pode rodar de novo quantas vezes for preciso, e em cada rodada ela lê o
 
 | Referência | O que é |
 |---|---|
-| [Guia de Desenvolvimento de Software Apoiado por Inteligência Artificial](https://git.anatel.gov.br/informacao-e-conhecimento/desenvolvimento-apoiado-por-ia) | Guia interno da Anatel: conceitos, governança, GitHub Copilot como ferramenta corporativa padrão e uso de ferramentas de código aberto. Acesso pela rede da Agência |
 | [Agent Skills](https://agentskills.io) | Padrão aberto que define o formato das skills e como as ferramentas as carregam |
 | [AGENTS.md](https://agents.md) | Convenção aberta para o arquivo de instruções que os agentes leem na raiz do repositório |
-| [Spec Kit](https://github.com/github/spec-kit) | Framework de desenvolvimento orientado por especificação usado pela stack |
+| [SpecKit](https://github.com/github/spec-kit) | Framework de desenvolvimento orientado por especificação usado pela stack |
 | [anthropics/skills](https://github.com/anthropics/skills) | Coleção de skills da Anthropic, origem de `frontend-design` e `skill-creator` |
 | [GitHub Copilot](https://github.com/features/copilot) | Ferramenta corporativa padrão na Anatel, usada no VS Code |
 | [OpenCode](https://opencode.ai) | Ferramenta de linha de comando de código aberto, compatível com as skills |

@@ -243,6 +243,24 @@ def alvo_do_symlink(caminho: str, alvo: str) -> str:
     return posixpath.normpath(posixpath.join(posixpath.dirname(caminho), alvo))
 
 
+def symlink_confere(caminho: Path, alvo: str) -> bool:
+    """Confere alvo relativo, tipo e acesso, sem alterar um link existente."""
+    if Path(os.readlink(caminho)).as_posix() != Path(alvo).as_posix():
+        return False
+    esperado = caminho.parent / alvo
+    try:
+        if esperado.is_dir() and caminho.is_dir():
+            next(caminho.iterdir(), None)
+            return True
+        if esperado.is_file() and caminho.is_file():
+            with caminho.open("rb") as arquivo:
+                arquivo.read(1)
+            return True
+    except OSError:
+        return False
+    return False
+
+
 def instalar(destino: Path, sobrescrever: bool, aplicar: bool) -> list[dict]:
     carga = arquivos_da_carga()
     estrutura = carregar_estrutura()
@@ -330,10 +348,10 @@ def instalar(destino: Path, sobrescrever: bool, aplicar: bool) -> list[dict]:
         p = destino / rel
         if p.is_symlink():
             atual = os.readlink(p)
-            if atual == alvo:
+            if symlink_confere(p, alvo):
                 registrar(rel, "symlink", "ignorado-igual")
             else:
-                registrar(rel, "symlink", "ignorado-existe", f"aponta para {atual}")
+                registrar(rel, "symlink", "ignorado-existe", f"aponta para {atual}; alvo divergente ou inacessivel")
             continue
         if p.exists():
             registrar(rel, "symlink", "ignorado-existe", "ja existe como diretorio real")
@@ -343,7 +361,7 @@ def instalar(destino: Path, sobrescrever: bool, aplicar: bool) -> list[dict]:
             continue
         p.parent.mkdir(parents=True, exist_ok=True)
         try:
-            os.symlink(alvo, p)
+            os.symlink(str(Path(alvo)), p, target_is_directory=(p.parent / alvo).is_dir())
             registrar(rel, "symlink", "symlink", f"-> {alvo}")
         except OSError as e:
             fonte_dir = CARGA / caminho_na_carga(alvo_do_symlink(rel, alvo))
@@ -403,7 +421,7 @@ def verificar(destino: Path) -> list[dict]:
         rel, alvo = link["caminho"], link["alvo"]
         p = destino / rel
         if p.is_symlink():
-            registrar(rel, "symlink", "igual" if os.readlink(p) == alvo else "divergente", os.readlink(p))
+            registrar(rel, "symlink", "igual" if symlink_confere(p, alvo) else "divergente", os.readlink(p))
         elif p.is_dir():
             registrar(rel, "symlink", "divergente", "diretorio real no lugar do symlink")
         else:

@@ -1,11 +1,16 @@
 #!/usr/bin/env python3
 """Testes de inventario_stack.py."""
 
+import contextlib
+import io
+import json
+import os
 import shutil
 import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
@@ -684,46 +689,281 @@ class TesteLeituraTolerante(Base):
         self.assertIn("Descri", inv.ler_texto(caminho))
 
 
-if __name__ == "__main__":
-    unittest.main(verbosity=2)
-
-
-class TestAuditarComando(unittest.TestCase):
-    """Cobre o detector de armadilhas de medicao."""
-
-    def setUp(self):
-        self.raiz = Path(tempfile.mkdtemp(prefix="stack-auditar-"))
-        self.addCleanup(shutil.rmtree, self.raiz, ignore_errors=True)
-
-    def _escrever(self, rel: str, texto: str) -> None:
-        caminho = self.raiz / rel
-        caminho.parent.mkdir(parents=True, exist_ok=True)
-        caminho.write_text(texto, encoding="utf-8")
+class TestAuditarComando(Base):
+    """Logica de auditoria independente do shell e das ferramentas da maquina."""
 
     def test_ancora_expoe_sufixo_de_outra_palavra(self):
-        # 'id' solto casa dentro de 'uuid' e 'valid': o controle ancorado devolve menos
-        self._escrever("a.txt", "id = 1\nuuid = 2\nvalid = 3\n")
+        # Arrange: base, ancora, caixa e comentario; a variante de binario e ambiental.
         cmd = "grep -rn -E 'id' a.txt | wc -l"
-        dados = inv.auditar_comando(cmd, self.raiz)
+        retornos = [(0, "3", ""), (0, "1", ""), (0, "3", ""), (1, "0", "")]
+        with mock.patch.object(Path, "exists", return_value=False), \
+             mock.patch.object(inv, "_rodar", side_effect=retornos) as rodar:
+            # Act
+            dados = inv.auditar_comando(cmd, self.raiz)
+
+        # Assert
         self.assertEqual(dados["numero"], 3)
         chaves = {a["armadilha"] for a in dados["achados"]}
         self.assertIn("ancora", chaves)
+        self.assertIn("'(^|[^A-Za-z0-9_])id'", rodar.call_args_list[1].args[0])
+        self.assertFalse(dados["inconclusiva"])
 
     def test_sem_divergencia_nao_gera_alerta(self):
-        self._escrever("b.txt", "(^|[^A-Za-z0-9_])zzz\n")
+        # Arrange
         cmd = "grep -rn -F 'nao-existe-nada-assim' b.txt | wc -l"
-        dados = inv.auditar_comando(cmd, self.raiz)
+        saida = io.StringIO()
+        retornos = [(0, "0", ""), (0, "0", ""), (0, "0", ""), (1, "0", "")]
+        with mock.patch.object(Path, "exists", return_value=False), \
+             mock.patch.object(inv, "_rodar", side_effect=retornos), contextlib.redirect_stdout(saida):
+            # Act
+            codigo = inv.main(["auditar-comando", "--raiz", str(self.raiz), "--cmd", cmd, "--json"])
+
+        # Assert
+        dados = json.loads(saida.getvalue())
+        self.assertEqual(codigo, 0)
         self.assertEqual(dados["numero"], 0)
+        self.assertFalse(dados["inconclusiva"])
 
     def test_comentario_e_detectado(self):
-        self._escrever("c.txt", "checkAccess(a)\n# checkAccess(b)\n# checkAccess(c)\n")
+        # Arrange
         cmd = "grep -rn -E 'checkAccess' c.txt | wc -l"
-        dados = inv.auditar_comando(cmd, self.raiz)
+        saida = io.StringIO()
+        retornos = [(0, "3", ""), (0, "3", ""), (0, "3", ""), (0, "2", "")]
+        with mock.patch.object(Path, "exists", return_value=False), \
+             mock.patch.object(inv, "_rodar", side_effect=retornos), contextlib.redirect_stdout(saida):
+            # Act
+            codigo = inv.main(["auditar-comando", "--raiz", str(self.raiz), "--cmd", cmd, "--json"])
+
+        # Assert
+        dados = json.loads(saida.getvalue())
         chaves = {a["armadilha"] for a in dados["achados"]}
         self.assertIn("comentario", chaves)
+        self.assertEqual(codigo, 1)
 
     def test_comando_nao_numerico_nao_quebra(self):
-        self._escrever("d.txt", "linha\n")
-        dados = inv.auditar_comando("cat d.txt", self.raiz)
+        # Arrange
+        with mock.patch.object(inv, "_rodar", return_value=(0, "linha", "")):
+            # Act
+            dados = inv.auditar_comando("cat d.txt", self.raiz)
+
+        # Assert
         self.assertIsNone(dados["numero"])
         self.assertEqual(dados["achados"], [])
+        self.assertTrue(dados["inconclusiva"])
+
+    def test_execucao_invalida_ou_sem_controles_nao_retorna_sucesso(self):
+        casos = [
+            ("comando-inexistente", (127, "", "comando ausente")),
+            ("cat d.txt", (0, "linha", "")),
+            ("comando-com-erro", (0, "0", "erro intermediario")),
+            ("comando-qualquer", (1, "0", "")),
+            ("grep -cE 'id' a.txt | python -c 'import sys; print(0); sys.exit(1)'", (1, "0", "")),
+            ("grep -cE 'id' a.txt; exit 1", (1, "0", "")),
+            ("grep -cE 'id' a.txt\nexit 1", (1, "0", "")),
+            ('python -c "import sys; print(0); sys.exit(1)" "|" grep -cE "id"', (1, "0", "")),
+            (r'python -c "import sys; print(0); sys.exit(1)" \| grep -cE "id"', (1, "0", "")),
+            ('python -c "import sys; print(0); sys.exit(1)" ^| grep -cE "id"', (1, "0", "")),
+            ("grep -cE 'id' /dev/null x# 2>/dev/null | python -c 'import sys; print(0); sys.exit(1)'", (1, "0", "")),
+            ("python -c 'import sys; print(0); sys.exit(1)' # | grep -cE 'id'", (1, "0", "")),
+            ("python -c 'import sys; print(0); sys.exit(1)' $(true | grep -cE 'id' /dev/null)", (1, "0", "")),
+            ("python -c 'import sys; print(0); sys.exit(1)' `true | grep -cE 'id' /dev/null`", (1, "0", "")),
+            ("echo 0", (0, "0", "")),
+        ]
+        for cmd, retorno in casos:
+            with self.subTest(comando=cmd):
+                # Arrange
+                saida = io.StringIO()
+                with mock.patch.object(inv, "_rodar", return_value=retorno), \
+                     contextlib.redirect_stdout(saida):
+                    # Act
+                    codigo = inv.main(["auditar-comando", "--raiz", str(self.raiz), "--cmd", cmd])
+
+                # Assert
+                self.assertEqual(codigo, 2)
+                self.assertIn("Auditoria inconclusiva", saida.getvalue())
+                self.assertNotIn("Sem divergencia", saida.getvalue())
+
+    def test_pipe_literal_real_nao_separa_comandos(self):
+        # Arrange: grep e um argumento do Python, sem executar uma pipeline.
+        cmd = f'"{sys.executable}" -c "import sys; print(0); sys.exit(1)" "|" grep -cE "id"'
+        saida = io.StringIO()
+        with contextlib.redirect_stdout(saida):
+            # Act
+            codigo = inv.main(["auditar-comando", "--raiz", str(self.raiz), "--cmd", cmd, "--json"])
+
+        # Assert
+        dados = json.loads(saida.getvalue())
+        self.assertEqual(dados["codigo"], 1)
+        self.assertEqual(dados["numero"], 0)
+        self.assertEqual(dados["erro"], "")
+        self.assertEqual(codigo, 2)
+        self.assertTrue(dados["inconclusiva"])
+
+    def test_variante_que_falha_torna_a_auditoria_inconclusiva(self):
+        # Arrange
+        cmd = "grep -rn -E 'id' a.txt | wc -l"
+        retornos = [(0, "3", ""), (127, "", "controle ausente"), (0, "3", ""), (1, "0", "")]
+        saida = io.StringIO()
+        with mock.patch.object(Path, "exists", return_value=False), \
+             mock.patch.object(inv, "_rodar", side_effect=retornos), contextlib.redirect_stdout(saida):
+            # Act
+            codigo = inv.main(["auditar-comando", "--raiz", str(self.raiz), "--cmd", cmd, "--json"])
+
+        # Assert
+        dados = json.loads(saida.getvalue())
+        self.assertEqual(codigo, 2)
+        self.assertEqual(dados["numero"], 3)
+        self.assertEqual(dados["testes"][0]["erro"], "controle ausente")
+        self.assertFalse(dados["testes"][0]["valido"])
+
+    def test_grep_contador_final_sem_correspondencias_e_valido(self):
+        for cmd in ("grep -n -cE 'ausente' a.txt", "/usr/bin/grep -n -cE 'ausente' a.txt"):
+            with self.subTest(comando=cmd):
+                # Arrange
+                saida = io.StringIO()
+                with mock.patch.object(Path, "exists", return_value=False), \
+                     mock.patch.object(inv, "_rodar", return_value=(1, "0", "")), \
+                     contextlib.redirect_stdout(saida):
+                    # Act
+                    codigo = inv.main(["auditar-comando", "--raiz", str(self.raiz), "--cmd", cmd, "--json"])
+
+                # Assert
+                self.assertEqual(codigo, 0)
+                self.assertFalse(json.loads(saida.getvalue())["inconclusiva"])
+
+    def test_rodar_preserva_diagnostico_com_codigo_final_zero(self):
+        # Arrange
+        processo = mock.Mock(returncode=0, stdout="0\n", stderr="erro intermediario\n")
+        with mock.patch.object(inv.subprocess, "run", return_value=processo):
+            # Act
+            resultado = inv._rodar("comando", self.raiz)
+
+        # Assert
+        self.assertEqual(resultado, (0, "0", "erro intermediario"))
+
+    def test_timeout_e_diagnostico_de_falha(self):
+        # Arrange
+        erro = inv.subprocess.TimeoutExpired("comando", 300)
+        with mock.patch.object(inv.subprocess, "run", side_effect=erro):
+            # Act
+            resultado = inv._rodar("comando", self.raiz)
+
+        # Assert
+        self.assertEqual(resultado, (-1, "", "<timeout>"))
+
+
+@unittest.skipUnless(os.name == "posix" and shutil.which("grep") and shutil.which("wc"),
+                     "integracoes reais exigem shell POSIX, grep e wc")
+class TestAuditarComandoPosix(Base):
+    def test_hash_em_argumento_ou_comentario_nao_oculta_erro_final(self):
+        casos = [
+            f'grep -cE "id" /dev/null x# 2>/dev/null | "{sys.executable}" -c "import sys; print(0); sys.exit(1)"',
+            f'"{sys.executable}" -c "import sys; print(0); sys.exit(1)" # | grep -cE "id"',
+        ]
+        for cmd in casos:
+            with self.subTest(comando=cmd):
+                # Arrange
+                saida = io.StringIO()
+                with contextlib.redirect_stdout(saida):
+                    # Act
+                    codigo = inv.main(["auditar-comando", "--raiz", str(self.raiz), "--cmd", cmd, "--json"])
+
+                # Assert
+                dados = json.loads(saida.getvalue())
+                self.assertEqual(dados["codigo"], 1)
+                self.assertEqual(dados["numero"], 0)
+                self.assertEqual(dados["erro"], "")
+                self.assertEqual(codigo, 2)
+                self.assertTrue(dados["inconclusiva"])
+
+    def test_ancora_real_separa_id_de_uuid_e_valid(self):
+        # Arrange
+        escrever(self.raiz / "a.txt", "id = 1\nuuid = 2\nvalid = 3\n")
+
+        # Act
+        dados = inv.auditar_comando("grep -rn -E 'id' a.txt | wc -l", self.raiz)
+
+        # Assert
+        self.assertEqual(dados["numero"], 3)
+        self.assertIn("ancora", {a["armadilha"] for a in dados["achados"]})
+        self.assertFalse(dados["inconclusiva"])
+
+    def test_zero_real_de_correspondencias_e_comparacao_valida(self):
+        # Arrange
+        escrever(self.raiz / "b.txt", "linha\n")
+
+        # Act
+        dados = inv.auditar_comando("grep -rn -E 'ausente' b.txt | wc -l", self.raiz)
+
+        # Assert
+        self.assertEqual(dados["numero"], 0)
+        self.assertEqual(dados["achados"], [])
+        self.assertFalse(dados["inconclusiva"])
+
+    def test_comentarios_reais_sao_contados(self):
+        # Arrange
+        escrever(self.raiz / "c.txt", "checkAccess(a)\n# checkAccess(b)\n# checkAccess(c)\n")
+
+        # Act
+        dados = inv.auditar_comando("grep -rn -E 'checkAccess' c.txt | wc -l", self.raiz)
+
+        # Assert
+        self.assertIn("comentario", {a["armadilha"] for a in dados["achados"]})
+        self.assertFalse(dados["inconclusiva"])
+
+    def test_saida_real_nao_numerica_e_inconclusiva(self):
+        # Arrange
+        escrever(self.raiz / "d.txt", "linha\n")
+
+        # Act
+        dados = inv.auditar_comando("cat d.txt", self.raiz)
+
+        # Assert
+        self.assertIsNone(dados["numero"])
+        self.assertTrue(dados["inconclusiva"])
+
+    def test_erro_intermediario_real_impede_sucesso_da_pipeline(self):
+        # Arrange
+        cmd = "(printf 'falha intermediaria\\n' >&2; exit 7) | wc -l"
+        saida = io.StringIO()
+        with contextlib.redirect_stdout(saida):
+            # Act
+            codigo = inv.main(["auditar-comando", "--raiz", str(self.raiz), "--cmd", cmd, "--json"])
+
+        # Assert
+        dados = json.loads(saida.getvalue())
+        self.assertEqual(dados["codigo"], 0)
+        self.assertEqual(dados["numero"], 0)
+        self.assertIn("falha intermediaria", dados["erro"])
+        self.assertEqual(codigo, 2)
+
+    def test_comando_real_inexistente_e_falha(self):
+        # Arrange
+        saida = io.StringIO()
+        with contextlib.redirect_stdout(saida):
+            # Act
+            codigo = inv.main(["auditar-comando", "--raiz", str(self.raiz),
+                               "--cmd", "comando-auditoria-inexistente", "--json"])
+
+        # Assert
+        self.assertEqual(codigo, 2)
+        self.assertTrue(json.loads(saida.getvalue())["erro"])
+
+    def test_erro_final_real_nao_e_confundido_com_grep_sem_correspondencias(self):
+        # Arrange
+        escrever(self.raiz / "a.txt", "id\n")
+        cmd = "grep -cE 'id' a.txt | (printf '0\\n'; exit 1)"
+        saida = io.StringIO()
+        with contextlib.redirect_stdout(saida):
+            # Act
+            codigo = inv.main(["auditar-comando", "--raiz", str(self.raiz), "--cmd", cmd, "--json"])
+
+        # Assert
+        dados = json.loads(saida.getvalue())
+        self.assertEqual(dados["codigo"], 1)
+        self.assertEqual(dados["erro"], "")
+        self.assertEqual(codigo, 2)
+
+
+if __name__ == "__main__":
+    unittest.main(verbosity=2)

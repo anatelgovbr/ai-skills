@@ -128,11 +128,13 @@ class TesteInstalacaoLimpa(Base):
             else:
                 self.assertIsNone(rendido, rel)
 
+    @unittest.skipUnless(os.name == "posix", "bits de execucao exigem filesystem POSIX")
     def test_preserva_bit_de_execucao(self):
         self.instalar()
         modo = stat.S_IMODE((self.destino / ".specify/scripts/bash/common.sh").stat().st_mode)
         self.assertEqual(modo, 0o755)
 
+    @unittest.skipUnless(os.name == "posix", "bits de execucao exigem filesystem POSIX")
     def test_bit_de_execucao_perdido_no_destino_e_divergencia(self):
         rel = ".specify/scripts/bash/common.sh"
         self.instalar()
@@ -152,7 +154,7 @@ class TesteInstalacaoLimpa(Base):
         self.instalar()
         link = self.destino / ".claude/skills/skill-creator"
         self.assertTrue(link.is_symlink())
-        self.assertEqual(os.readlink(link), "../../.agents/skills/skill-creator")
+        self.assertEqual(Path(os.readlink(link)).as_posix(), "../../.agents/skills/skill-creator")
         self.assertTrue((link / "SKILL.md").is_file())
 
     def test_simular_nao_escreve(self):
@@ -480,6 +482,47 @@ class TesteInstalacaoComNomeJaDeclarado(Base):
 
 
 class TesteSymlink(Base):
+    def test_link_legivel_continua_igual_na_segunda_instalacao(self):
+        # Arrange
+        self.instalar()
+        rel = ".claude/skills/skill-creator"
+
+        # Act
+        acoes = self.instalar()
+
+        # Assert
+        self.assertEqual(self.acao_de(acoes, rel), "ignorado-igual")
+        self.assertTrue((self.destino / rel / "SKILL.md").is_file())
+        self.assertEqual({i["caminho"]: i["acao"] for i in inst.verificar(self.destino)}[rel], "igual")
+
+    def test_link_equivalente_mas_quebrado_e_preservado(self):
+        # Arrange
+        rel = ".claude/skills/skill-creator"
+        alvo = "../../.agents/skills/skill-creator"
+        link = self.destino / rel
+        link.parent.mkdir(parents=True)
+        os.symlink(alvo, link, target_is_directory=True)
+        # A simulacao mantem o alvo ausente; no Windows o link antigo com / tambem e ilegivel.
+
+        # Act
+        acoes = inst.instalar(self.destino, sobrescrever=True, aplicar=False)
+
+        # Assert
+        self.assertEqual(self.acao_de(acoes, rel), "ignorado-existe")
+        self.assertEqual(os.readlink(link), alvo)
+        self.assertEqual({i["caminho"]: i["acao"] for i in inst.verificar(self.destino)}[rel], "divergente")
+
+    def test_link_sem_acesso_ao_diretorio_e_divergencia(self):
+        # Arrange
+        self.instalar()
+        rel = ".claude/skills/skill-creator"
+        with mock.patch.object(Path, "iterdir", side_effect=PermissionError("sem acesso")):
+            # Act
+            itens = inst.verificar(self.destino)
+
+        # Assert
+        self.assertEqual({i["caminho"]: i["acao"] for i in itens}[rel], "divergente")
+
     def test_alvo_diferente_nao_e_tocado(self):
         link = self.destino / ".claude/skills/skill-creator"
         link.parent.mkdir(parents=True)
@@ -501,6 +544,37 @@ class TesteSymlink(Base):
         self.assertFalse(alvo.is_symlink())
         self.assertTrue((alvo / "SKILL.md").is_file())
         self.assertEqual(self.acao_de(acoes, ".claude/skills/skill-creator"), "symlink-degradado")
+
+
+class TestePoliticaDeExecucao(Base):
+    def test_perda_de_execucao_e_reportada_sem_sobrescrever(self):
+        # Arrange
+        self.instalar()
+        rel = ".specify/scripts/bash/common.sh"
+        alvo = self.destino / rel
+        conteudo = alvo.read_bytes()
+        with mock.patch.object(inst, "executavel", side_effect=lambda p: p != alvo):
+            # Act
+            acoes = self.instalar()
+
+            # Assert
+            self.assertEqual(self.acao_de(acoes, rel), "ignorado-existe")
+            self.assertEqual(alvo.read_bytes(), conteudo)
+            self.assertEqual({i["caminho"]: i["acao"] for i in inst.verificar(self.destino)}[rel], "divergente")
+
+    def test_sobrescrever_reaplica_a_copia_quando_execucao_diverge(self):
+        # Arrange
+        self.instalar()
+        rel = ".specify/scripts/bash/common.sh"
+        alvo = self.destino / rel
+        with mock.patch.object(inst.shutil, "copy2", wraps=shutil.copy2) as copiar, \
+             mock.patch.object(inst, "executavel", side_effect=lambda p: p != alvo or copiar.called):
+            # Act
+            acoes = self.instalar(sobrescrever=True)
+
+        # Assert
+        self.assertEqual(self.acao_de(acoes, rel), "substituido")
+        self.assertIn(mock.call(self.carga / "dot-specify/scripts/bash/common.sh", alvo), copiar.call_args_list)
 
 
 class TesteVerificar(Base):
