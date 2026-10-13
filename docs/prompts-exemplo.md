@@ -4,48 +4,49 @@
 
 - [Introdução](#introdução)
 - [Como escrever um bom prompt](#como-escrever-um-bom-prompt)
+- [Pré-requisitos de Automação de Navegador (Playwright e Selenium)](#pré-requisitos-de-automação-de-navegador-playwright-e-selenium)
 - [stack-ai-init](#stack-ai-init)
-  - [Instalar a stack em um repositório novo](#instalar-a-stack-em-um-repositório-novo)
-  - [Conferir uma instalação antiga](#conferir-uma-instalação-antiga)
-  - [Atualizar arquivos da stack que ficaram para trás](#atualizar-arquivos-da-stack-que-ficaram-para-trás)
+	- [Instalar a stack em um repositório novo](#instalar-a-stack-em-um-repositório-novo)
+	- [Conferir uma instalação antiga](#conferir-uma-instalação-antiga)
+	- [Atualizar arquivos da stack que ficaram para trás](#atualizar-arquivos-da-stack-que-ficaram-para-trás)
 - [stack-ai-build-project-context](#stack-ai-build-project-context)
-  - [Enriquecer uma stack recém instalada](#enriquecer-uma-stack-recém-instalada)
-  - [Atualizar a stack depois de uma mudança grande](#atualizar-a-stack-depois-de-uma-mudança-grande)
+	- [Enriquecer uma stack recém instalada](#enriquecer-uma-stack-recém-instalada)
+	- [Atualizar a stack depois de uma mudança grande](#atualizar-a-stack-depois-de-uma-mudança-grande)
 - [configuracao-de-testes-unitarios](#configuracao-de-testes-unitarios)
-  - [Projeto sem testes](#projeto-sem-testes)
-  - [Projeto que já tem testes](#projeto-que-já-tem-testes)
-  - [Projeto que roda em Docker](#projeto-que-roda-em-docker)
-  - [Projeto sem Docker](#projeto-sem-docker)
-  - [Analisar o repositório e planejar os testes unitários](#analisar-o-repositório-e-planejar-os-testes-unitários)
-- [dicionario-dados-db-scan-codebase-docs](#dicionario-dados-db-scan-codebase-docs)
-  - [Criar o adaptador](#criar-o-adaptador)
-  - [Criar o dicionário de dados](#criar-o-dicionário-de-dados)
-  - [Atualizar o dicionário](#atualizar-o-dicionário)
-  - [Revisar a qualidade do dicionário](#revisar-a-qualidade-do-dicionário)
-  - [Gerar prints de tela como insumo complementar](#gerar-prints-de-tela-como-insumo-complementar)
+	- [Projeto sem testes](#projeto-sem-testes)
+	- [Projeto que já tem testes](#projeto-que-já-tem-testes)
+	- [Projeto que roda em Docker](#projeto-que-roda-em-docker)
+	- [Projeto sem Docker](#projeto-sem-docker)
+	- [Analisar o repositório e planejar os testes unitários](#analisar-o-repositório-e-planejar-os-testes-unitários)
 - [manual-creator-scan-codebase](#manual-creator-scan-codebase)
-  - [Preparar o adaptador do manual](#preparar-o-adaptador-do-manual)
-  - [Criar um manual de uso](#criar-um-manual-de-uso)
-  - [Atualizar um manual de uso](#atualizar-um-manual-de-uso)
-  - [Verificar um manual de uso sem escrita](#verificar-um-manual-de-uso-sem-escrita)
+	- [Preparar o adaptador do manual](#preparar-o-adaptador-do-manual)
+	- [Criar um manual de uso](#criar-um-manual-de-uso)
+	- [Atualizar um manual de uso](#atualizar-um-manual-de-uso)
+	- [Verificar um manual de uso sem escrita](#verificar-um-manual-de-uso-sem-escrita)
+- [dicionario-dados-db-scan-codebase-docs](#dicionario-dados-db-scan-codebase-docs)
+	- [Criar o adaptador](#criar-o-adaptador)
+	- [Criar o dicionário de dados](#criar-o-dicionário-de-dados)
+	- [Atualizar o dicionário](#atualizar-o-dicionário)
+	- [Revisar a qualidade do dicionário](#revisar-a-qualidade-do-dicionário)
+	- [Gerar prints de tela como insumo complementar](#gerar-prints-de-tela-como-insumo-complementar)
 - [gauntlet-loop-forge](#gauntlet-loop-forge)
-  - [Criar o prompt a partir de uma ideia](#criar-o-prompt-a-partir-de-uma-ideia)
-  - [Criar o prompt a partir de uma especificação](#criar-o-prompt-a-partir-de-uma-especificação)
-  - [Otimizar um prompt que já existe](#otimizar-um-prompt-que-já-existe)
-  - [Executar o prompt criado](#executar-o-prompt-criado)
+	- [Criar o prompt a partir de uma ideia](#criar-o-prompt-a-partir-de-uma-ideia)
+	- [Criar o prompt a partir de uma especificação](#criar-o-prompt-a-partir-de-uma-especificação)
+	- [Otimizar um prompt que já existe](#otimizar-um-prompt-que-já-existe)
+	- [Executar o prompt criado](#executar-o-prompt-criado)
 - [ciclo-design](#ciclo-design)
-  - [Rodar o ciclo com uma referência](#rodar-o-ciclo-com-uma-referência)
-  - [Rodar o ciclo sem referência escolhida](#rodar-o-ciclo-sem-referência-escolhida)
-  - [Continuar depois do limite de rodadas](#continuar-depois-do-limite-de-rodadas)
+	- [Rodar o ciclo com uma referência](#rodar-o-ciclo-com-uma-referência)
+	- [Rodar o ciclo sem referência escolhida](#rodar-o-ciclo-sem-referência-escolhida)
+	- [Continuar depois do limite de rodadas](#continuar-depois-do-limite-de-rodadas)
 - [recapitulacao-resumo-ata-relato-reuniao](#recapitulacao-resumo-ata-relato-reuniao)
-  - [Registrar uma reunião a partir da transcrição](#registrar-uma-reunião-a-partir-da-transcrição)
-  - [Registrar uma reunião a partir da gravação no Teams](#registrar-uma-reunião-a-partir-da-gravação-no-teams)
+	- [Registrar uma reunião a partir da transcrição](#registrar-uma-reunião-a-partir-da-transcrição)
+	- [Registrar uma reunião a partir da gravação no Teams](#registrar-uma-reunião-a-partir-da-gravação-no-teams)
 - [escrita-em-linguagem-simples-pt-br](#escrita-em-linguagem-simples-pt-br)
-  - [Reescrever um texto colado](#reescrever-um-texto-colado)
-  - [Reescrever um arquivo ou uma página](#reescrever-um-arquivo-ou-uma-página)
+	- [Reescrever um texto colado](#reescrever-um-texto-colado)
+	- [Reescrever um arquivo ou uma página](#reescrever-um-arquivo-ou-uma-página)
 - [conformidade-de-escrita-normativa](#conformidade-de-escrita-normativa)
-  - [Analisar a minuta inteira](#analisar-a-minuta-inteira)
-  - [Analisar só alguns dispositivos](#analisar-só-alguns-dispositivos)
+	- [Analisar a minuta inteira](#analisar-a-minuta-inteira)
+	- [Analisar só alguns dispositivos](#analisar-só-alguns-dispositivos)
 
 ---
 
@@ -84,6 +85,18 @@ Troque cada valor por um texto genérico, mantendo claro o que está errado. Amb
 **Vocabulário.** Onde os prompts pedem "a raiz do repositório", leia a pasta principal do projeto, aquela que contém todas as outras.
 
 **A sessão continua.** Todo prompt daqui é só o ponto de partida da sessão, não uma interação única. Depois do resultado, continue na mesma janela para ajustar, aprofundar ou corrigir o que vier. Se quiser guardar o conteúdo da sessão (achados, relatório, decisão), peça ao agente para salvar em um arquivo Markdown (`.md`) na pasta `specs/`. Ela fica fora do versionamento quando o `.gitignore` do projeto a ignora, como faz a `stack-ai-init` quando o projeto ainda não tem essa pasta.
+
+---
+
+## Pré-requisitos de Automação de Navegador (Playwright e Selenium)
+
+Consulte esta seção antes de usar qualquer prompt deste arquivo que peça Playwright ou Selenium. Os prompts que usam uma dessas ferramentas apontam para cá em vez de repetir o conteúdo.
+
+Qualquer prompt com automação de navegador exige o ambiente de desenvolvimento do SEI rodando localmente (`README.md`, seção "Ambiente de Desenvolvimento"). Se o alvo for um módulo específico, confirme que ele está ativo nesse ambiente antes de usar o prompt: veja o array `Modulos` em `fontes/sei/src/main/php/sei/config/ConfiguracaoSEI.php`. Se o módulo não estiver ativo, peça ao agente que o ative (edição local, sem comitar) antes de continuar; não deixe o agente editar esse arquivo sem a sua confirmação.
+
+**Playwright:** não vem configurado neste repositório. Você precisa trazer a sua própria automação de navegador, por exemplo a imagem Docker `mcr.microsoft.com/playwright` na tag que você for usar; os prompts deste arquivo usam a tag `v1.60.0-noble` como ilustração. Confirme que a ferramenta de IA da sua sessão consegue executá-la. Qualquer ajuste de configuração feito só para habilitá-la é local e não deve ser comitado.
+
+**Selenium:** ao contrário do Playwright, já vem configurado via Docker em `fontes/sei/ops_sei-docker/tests/`, com o container `selenium/standalone-chrome` e um runner pytest. Para rodar a suíte de exemplo (login, criação de processo, logout), use `make test_selenium_basico1` dentro de `fontes/sei/ops_sei-docker/tests/`. Essa suíte serve de referência para você adaptá-la a outros cenários. Essa configuração funciona só em Linux, com o ambiente em localhost.
 
 ---
 
@@ -239,6 +252,71 @@ Depois de entregar o plano, traga uma análise com:
 
 ---
 
+## manual-creator-scan-codebase
+
+Cria e mantém manuais de uso no destino declarado pelo adaptador, que por padrão é `docs/manuais/<slug_do_manual>.md`, com imagens em `docs/manuais/imagens-<slug_do_manual>/`. Primeiro combina entrevista e inspeção da codebase para preparar o adaptador do sistema; depois conecta tarefas e personas às telas, campos, textos, regras e permissões para redigir o manual em linguagem simples. Qualquer prompt demanda primeiro ter adaptador necessário criado, sendo possível preparar somente o adaptador.
+
+Informe o público-alvo e as tarefas que conhece. A skill investiga antes de perguntar pelas lacunas e não presume que um perfil de acesso define sozinho uma persona. O renderizador e a logo permitem verificar a apresentação do Markdown; ter acesso ao código não comprova a versão implantada nem substitui observação de conteúdo dinâmico.
+
+A varredura funcional também planeja onde os prints ajudam a explicar telas, campos e decisões. Quando faltar uma captura necessária, a skill deixa um aviso padronizado no ponto correspondente para depois incluir a imagem/print, com o caminho no sistema e o contexto de coleta. Os prints precisam ser obtidos manualmente depois. Na verificação sem escrita, essas posições são apenas reportadas.
+
+A entrevista da skill define o público-alvo antes da escrita; não depende de preencher este template. Grupos escolhidos com necessidades distintas recebem manuais separados por padrão, salvo escolha de manual conjunto. Na atualização, conteúdo jurídico, contextual, empírico ou externo já existente é preservado, inclusive em trechos mistos; a ausência dele no código não autoriza exclusão. Mudança de mérito exige proposta e decisão específica. Revisão de redação exige alcance autorizado, sem mudar sentido ou citações.
+
+### Preparar o adaptador do manual
+
+Use quando quiser preparar a investigação sem gerar o manual ainda. Apenas criar o adaptador necessário pertinente ao sistema ou módulo.
+
+```text
+Use a skill `manual-creator-scan-codebase` para criar ou atualizar somente o adaptador do <sistema ou módulo> neste repositório.
+
+Público e tarefas: <o que já souber sobre quem usa e o que precisa fazer>.
+Versão, idioma e configuração: <se souber>.
+Local de leitura e renderizador Markdown: <se souber>.
+Logo e materiais complementares: <arquivos locais, se houver>.
+
+Confira no código as convenções informadas, com atenção especial sobre como rastrear caminhos visíveis, telas, estados e personas, inclusive para orientar posterior coleta manual de prints. Entreviste-me sobre as lacunas relevantes e registre o adaptador completo. Não gere o manual nem insira avisos nele nesta etapa.
+```
+
+### Criar um manual de uso
+
+```text
+Use a skill `manual-creator-scan-codebase` para criar o manual de uso do <sistema ou módulo> neste repositório.
+
+Público: <grupos que cada manual deve atender e seus objetivos>.
+Organização dos manuais: <se tiver preferência por arquivos separados ou um manual conjunto>.
+Tarefas no alcance: <tarefas ou funcionalidades>.
+Versão e idioma da interface: <se souber>.
+Local de leitura e renderizador Markdown: <onde o manual será lido>.
+Logo: <caminho do arquivo ou indicação da logo existente no projeto>.
+Materiais complementares: <documentos ou capturas locais, se houver>.
+Ambiente para conferência: <fonte e alcance autorizados, se houver>.
+
+Defina comigo o público e a intenção que continuarem indeterminados. Prepare primeiro o adaptador e só depois faça a varredura funcional completa de cada alcance e redija os manuais conforme as Regras de Escrita da mencionada skill. Articule o texto com as capturas disponíveis; onde faltar um print necessário, insira o aviso padronizado junto à explicação pertinente, com o caminho comprovado no sistema e o contexto para posterior coleta manual do print. Ao final, apresente as lacunas, os prints pendentes e diferencie a conferência no código da observação na interface.
+```
+
+### Atualizar um manual de uso
+
+```text
+Use a skill `manual-creator-scan-codebase` para atualizar o manual em <docs/manuais/nome-do-manual.md> conforme a codebase atual referente ao <sistema ou módulo> neste repositório.
+
+Mudança a documentar: <funcionalidades, versão ou commits, se souber>.
+Público ou configuração que mudou: <se houver>.
+Novas capturas ou materiais: <arquivos locais/externos, se houver>.
+Revisão editorial adicional: <trechos cuja redação autorizo revisar sem mudar sentido, se houver>.
+
+Confirme o público quando não estiver claro no pedido ou no manual. Revalide o adaptador e atualize somente diferenças funcionais comprovadas no alcance, preservando conhecimento prévio sem rastro no código, inclusive dentro de parágrafos afetados. Para mudar ou excluir mérito contextual, jurídico, empírico ou externo, apresente uma proposta e aguarde minha decisão específica. Aplique as Regras de Escrita da mencionada skill ao texto novo ou alterado e à revisão editorial autorizada, sem mudar sentido nem citações. Reavalie os prints somente no alcance; preserve imagens, âncoras e trechos restantes. Relate necessidades externas, limites do legado e a origem de cada alteração no diff, fora do teor do manual. Articule o texto com as capturas disponíveis; onde faltar um print necessário, insira o aviso padronizado junto à explicação pertinente, com o caminho comprovado no sistema e o contexto para posterior coleta manual do print. Ao final, apresente as lacunas, os prints pendentes e diferencie a conferência no código da observação na interface.
+```
+
+### Verificar um manual de uso sem escrita
+
+```text
+Use a skill `manual-creator-scan-codebase` para verificar o manual em <docs/manuais/nome-do-manual.md> contra a codebase atual referente ao <sistema ou módulo> neste repositório e as convenções da skill.
+
+Confira público, tarefas e personas, campos, regras, mensagens, imagens, navegação e Regras de Escrita da mencionada skill. Distinga diferença funcional comprovada, conteúdo legítimo de outra origem e incerteza, sem tratar ausência no código como erro do manual. Confronte as telas com as posições dos prints e proponha os avisos necessários somente no relatório. Não altere nenhum arquivo, inclusive manual, imagens, adaptador e registro. Reporte critérios, evidências, propostas que exigem decisão e limites da conferência.
+```
+
+---
+
 ## dicionario-dados-db-scan-codebase-docs
 
 Investiga o código do sistema, os arquivos que criam e alteram o banco e a documentação disponível para gerar e manter dicionários de dados. Além do dicionário, ela mantém o changelog estrutural, que é o histórico das mudanças na estrutura do banco. Ela nasceu de um documento conceitual apoiado na família de normas ISO/IEC de qualidade de dados e metadados (ISO 8000-1, ISO/IEC 25012/25024 e ISO/IEC 11179), guardado em `references/` dentro da própria skill. O alvo pode ser o sistema, um módulo, uma base corporativa ou um data warehouse.
@@ -367,71 +445,6 @@ Use <ferramenta de automação de navegador disponível, ex.: Playwright ou Sele
 5. Exporte os seeds e dados de teste usados no passo 2 (SQL de insert ou passo a passo reprodutível) em <pasta de destino>/seeds/, para reaproveitar em futuras implementações sem recriar a massa de teste do zero.
 
 Ao final, liste as telas que não conseguiu capturar e o motivo de cada uma.
-```
-
----
-
-## manual-creator-scan-codebase
-
-Cria e mantém manuais de uso no destino declarado pelo adaptador, que por padrão é `docs/manuais/<slug_do_manual>.md`, com imagens em `docs/manuais/imagens-<slug_do_manual>/`. Primeiro combina entrevista e inspeção da codebase para preparar o adaptador do sistema; depois conecta tarefas e personas às telas, campos, textos, regras e permissões para redigir o manual em linguagem simples. Qualquer prompt demanda primeiro ter adaptador necessário criado, sendo possível preparar somente o adaptador.
-
-Informe o público-alvo e as tarefas que conhece. A skill investiga antes de perguntar pelas lacunas e não presume que um perfil de acesso define sozinho uma persona. O renderizador e a logo permitem verificar a apresentação do Markdown; ter acesso ao código não comprova a versão implantada nem substitui observação de conteúdo dinâmico.
-
-A varredura funcional também planeja onde os prints ajudam a explicar telas, campos e decisões. Quando faltar uma captura necessária, a skill deixa um aviso padronizado no ponto correspondente para depois incluir a imagem/print, com o caminho no sistema e o contexto de coleta. Os prints precisam ser obtidos manualmente depois. Na verificação sem escrita, essas posições são apenas reportadas.
-
-A entrevista da skill define o público-alvo antes da escrita; não depende de preencher este template. Grupos escolhidos com necessidades distintas recebem manuais separados por padrão, salvo escolha de manual conjunto. Na atualização, conteúdo jurídico, contextual, empírico ou externo já existente é preservado, inclusive em trechos mistos; a ausência dele no código não autoriza exclusão. Mudança de mérito exige proposta e decisão específica. Revisão de redação exige alcance autorizado, sem mudar sentido ou citações.
-
-### Preparar o adaptador do manual
-
-Use quando quiser preparar a investigação sem gerar o manual ainda. Apenas criar o adaptador necessário pertinente ao sistema ou módulo.
-
-```text
-Use a skill `manual-creator-scan-codebase` para criar ou atualizar somente o adaptador do <sistema ou módulo> neste repositório.
-
-Público e tarefas: <o que já souber sobre quem usa e o que precisa fazer>.
-Versão, idioma e configuração: <se souber>.
-Local de leitura e renderizador Markdown: <se souber>.
-Logo e materiais complementares: <arquivos locais, se houver>.
-
-Confira no código as convenções informadas, com atenção especial sobre como rastrear caminhos visíveis, telas, estados e personas, inclusive para orientar posterior coleta manual de prints. Entreviste-me sobre as lacunas relevantes e registre o adaptador completo. Não gere o manual nem insira avisos nele nesta etapa.
-```
-
-### Criar um manual de uso
-
-```text
-Use a skill `manual-creator-scan-codebase` para criar o manual de uso do <sistema ou módulo> neste repositório.
-
-Público: <grupos que cada manual deve atender e seus objetivos>.
-Organização dos manuais: <se tiver preferência por arquivos separados ou um manual conjunto>.
-Tarefas no alcance: <tarefas ou funcionalidades>.
-Versão e idioma da interface: <se souber>.
-Local de leitura e renderizador Markdown: <onde o manual será lido>.
-Logo: <caminho do arquivo ou indicação da logo existente no projeto>.
-Materiais complementares: <documentos ou capturas locais, se houver>.
-Ambiente para conferência: <fonte e alcance autorizados, se houver>.
-
-Defina comigo o público e a intenção que continuarem indeterminados. Prepare primeiro o adaptador e só depois faça a varredura funcional completa de cada alcance e redija os manuais conforme as Regras de Escrita da mencionada skill. Articule o texto com as capturas disponíveis; onde faltar um print necessário, insira o aviso padronizado junto à explicação pertinente, com o caminho comprovado no sistema e o contexto para posterior coleta manual do print. Ao final, apresente as lacunas, os prints pendentes e diferencie a conferência no código da observação na interface.
-```
-
-### Atualizar um manual de uso
-
-```text
-Use a skill `manual-creator-scan-codebase` para atualizar o manual em <docs/manuais/nome-do-manual.md> conforme a codebase atual referente ao <sistema ou módulo> neste repositório.
-
-Mudança a documentar: <funcionalidades, versão ou commits, se souber>.
-Público ou configuração que mudou: <se houver>.
-Novas capturas ou materiais: <arquivos locais/externos, se houver>.
-Revisão editorial adicional: <trechos cuja redação autorizo revisar sem mudar sentido, se houver>.
-
-Confirme o público quando não estiver claro no pedido ou no manual. Revalide o adaptador e atualize somente diferenças funcionais comprovadas no alcance, preservando conhecimento prévio sem rastro no código, inclusive dentro de parágrafos afetados. Para mudar ou excluir mérito contextual, jurídico, empírico ou externo, apresente uma proposta e aguarde minha decisão específica. Aplique as Regras de Escrita da mencionada skill ao texto novo ou alterado e à revisão editorial autorizada, sem mudar sentido nem citações. Reavalie os prints somente no alcance; preserve imagens, âncoras e trechos restantes. Relate necessidades externas, limites do legado e a origem de cada alteração no diff, fora do teor do manual. Articule o texto com as capturas disponíveis; onde faltar um print necessário, insira o aviso padronizado junto à explicação pertinente, com o caminho comprovado no sistema e o contexto para posterior coleta manual do print. Ao final, apresente as lacunas, os prints pendentes e diferencie a conferência no código da observação na interface.
-```
-
-### Verificar um manual de uso sem escrita
-
-```text
-Use a skill `manual-creator-scan-codebase` para verificar o manual em <docs/manuais/nome-do-manual.md> contra a codebase atual referente ao <sistema ou módulo> neste repositório e as convenções da skill.
-
-Confira público, tarefas e personas, campos, regras, mensagens, imagens, navegação e Regras de Escrita da mencionada skill. Distinga diferença funcional comprovada, conteúdo legítimo de outra origem e incerteza, sem tratar ausência no código como erro do manual. Confronte as telas com as posições dos prints e proponha os avisos necessários somente no relatório. Não altere nenhum arquivo, inclusive manual, imagens, adaptador e registro. Reporte critérios, evidências, propostas que exigem decisão e limites da conferência.
 ```
 
 ---
