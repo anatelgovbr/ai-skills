@@ -6,6 +6,8 @@ Use Markdown UTF-8, com uma linha por parágrafo, espaços entre blocos e hierar
 
 Escolha o slug a partir do nome do manual, com letras minúsculas sem acento, números e hífens: `[a-z0-9]+(?:-[a-z0-9]+)*`. Preserve o slug de um manual existente que já siga esse contrato; colisão entre manuais exige escolha do responsável. Não use barra, caminho absoluto ou `..` como parte do slug.
 
+Para novos manuais separados por público, faça título e slug identificarem o sistema ou módulo e o grupo escolhido, como `manual-solicitacoes-administracao`, `manual-solicitacoes-usuario-interno` e `manual-solicitacoes-usuario-externo`. Esses grupos são exemplos, não papéis universais. Um manual conjunto escolhido pode atender várias personas. Não renomeie um manual existente para aderir ao exemplo; mantenha destinos e recursos declarados pelo adaptador, prevenindo colisões entre imagens de manuais diferentes.
+
 O destino fica no adaptador: a pasta de publicação do manual e a pasta de imagens, ao lado do manual. O destino padrão para registrar no adaptador é a pasta `docs/manuais/`, com uma pasta de imagens por manual:
 
 ```text
@@ -56,6 +58,8 @@ O verificador reconhece somente as âncoras automáticas do perfil GitHub. Se o 
 ## Organização por tarefas
 
 Comece com propósito, público e pré-requisitos úteis. Organize o restante pelas tarefas que as personas realizam, respeitando dependências reais. Glossário, solução de problemas e referências entram quando houver conteúdo comprovado que ajude a pessoa, sem criar seções vazias.
+
+O esqueleto orienta criação, não regeneração de manual existente. Conhecimento contextual, jurídico ou empírico já publicado conserva seu lugar e significado conforme [atualização e preservação](atualizacao-preservacao.md). Regras de Escrita são obrigatórias no texto novo/alterado, com preservação dos literais citados; revisão geral de estilo, conversão de legado ou nova organização dependem do alcance autorizado.
 
 Cada tarefa informa o objetivo, quem pode realizá-la, as condições necessárias e o caminho de acesso. Depois apresenta passos numerados, uma ação clara por passo e o resultado esperado comprovado. Explique efeitos de confirmação, cancelamento e outras decisões relevantes. Use verbos como “acesse”, “informe” e “selecione”, compatíveis com diferentes formas de interação.
 
