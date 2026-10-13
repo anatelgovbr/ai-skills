@@ -14,7 +14,7 @@ SLUG = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
 HEADING = re.compile(r"^(#{1,6}) (.+?)\s*$")
 IMAGE = re.compile(r"!\[([^\[\]\n]*)\]\(([^()\s]+)\)")
 LINK = re.compile(r"(?<!!)\[([^\[\]\n]+)\]\(([^()\s]+)\)")
-LOGO = re.compile(r"\A\s*!\[([^\[\]\n]*)\]\(([^()\s]+)\)[ \t]*(?=\n|\Z)")
+LOGO = re.compile(r"\A\s*!\[([^\[\]\n]*)\]\(([^()\s]+)\)[ \t]*(?=\r?\n|\Z)")
 NOTICE_MARKER = "[NECESSÁRIO INSERIR IMAGEM DE PRINT DA TELA DESTA FUNCIONALIDADE]"
 NOTICE = re.compile(
     r"> \*\*"
@@ -90,7 +90,7 @@ def verificar(raiz_repo, manual, pasta_imagens=None):
         r"(?<!\w)data\s*:\s*(?:(?:image|application|text|audio|video|font|model|multipart|message)/[a-z0-9.+-]+|[,;])"
         r"|;\s*base64|base64\s*,", decoded, re.IGNORECASE
     )
-    long_line = re.search(r"(?m)^[ \t]*[A-Za-z0-9+/]{80,}={0,2}[ \t]*$", original)
+    long_line = re.search(r"(?m)^[ \t]*[A-Za-z0-9+/]{80,}={0,2}[ \t]*\r?$", original)
     if image_payload or embedded or long_line:
         line = decoded.count("\n", 0, embedded.start()) + 1 if embedded else original.count("\n", 0, long_line.start()) + 1 if long_line else 1
         report("M05", line, "Imagem embutida, URI data ou bloco base64 proibido.")

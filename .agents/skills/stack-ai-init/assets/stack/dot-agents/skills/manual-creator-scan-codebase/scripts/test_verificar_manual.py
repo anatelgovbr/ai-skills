@@ -66,6 +66,23 @@ class TestManual(unittest.TestCase):
         self.assertEqual(self.run_check(), [])
         self.assertEqual(verificar(self.root, "docs/manuais/manual-teste.md"), [])
 
+    def test_manual_com_lf_e_crlf_sem_escrita(self):
+        for newline in ("\n", "\r\n"):
+            with self.subTest(newline=repr(newline)):
+                content = VALID.replace("\n", newline).encode("utf-8")
+                self.manual.write_bytes(content)
+                self.assertEqual(verificar(self.root, self.manual), [])
+                self.assertEqual(self.manual.read_bytes(), content)
+
+    def test_base64_em_lf_e_crlf_sem_escrita(self):
+        for newline in ("\n", "\r\n"):
+            with self.subTest(newline=repr(newline)):
+                content = (VALID + "\n" + "A" * 120 + "\n").replace("\n", newline).encode("utf-8")
+                self.manual.write_bytes(content)
+                before = hashlib.sha256(content).hexdigest()
+                self.assertTrue(any(i[0] == "M05" for i in verificar(self.root, self.manual)))
+                self.assertEqual(hashlib.sha256(self.manual.read_bytes()).hexdigest(), before)
+
     def montar_em_pasta_de_modulo(self, content):
         directory = self.root / "docs" / "manuais" / "modulo-teste"
         (directory / "imagens").mkdir(parents=True)

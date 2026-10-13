@@ -5,7 +5,7 @@ Autoridade sobre: o que a skill distribui, o que fica de fora e por que, como a 
 ## Onde a carga fica
 
 ```text
-assets/stack/          os 646 arquivos, com os nomes com ponto mapeados para dot-
+assets/stack/          os 659 arquivos, com os nomes com ponto mapeados para dot-
 assets/estrutura.json  diretorios vazios e symlinks a recriar na instalacao
 ```
 
@@ -13,7 +13,7 @@ assets/estrutura.json  diretorios vazios e symlinks a recriar na instalacao
 
 Das skills de `.agents/skills/` deste repositório, somente nove entram na carga, em `.agents/skills/stack-ai-init/assets/stack/dot-agents/skills/<nome>/`: `caveman`, `configuracao-de-testes-unitarios`, `dicionario-dados-db-scan-codebase-docs`, `frontend-design`, `gauntlet-loop-forge`, `manual-creator-scan-codebase`, `skill-creator`, `stack-ai-build-project-context` e `writing-for-agents`. A cópia é feita à mão, sem script de sincronizacao. A carga nao leva o `LICENSE.txt` das skills: ela e uma instalacao da stack, nao a mantenedora, e origem, versão e licenca ficam registradas no `ai-skills`. Para conferir a paridade, rode a partir da raiz do repositorio `diff -rq -x __pycache__ -x LICENSE.txt -x README.md .agents/skills/<nome> .agents/skills/stack-ai-init/assets/stack/dot-agents/skills/<nome>`; o comando precisa voltar vazio, salvo a excecao abaixo.
 
-A copia distribuida de `manual-creator-scan-codebase/SKILL.md` omite somente as duas frases finais que delegam a revisao da escrita a uma skill fora da selecao minima. A fonte em `.agents/skills/manual-creator-scan-codebase/` continua com essa integracao. Ao copiar uma versão nova, reaplique essa omissao antes de conferir a paridade; essa deve ser a unica diferenca de conteudo entre os dois `SKILL.md`, e os demais arquivos devem continuar iguais.
+A fonte e a copia distribuida de `manual-creator-scan-codebase/SKILL.md` conservam integralmente as Regras de Escrita incorporadas, sem depender de uma skill fora da selecao minima. Os arquivos dessa skill devem ter o mesmo conteudo nas duas pastas.
 
 A pasta `docs/architecture/` segue a mesma regra, com uma diferença: as ADRs registram decisões do `ai-skills` e ficam fora da carga. A fonte é `docs/architecture/` na raiz deste repositório, e a cópia na carga fica em `assets/stack/docs/architecture/`. A conferência é `diff -rq -x 'ADR-0*' docs/architecture .agents/skills/stack-ai-init/assets/stack/docs/architecture`, que precisa voltar vazio.
 
@@ -24,7 +24,7 @@ A pasta `docs/architecture/` segue a mesma regra, com uma diferença: as ADRs re
 | Raiz | 3 | `AGENTS.md`, `CLAUDE.md`, `.gitignore` |
 | `.agents/references/` | 2 | `speckit.md`, a regra de manutenção das fases; `template-revisao-tecnica.md`, o formato do relatorio de revisao tecnica, com estados, severidades, origem temporal e limite de cada celula |
 | `.agents/security/` | 2 | `guia-seguranca.md`, os 19 topicos de risco agnosticos de linguagem; `mapa-cwe-guia.md`, a ponte da `owasp-playbook` |
-| `.agents/skills/` | 595 | 22 skills: os 17 arquivos da `skill-creator`, as 10 fases do SpecKit em `speckit-<fase>/`, os 506 arquivos da `owasp-playbook`, dos quais 505 sao a copia do OWASP Secure Agent Playbook em `upstream/`, e 10 skills de apoio em 62 arquivos: 4 de terceiros (`caveman`, `grill-me`, `grilling` e `writing-for-agents`), a `frontend-design` da Anthropic e 5 mantidas pela Anatel no `ai-skills` (`configuracao-de-testes-unitarios`, `dicionario-dados-db-scan-codebase-docs`, `gauntlet-loop-forge`, `manual-creator-scan-codebase` e `stack-ai-build-project-context`) |
+| `.agents/skills/` | 608 | 22 skills: os 17 arquivos da `skill-creator`, as 10 fases do SpecKit em `speckit-<fase>/`, os 506 arquivos da `owasp-playbook`, dos quais 505 sao a copia do OWASP Secure Agent Playbook em `upstream/`, e 10 skills de apoio em 75 arquivos: 4 de terceiros (`caveman`, `grill-me`, `grilling` e `writing-for-agents`), a `frontend-design` da Anthropic e 5 mantidas pela Anatel no `ai-skills` (`configuracao-de-testes-unitarios`, `dicionario-dados-db-scan-codebase-docs`, `gauntlet-loop-forge`, `manual-creator-scan-codebase` e `stack-ai-build-project-context`) |
 | `.claude/` | 1 | `settings.json`, que registra o marketplace local e liga o plugin `stack-ai` |
 | `.claude-plugin/` | 1 | `marketplace.json`, o plugin local que aponta o Claude Code para `.agents/skills/`; traz `{{MARKETPLACE}}` no lugar do nome |
 | `.github/` | 1 | `copilot-instructions.md` |
@@ -238,7 +238,7 @@ Edite `assets/stack/` direto, com o nome mapeado para `dot-` onde houver ponto. 
 O fluxo de qualquer mudanca:
 
 1. Editar o arquivo em `assets/stack/`, ou criar o diretorio da skill nova.
-2. Se a skill esta na selecao da secao "Onde a carga fica" e tambem vive em `.agents/skills/<nome>/`, editar a fonte la, copiar a pasta inteira para `assets/stack/dot-agents/skills/<nome>/` e conferir com o `diff -rq` daquela secao, reaplicando a excecao documentada do manual. Skills fora da selecao continuam somente na raiz do `ai-skills`.
+2. Se a skill esta na selecao da secao "Onde a carga fica" e tambem vive em `.agents/skills/<nome>/`, editar a fonte la, copiar a pasta inteira para `assets/stack/dot-agents/skills/<nome>/` e conferir com o `diff -rq` daquela secao. Skills fora da selecao continuam somente na raiz do `ai-skills`.
 3. Se a mudanca envolver diretorio vazio ou symlink, declarar em `assets/estrutura.json`. As duas listas estao vazias hoje.
 4. Rodar os testes: `cd scripts && python3 -m unittest test_instalar_stack`.
 5. Instalar em um destino descartavel e conferir: `python3 scripts/instalar_stack.py instalar --destino <pasta vazia>`.

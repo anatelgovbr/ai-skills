@@ -47,9 +47,9 @@ O conjunto visível precisa aparecer na matriz. No manual, apresente cada elemen
 | Valor dinâmico e configuração corrente | Fonte configurada ou observação autorizada correspondente à versão, persona e idioma |
 | Sequência e resultado observado | Navegação autorizada ou teste aplicável, distinguindo expectativa do código de observação no sistema |
 
-Um fato diretamente sustentado por fonte adequada pode ser documentado. Inferência ainda provável exige ampliar a busca; se não houver prova, mantenha lacuna. Respostas de entrevista definem público, objetivos e escolhas do manual, mas uma regra atribuída ao software precisa ser confrontada com o código ou a configuração correspondente.
+Um fato funcional diretamente sustentado por fonte adequada pode ser documentado. Inferência ainda provável exige ampliar a busca; se não houver prova, mantenha lacuna. Respostas de entrevista definem público, objetivos e escolhas do manual, mas uma regra atribuída ao software precisa ser confrontada com o código ou a configuração correspondente. Conteúdo de concepção, norma, experiência ou fonte externa tem domínio próprio; não deve ser invalidado por ausência na codebase. Em manual existente, siga [atualização e preservação](atualizacao-preservacao.md), inclusive para afirmações misturadas no mesmo trecho.
 
-Quando fontes divergirem, relate as leituras, os caminhos, a variante e o efeito no procedimento. Suspenda somente o conteúdo dependente da divergência até a decisão ou confirmação adequada. Não preserve uma afirmação antiga só porque ela já constava do manual.
+Quando fontes divergirem, relate as leituras, os caminhos, a variante e o efeito no procedimento. Na criação, suspenda a inclusão dependente da divergência até confirmação adequada. Na atualização, corrija somente a diferença funcional demonstrada no alcance; preserve mérito externo e afirmação indeterminada enquanto reporta a proposta ou incerteza. Remover uma referência exige prova de retirada ou decisão específica, e não apenas busca vazia. A investigação mais ampla não amplia por si só a autorização de edição.
 
 ## Matriz técnica e término
 
