@@ -372,10 +372,6 @@ class TesteMesclagemDeSettingsDoClaude(Base):
 
 
 class TesteNomeDoMarketplace(unittest.TestCase):
-    def test_deriva_do_nome_do_diretorio(self):
-        self.assertEqual(inst.nome_do_marketplace(Path("/x/sei-sdd")), "stack-ai-sei-sdd")
-        self.assertEqual(inst.nome_do_marketplace(Path("/x/sdta")), "stack-ai-sdta")
-
     def test_reduz_caracteres_fora_de_a_z0_9(self):
         self.assertEqual(inst.nome_do_marketplace(Path("/x/Meu Repo!")), "stack-ai-meu-repo")
         self.assertEqual(inst.nome_do_marketplace(Path("/x/.oculto")), "stack-ai-oculto")

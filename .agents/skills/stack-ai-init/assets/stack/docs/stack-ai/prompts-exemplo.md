@@ -4,48 +4,55 @@
 
 - [Introdução](#introdução)
 - [Como escrever um bom prompt](#como-escrever-um-bom-prompt)
-- [Pré-requisitos de automação de navegador](#pré-requisitos-de-automação-de-navegador)
-- [Loop de verificação](#loop-de-verificação)
+- [Pré-requisitos de Automação de Navegador (Playwright e Selenium)](#pré-requisitos-de-automação-de-navegador-playwright-e-selenium)
 - [Correção de bugs](#correção-de-bugs)
-  - [Investigar e corrigir bug](#investigar-e-corrigir-bug)
-  - [Investigar e corrigir bug com automação de navegador](#investigar-e-corrigir-bug-com-automação-de-navegador)
+	- [Investigar e corrigir bug](#investigar-e-corrigir-bug)
+	- [Investigar e corrigir bug com automação de navegador](#investigar-e-corrigir-bug-com-automação-de-navegador)
 - [Fluxo SpecKit para funcionalidade nova](#fluxo-speckit-para-funcionalidade-nova)
-  - [Fluxo padrão](#fluxo-padrão)
-  - [Fluxo alternativo, com passos opcionais](#fluxo-alternativo-com-passos-opcionais)
+	- [Fluxo padrão](#fluxo-padrão)
+	- [Fluxo alternativo, com passos opcionais](#fluxo-alternativo-com-passos-opcionais)
 - [Revisão de segurança](#revisão-de-segurança)
-  - [Revisar alterações](#revisar-alterações)
-  - [Revisar uma pasta ou um arquivo](#revisar-uma-pasta-ou-um-arquivo)
-  - [Saber o que precisa de cuidado antes de implementar](#saber-o-que-precisa-de-cuidado-antes-de-implementar)
-  - [Descobrir o que dá para verificar](#descobrir-o-que-dá-para-verificar)
-  - [Variações de saída da revisão](#variações-de-saída-da-revisão)
-    - [Gerar revisão no formato PDF](#gerar-revisão-no-formato-pdf)
-    - [Gerar as issues ou tarefas técnicas](#gerar-as-issues-ou-tarefas-técnicas)
-    - [Para uma revisão já entregue](#para-uma-revisão-já-entregue)
-  - [Depois da revisão: marcar ou planejar a correção](#depois-da-revisão-marcar-ou-planejar-a-correção)
-- [Dicionário de dados](#dicionário-de-dados)
-  - [Criar o adaptador](#criar-o-adaptador)
-  - [Criar o dicionário de dados](#criar-o-dicionário-de-dados)
-  - [Atualizar o dicionário](#atualizar-o-dicionário)
-  - [Revisar a qualidade do dicionário](#revisar-a-qualidade-do-dicionário)
-  - [Gerar prints de tela como insumo complementar](#gerar-prints-de-tela-como-insumo-complementar)
-- [Manual de uso](#manual-de-uso)
-  - [Preparar o adaptador do manual](#preparar-o-adaptador-do-manual)
-  - [Criar um manual de uso](#criar-um-manual-de-uso)
-  - [Atualizar um manual de uso](#atualizar-um-manual-de-uso)
-  - [Verificar um manual sem escrita](#verificar-um-manual-sem-escrita)
-- [Testes unitários](#testes-unitários)
-  - [Projeto sem testes](#projeto-sem-testes)
-  - [Projeto que já tem testes](#projeto-que-já-tem-testes)
-  - [Projeto que roda em Docker](#projeto-que-roda-em-docker)
-  - [Projeto sem Docker](#projeto-sem-docker)
-  - [Analisar o repositório e planejar os testes unitários](#analisar-o-repositório-e-planejar-os-testes-unitários)
+	- [Revisar alterações](#revisar-alterações)
+	- [Revisar uma pasta ou um arquivo](#revisar-uma-pasta-ou-um-arquivo)
+	- [Saber o que precisa de cuidado antes de implementar](#saber-o-que-precisa-de-cuidado-antes-de-implementar)
+	- [Descobrir o que dá para verificar](#descobrir-o-que-dá-para-verificar)
+	- [Variações de saída da revisão](#variações-de-saída-da-revisão)
+		- [Gerar revisão no formato PDF](#gerar-revisão-no-formato-pdf)
+		- [Gerar as issues ou tarefas técnicas](#gerar-as-issues-ou-tarefas-técnicas)
+		- [Para uma revisão já entregue](#para-uma-revisão-já-entregue)
+	- [Depois da revisão: marcar ou planejar a correção](#depois-da-revisão-marcar-ou-planejar-a-correção)
+- [stack-ai-build-project-context](#stack-ai-build-project-context)
+	- [Enriquecer uma stack recém instalada](#enriquecer-uma-stack-recém-instalada)
+	- [Atualizar a stack depois de uma mudança grande](#atualizar-a-stack-depois-de-uma-mudança-grande)
+- [configuracao-de-testes-unitarios](#configuracao-de-testes-unitarios)
+	- [Projeto sem testes](#projeto-sem-testes)
+	- [Projeto que já tem testes](#projeto-que-já-tem-testes)
+	- [Projeto que roda em Docker](#projeto-que-roda-em-docker)
+	- [Projeto sem Docker](#projeto-sem-docker)
+	- [Analisar o repositório e planejar os testes unitários](#analisar-o-repositório-e-planejar-os-testes-unitários)
+- [manual-creator-scan-codebase](#manual-creator-scan-codebase)
+	- [Preparar o adaptador do manual](#preparar-o-adaptador-do-manual)
+	- [Criar um manual de uso](#criar-um-manual-de-uso)
+	- [Atualizar um manual de uso](#atualizar-um-manual-de-uso)
+	- [Verificar um manual de uso sem escrita](#verificar-um-manual-de-uso-sem-escrita)
+- [dicionario-dados-db-scan-codebase-docs](#dicionario-dados-db-scan-codebase-docs)
+	- [Criar o adaptador](#criar-o-adaptador)
+	- [Criar o dicionário de dados](#criar-o-dicionário-de-dados)
+	- [Atualizar o dicionário](#atualizar-o-dicionário)
+	- [Revisar a qualidade do dicionário](#revisar-a-qualidade-do-dicionário)
+	- [Gerar prints de tela como insumo complementar](#gerar-prints-de-tela-como-insumo-complementar)
+- [gauntlet-loop-forge](#gauntlet-loop-forge)
+	- [Criar o prompt a partir de uma ideia](#criar-o-prompt-a-partir-de-uma-ideia)
+	- [Criar o prompt a partir de uma especificação](#criar-o-prompt-a-partir-de-uma-especificação)
+	- [Otimizar um prompt que já existe](#otimizar-um-prompt-que-já-existe)
+	- [Executar o prompt criado](#executar-o-prompt-criado)
 - [Documentos para agentes de IA](#documentos-para-agentes-de-ia)
-  - [Revisar o AGENTS.md do projeto](#revisar-o-agentsmd-do-projeto)
-  - [Revisar a escrita de uma skill](#revisar-a-escrita-de-uma-skill)
-  - [Revisar um documento que o AGENTS.md aponta](#revisar-um-documento-que-o-agentsmd-aponta)
+	- [Revisar o AGENTS.md do projeto](#revisar-o-agentsmd-do-projeto)
+	- [Revisar a escrita de uma skill](#revisar-a-escrita-de-uma-skill)
+	- [Revisar um documento que o AGENTS.md aponta](#revisar-um-documento-que-o-agentsmd-aponta)
 - [Modos auxiliares](#modos-auxiliares)
-  - [Interrogar um plano ou um pedido utilizando o grill-me](#interrogar-um-plano-ou-um-pedido-utilizando-o-grill-me)
-  - [Comprimir a resposta utilizando o caveman](#comprimir-a-resposta-utilizando-o-caveman)
+	- [Interrogar um plano ou um pedido utilizando o grill-me](#interrogar-um-plano-ou-um-pedido-utilizando-o-grill-me)
+	- [Comprimir a resposta utilizando o caveman](#comprimir-a-resposta-utilizando-o-caveman)
 
 ---
 
@@ -61,11 +68,13 @@ A seção "Modos auxiliares", no fim do arquivo, não tem prompt de demanda. Ela
 
 ## Como escrever um bom prompt
 
-O `AGENTS.md` é carregado em toda sessão e concentra as regras do projeto, então os prompts abaixo não repetem o que já está lá. Repita uma orientação do `AGENTS.md` dentro de um prompt só quando quiser reforçar um ponto muito crítico, para reduzir o risco de o agente falhar justamente nesse ponto.
+O `AGENTS.md` do projeto é carregado em toda sessão e concentra as regras dele, então os prompts abaixo não repetem o que já está lá. Repita uma orientação do `AGENTS.md` dentro de um prompt só quando quiser reforçar um ponto muito crítico, para reduzir o risco de o agente falhar justamente nesse ponto.
 
-O `AGENTS.md` e as skills definem as regras de execução. Os prompts informam o objetivo, o alvo e as escolhas específicas de cada pedido, como revisar apenas um assunto ou aguardar sua aprovação antes de implementar.
+O `AGENTS.md` e as skills definem as regras de execução. Os prompts informam o objetivo, o alvo e as escolhas específicas de cada pedido.
 
-Nos blocos para copiar, os campos entre `<` e `>` são informações que você deve preencher. Estes são os campos que aparecem em mais de um prompt:
+**Parâmetros.** Nos blocos para copiar, os campos entre `<` e `>` são informações que você deve preencher. Se um campo trouxer uma condição, como "se souber", "se houver", "se existir", "se não for" ou "opcional", e ela não valer para o seu caso, apague a linha inteira. Substitua os demais campos antes de enviar e nunca envie um prompt com texto entre `<` e `>` ainda dentro dele. Quando faltar uma informação necessária, descreva o que você sabe; o agente pode investigar ou pedir o dado que falta. Datas, identificadores e nomes de arquivos de saída são gerados pelo agente.
+
+Estes são os campos que aparecem em mais de um prompt:
 
 | Campo | O que preencher | Exemplo |
 |---|---|---|
@@ -73,57 +82,35 @@ Nos blocos para copiar, os campos entre `<` e `>` são informações que você d
 | `<caminho da pasta ou do arquivo>` | Qualquer pasta ou arquivo do repositório | `src/pedidos/` |
 | `<caminho do arquivo>` | Um arquivo só | `src/pedidos/listagem.py` |
 
-Os demais campos aparecem em um prompt só e o próprio texto entre `<` e `>` diz o que preencher. Datas de relatórios, identificadores de achados e nomes de arquivos de saída são gerados pelo agente.
+Os demais campos aparecem em um prompt só e o próprio texto entre `<` e `>` diz o que preencher.
 
-Se um campo trouxer uma condição, como "se souber", "se houver", "se existir", "se não for" ou "opcional", e ela não valer para o seu caso, apague a linha inteira. Substitua os demais campos antes de enviar e nunca envie um prompt com texto entre `<` e `>` ainda dentro dele. Quando faltar uma informação necessária, descreva o que você sabe; o agente pode investigar ou pedir o dado que falta.
+**Adapte à vontade.** Nenhum prompt precisa ser enviado igual ao template. Apague a linha que não se aplica ao seu caso e mande só o que você tem de fato: quanto mais informação e validação você der, mais assertivo o agente tende a ser, mas um prompt enxuto também funciona.
 
-Nenhum prompt precisa ser enviado igual ao template. Apague a linha que não se aplica ao seu caso e mande só o que você tem de fato: quanto mais informação e validação você der, mais assertivo o agente tende a ser, mas um prompt enxuto também funciona.
+**Trate o que você informa como pista.** O que você escreve no prompt orienta a investigação, não substitui a evidência. Apresente suspeitas como hipóteses e peça ao agente para confirmar cada item contra o código ou a fonte estrutural e avisar quando algo divergir.
 
-Os exemplos preenchidos mostram como adaptar os modelos. Informe o que observou, o resultado esperado e as evidências disponíveis. Apresente suspeitas como hipóteses, para que o agente possa conferi-las.
-
-Antes de enviar mensagens de erro, capturas de tela ou outros materiais, oculte estes valores reais, independentemente do ambiente:
+**Nunca cole segredo.** Antes de enviar mensagem de erro, print de tela ou qualquer evidência bruta, oculte estes valores reais, independentemente do ambiente:
 
 - senha ou qualquer outra credencial
 - dado pessoal (CPF, nome completo, e-mail, endereço)
-- segredo (token, chave de API ou credencial na configuração de conexão)
+- segredo, que são as senhas usadas pelos sistemas para conversarem entre si (token, chave de API, credencial na configuração de conexão)
 
 Troque cada valor por um texto genérico, mantendo claro o que está errado. Ambientes de teste e desenvolvimento também podem conter credenciais válidas ou dados reais.
 
-Se a regra de negócio não estiver documentada no repositório, escreva a regra no próprio prompt.
+**Regra de negócio não documentada.** Se a regra não estiver escrita em lugar nenhum do repositório, escreva a regra no próprio prompt.
 
-Todo prompt deste arquivo é só o ponto de partida da sessão, não uma interação única: depois do resultado, continue na mesma janela para ajustar, aprofundar ou corrigir o que vier. Se quiser guardar o conteúdo da sessão (achados, relatório, decisão), peça ao agente para salvar em um arquivo Markdown (`.md`) na pasta `specs/`. Ela fica fora do versionamento quando o `.gitignore` do projeto a ignora, como faz a `stack-ai-init` quando o projeto ainda não tem essa pasta.
+**Vocabulário.** Onde os prompts pedem "a raiz do repositório", leia a pasta principal do projeto, aquela que contém todas as outras.
 
----
-
-## Pré-requisitos de automação de navegador
-
-Consulte esta seção antes de usar qualquer prompt deste arquivo que peça automação de navegador. Os prompts que usam essa automação apontam para cá em vez de repetir o conteúdo.
-
-Qualquer prompt com automação de navegador exige um ambiente de teste do sistema no ar, local ou remoto, e uma ferramenta que controle o navegador, como Playwright ou Selenium, que a ferramenta de IA da sua sessão consiga executar. A stack não traz essa ferramenta: use a que o projeto já tem ou traga a sua, por exemplo a imagem Docker oficial do Playwright. Qualquer ajuste de configuração feito só para habilitá-la é local e não deve ser comitado. Nunca use credencial de produção.
+**A sessão continua.** Todo prompt daqui é só o ponto de partida da sessão, não uma interação única. Depois do resultado, continue na mesma janela para ajustar, aprofundar ou corrigir o que vier. Se quiser guardar o conteúdo da sessão (achados, relatório, decisão), peça ao agente para salvar em um arquivo Markdown (`.md`) na pasta `specs/`. Ela fica fora do versionamento quando o `.gitignore` do projeto a ignora, como faz a `stack-ai-init` quando o projeto ainda não tem essa pasta.
 
 ---
 
-## Loop de verificação
+## Pré-requisitos de Automação de Navegador (Playwright e Selenium)
 
-A skill `gauntlet-loop-forge` monta um prompt com a técnica de loop de verificação a partir do que você tiver: uma ideia, uma especificação ou um prompt que já existe. Ela só escreve o prompt e para: executar é um pedido separado, em uma janela nova.
+Consulte esta seção antes de usar qualquer prompt deste arquivo que peça Playwright ou Selenium.
 
-Para agregar a técnica, acrescente esta linha ao início ou ao fim de qualquer prompt deste arquivo, antes de enviar:
+Qualquer prompt com automação de navegador exige um ambiente de teste do sistema no ar, local ou remoto. Se o alvo for um módulo específico, confirme que ele está ativo nesse ambiente antes de usar o prompt: veja o arquivo de configuração em que o sistema lista os módulos ativos. Se o módulo não estiver ativo, peça ao agente que o ative (edição local, sem comitar) antes de continuar; não deixe o agente editar esse arquivo sem a sua confirmação.
 
-```text
-Use a skill `gauntlet-loop-forge` para acrescentar a técnica de loop ao prompt <acima/abaixo>.
-```
-
-Antes de acionar o loop, confirme que a tarefa é complexa ou que um erro nela é difícil de reverter. Em tarefa pequena e reversível, o loop custa mais do que resolve.
-
-Onde o loop compensa:
-
-| Demanda | Quando o loop compensa |
-|---|---|
-| Correção de bug | A correção muda comportamento em fluxo crítico, mexe em transação ou migra dado, e precisa preservar o que já funciona. |
-| Pedido inicial e entregáveis do Speckit | O documento de uma fase é insumo de todas as fases seguintes, e o `/speckit-analyze` só roda depois do `/speckit-tasks`. |
-| Revisão técnica e de segurança | O código vai para produção, trata dado pessoal ou já causou incidente. |
-
-**Modelo para executar o prompt com loop:** prefira modelos intermediários e mais baratos. Exemplos em 2026: Luna e Terra (GPT), Haiku e Sonnet (Claude). Eles tendem a gastar menos tokens e, com o loop e os critérios bem definidos no prompt, entregam bom resultado. Modelos de topo, como Opus e Fable (Claude) ou Sol e Astra (GPT), tendem a alongar o loop, porque o mecanismo de execução do próprio modelo já repete e reverifica passos por conta própria, e o gasto de tokens cresce muito.
+**Playwright:** não vem configurado na stack. Você precisa trazer a sua própria automação de navegador, por exemplo a imagem Docker `mcr.microsoft.com/playwright` na tag que você for usar. Confirme que a ferramenta de IA da sua sessão consegue executá-la. Qualquer ajuste de configuração feito só para habilitá-la é local e não deve ser comitado.
 
 ---
 
@@ -220,7 +207,7 @@ Protocolo de execução:
 
 Use esta variação quando quiser reproduzir o bug na tela e validar a correção visualmente, com os prints de antes e de depois como evidência de cada critério de aceite.
 
-Pré-requisito: veja "Pré-requisitos de automação de navegador", no início deste arquivo.
+Pré-requisito: veja "Pré-requisitos de Automação de Navegador (Playwright e Selenium)", no início deste arquivo.
 
 **Prompt:**
 
@@ -754,193 +741,48 @@ Pare aqui. Se eu pedir para implementar agora, use o prompt "Investigar e corrig
 
 ---
 
-## Dicionário de dados
+## stack-ai-build-project-context
 
-A skill `dicionario-dados-db-scan-codebase-docs` investiga a codebase, os scripts de banco e qualquer documentação ou material complementar disponível para gerar e manter dicionários de dados. Ela nasceu de um documento conceitual apoiado na família de normas ISO/IEC de qualidade de dados e metadados (ISO 8000-1, ISO/IEC 25012/25024 e ISO/IEC 11179), guardado em `references/` dentro da própria skill. O alvo pode ser o sistema, um módulo, uma base de dados corporativa ou DW. Todo alvo reconhecido precisa de um adaptador registrado.
+Investiga o código de um repositório que já tem a estrutura instalada e transforma o que descobre em base de trabalho para os agentes: inventário e regras no `AGENTS.md`, skills de fluxo, references de detalhe e guardrails, todos derivados de evidência do próprio código. É a segunda metade da dupla: a `stack-ai-init` põe a estrutura de pé, esta aqui a preenche.
 
-O adaptador é o arquivo que ensina a skill a localizar, investigar e versionar esse alvo: onde fica a fonte estrutural, qual fonte tem precedência quando houver mais de uma, como a versão é identificada e onde buscar no código. Ele fica em `adapters/<família>/<caminho-do-adaptador>.md`, listado em `registro-adaptadores.md`, ambos na raiz da skill. Use o prompt "Criar o adaptador" a seguir para criar e registrar o adaptador. Sem ele registrado, a skill se recusa a gerar o dicionário e aponta a lacuna.
+**Pré-requisito da seção:** a estrutura mínima já instalada pela `stack-ai-init`. Para a parte que empacota skills novas, a skill `skill-creator` precisa estar instalada junto, e a própria skill avisa antes de começar se ela faltar. Com agentes auxiliares a investigação corre em paralelo e a auditoria fica independente. Sem eles a rodada continua com independência menor, e a skill declara isso no relatório.
 
-A skill gera três artefatos de saída: `dicionario_tabelas.md` e `dicionario_colunas.md`, com as descrições semânticas, e `CHANGELOG.md`, com o changelog estrutural.
+### Enriquecer uma stack recém instalada
 
-### Criar o adaptador
-
-Use este prompt no primeiro contato com um alvo que a skill ainda não reconhece, seja o sistema, um módulo ou uma base de dados corporativa. Ele cria só o adaptador. Gere o dicionário depois, em um pedido separado, com o prompt "Criar o dicionário de dados" a seguir. Informe as convenções que você já souber, para reduzir as perguntas que a skill vai precisar fazer. O que você não souber, ela tenta inferir da codebase antes de perguntar.
-
-A skill pode concluir que um adaptador já registrado cobre o alvo e apenas registrar o alvo nele, em vez de criar um arquivo novo. Isso não é falha do pedido.
+**Pré-requisito:** stack instalada.
 
 **Prompt:**
 
 ```text
-Use a skill `dicionario-dados-db-scan-codebase-docs` para criar o adaptador do alvo abaixo. Investigue a codebase, crie o adaptador completo e registre-o. Não gere o dicionário de dados nem o changelog nesta etapa.
-- Alvo: <sistema ou módulo>
+Use a skill `stack-ai-build-project-context` neste repositório. A stack mínima já está instalada.
+
+Descubra como este sistema é construído e como se desenvolve nele.
 
 O que eu já sei sobre ele:
-- pistas que identificam este sistema ou módulo (nome, caminhos, prefixo de tabela, pasta de documentação, ou a própria codebase, se for o sistema inteiro): <se souber, ex.: "prefixo pedidos_, models em app/Models/Pedido.php, migrations em database/migrations/">
-- fonte estrutural e convenção de versionamento: <scripts de instalação, migrations, schema ou DDL, se souber, ex.: "migrations em migrations/Version20240115120000.php">
-- precedência entre fontes, se houver mais de uma fonte estrutural para a mesma informação: <qual prevalece, se souber, ex.: "migration mais recente prevalece sobre o schema.sql legado">
-- codificação, camadas e onde buscar no código: <se souber, ex.: "camadas Entity/Repository/Controller">
-- títulos e pasta de destino dos dicionários: <se souber, ex.: "docs/dicionario_dados/pedidos/">
-- particularidades ou exceções conhecidas: <se houver, ex.: "módulo tem tabela compartilhada com outro módulo, não duplicar no dicionário">
-
-Confira no código cada item que informei acima e me avise se encontrar divergência.
-
-Pergunte objetivamente só sobre o que não puder ser inferido nem tiver sido informado acima.
+- o que o sistema faz: <se souber>
+- partes que costumam dar problema para quem chega: <se souber>
+- pontos que eu considero fora do escopo desta rodada: <se houver>
 ```
 
-### Criar o dicionário de dados
+### Atualizar a stack depois de uma mudança grande
 
-Use este prompt na primeira vez que for gerar o dicionário de um sistema ou módulo, depois que ele já tiver um adaptador (crie primeiro com "Criar o adaptador", se ainda não existir). Anexar material complementar aumenta o contexto negocial disponível para a skill e tende a melhorar a qualidade do resultado. Pode ser qualquer formato: esquema de banco em outra ferramenta, dicionário anterior, prints de tela, manuais, vídeos ou transcrições. Cite os materiais que tiver e, se houver mais de um, indique qual é o material prioritário. A skill sempre confere as informações com base nas fontes estruturais disponíveis (codebase, esquema de banco ou DDL) antes de publicar qualquer descrição, com ou sem material complementar.
+Use quando o sistema mudou e o conhecimento que a skill escreveu precisa acompanhar. Para atualizar os arquivos que a `stack-ai-init` distribui, use [Como atualizar os demais arquivos da stack](manutencao-da-stack.md#como-atualizar-os-demais-arquivos-da-stack).
+
+**Pré-requisito:** stack já com conteúdo escrito em rodadas anteriores.
 
 **Prompt:**
 
 ```text
-Use a skill `dicionario-dados-db-scan-codebase-docs` para criar o dicionário de dados e o changelog estrutural do alvo abaixo.
-- Alvo: <sistema ou módulo>
+Use a skill `stack-ai-build-project-context` neste repositório. A stack já tem conteúdo.
 
-Investigue as fontes estruturais disponíveis (codebase, scripts de instalação, migrations, schemas ou DDLs) para identificar a convenção de versionamento e, quando houver codebase, onde ficam as regras de negócio. Aproveite também qualquer documentação já existente. Só publique uma descrição quando as evidências encontradas sustentarem a semântica dela; sem essa sustentação, marque a descrição como não confirmada.
-
-Materiais complementares: <arquivos anexados, esquema em outro formato, dicionário anterior, capturas de tela, manuais, vídeos ou transcrições, se houver>.
-Material prioritário: <arquivo ou material ao qual dar mais atenção, opcional>.
-
-Confira as informações dos materiais com base na fonte estrutural disponível (código, esquema de banco ou DDL) antes de publicar qualquer descrição.
-
-Ao final, informe explicitamente: 1) as tabelas ou colunas cuja semântica você não conseguiu confirmar nas fontes disponíveis; 2) o que faltou para confirmá-las; 3) os pontos em que algum material complementar divergiu da fonte estrutural, com a fonte que você adotou.
-```
-
-### Atualizar o dicionário
-
-Use quando o dicionário já existir e você quiser sincronizá-lo com as mudanças estruturais do sistema ou do módulo (novas tabelas, colunas ou regras de negócio), inclusive depois de uma nova versão. Também serve para corrigir uma descrição anterior, mas só quando houver divergência estrutural ou domínio incompleto já confirmado, nunca por ajuste de estilo.
-
-**Prompt:**
-
-```text
-Use a skill `dicionario-dados-db-scan-codebase-docs` para atualizar o dicionário de dados conforme o estado mais recente das fontes disponíveis.
-- Alvo: <sistema ou módulo>
-
-Compare o dicionário de dados e o changelog já existentes com a estrutura e as regras de negócio atuais e altere somente o que realmente mudou desde a última atualização, preservando os demais conteúdos.
-
-Referência da atualização: <versão, commits ou scripts de mudança, se souber>. Se eu não indicar a referência, identifique o escopo da diferença pelas próprias fontes estruturais.
-
-Materiais complementares: <arquivos anexados, esquema em outro formato, dicionário anterior, capturas de tela, manuais, vídeos ou transcrições, se houver>.
-Material prioritário: <arquivo ou material ao qual dar mais atenção, opcional>.
-
-Confira as informações dos materiais com base na fonte estrutural disponível (código, esquema de banco ou DDL) antes de publicar qualquer descrição.
-
-Ao final, liste o que foi alterado e o que foi preservado intencionalmente.
-```
-
-### Revisar a qualidade do dicionário
-
-Use quando quiser avaliar se um dicionário já existente segue os critérios de qualidade e as convenções da própria skill (completude, consistência, terminologia, distinções documentadas), sem alterar arquivos. A revisão também compara a estrutura documentada com a fonte estrutural e aponta as divergências sem corrigi-las; para incorporar mudanças do código, use "Atualizar o dicionário".
-
-**Prompt:**
-
-```text
-Use a skill `dicionario-dados-db-scan-codebase-docs` para revisar a qualidade e a consistência do dicionário de dados do alvo abaixo.
-- Alvo: <sistema ou módulo>
-
-Classifique cada achado como problema de qualidade documental (descrição incompleta, inconsistente, genérica ou fora das convenções da skill), como lacuna (elemento sem descrição) ou como divergência estrutural (tabela ou coluna documentada de forma diferente da fonte estrutural).
-```
-
-### Gerar prints de tela como insumo complementar
-
-Use este exemplo quando o sistema ou o módulo já tiver um ambiente de teste no ar, local ou remoto, antes de rodar o prompt. Os prints gerados aqui podem ser apontados como material complementar no exemplo "Criar o dicionário de dados".
-
-Pré-requisito: veja "Pré-requisitos de automação de navegador", no início deste arquivo.
-
-**Prompt:**
-
-```text
-Gere os prints de tela do alvo abaixo para servirem de insumo complementar ao dicionário de dados (skill `dicionario-dados-db-scan-codebase-docs`).
-- Alvo: <sistema ou módulo>
-
-O ambiente de teste já está disponível em <endereço ou instrução para subir o ambiente>. Para autenticar, leia a credencial na <variável de ambiente ou arquivo local não versionado>; se não houver, pare e me peça para configurá-la nesse local, sem recebê-la pela conversa. Nunca use credencial de produção.
-
-Use <ferramenta de automação de navegador disponível, ex.: Playwright ou Selenium> para rodar um script de automação que:
-
-1. Faça login no ambiente de teste.
-2. Navegue pelas telas que leem ou gravam as tabelas do alvo, criando os dados de teste (seeds) necessários para preencher cada tela. Se o ambiente for remoto ou compartilhado, confirme comigo antes de criar dados.
-3. Capture um print de cada uma dessas telas (listagem, formulário vazio, formulário preenchido, modal, estado intermediário).
-4. Salve os PNGs em <pasta de destino>/screenshots/, organizados por subpasta.
-5. Exporte os seeds e dados de teste usados no passo 2 (SQL de insert ou passo a passo reprodutível) em <pasta de destino>/seeds/, para reaproveitar em futuras implementações sem recriar a massa de teste do zero.
-
-Ao final, liste as telas que não conseguiu capturar e o motivo de cada uma.
+Contexto da mudança: <o que mudou no sistema, se souber>
 ```
 
 ---
 
-## Manual de uso
+## configuracao-de-testes-unitarios
 
-A skill `manual-creator-scan-codebase` cria e mantém manuais de uso no destino declarado pelo adaptador, que por padrão é `docs/manuais/<slug_do_manual>.md`, com imagens em `docs/manuais/imagens-<slug_do_manual>/`. Primeiro combina entrevista e inspeção da codebase para preparar o adaptador do sistema; depois conecta tarefas e personas às telas, campos, textos, regras e permissões para redigir o manual em linguagem simples. O pedido de manual inclui criar o adaptador necessário, e também é possível preparar somente o adaptador.
-
-Informe o público e as tarefas que conhece. A skill investiga antes de perguntar pelas lacunas e não presume que um perfil de acesso define sozinho uma persona. O renderizador e a logo permitem verificar a apresentação do Markdown; ter acesso ao código não comprova a versão implantada nem substitui observação de conteúdo dinâmico. Não anexe capturas com dados pessoais ou credenciais.
-
-A varredura funcional também planeja onde os prints ajudam a explicar telas, campos e decisões. Quando faltar uma captura necessária, a skill deixa um aviso padronizado no ponto correspondente, com o caminho no sistema e o contexto de coleta. Você ou o desenvolvedor obtém os prints manualmente depois. Na verificação sem escrita, essas posições são apenas reportadas.
-
-### Preparar o adaptador do manual
-
-Use quando quiser preparar a investigação sem gerar o manual ainda.
-
-**Prompt:**
-
-```text
-Use a skill `manual-creator-scan-codebase` para criar ou atualizar somente o adaptador de <sistema ou módulo> neste repositório.
-
-Público e tarefas: <o que já souber sobre quem usa e o que precisa fazer>.
-Versão, idioma e configuração: <se souber>.
-Local de leitura e renderizador Markdown: <se souber>.
-Logo e materiais complementares: <arquivos locais, se houver>.
-
-Confira no código as convenções informadas, inclusive como rastrear caminhos visíveis, telas, estados e personas para orientar a coleta manual de prints. Entreviste-me sobre as lacunas relevantes e registre o adaptador completo. Não gere o manual nem insira avisos nele nesta etapa.
-```
-
-### Criar um manual de uso
-
-**Prompt:**
-
-```text
-Use a skill `manual-creator-scan-codebase` para criar o manual de uso de <sistema ou módulo> neste repositório.
-
-Público: <grupos de usuários e seus objetivos>.
-Tarefas no alcance: <tarefas ou funcionalidades>.
-Versão e idioma da interface: <se souber>.
-Local de leitura e renderizador Markdown: <onde o manual será lido>.
-Logo: <caminho do arquivo ou indicação da logo existente no projeto>.
-Materiais complementares: <documentos ou capturas locais, se houver>.
-Ambiente para conferência: <fonte e alcance autorizados, se houver>.
-
-Prepare primeiro o adaptador e só depois faça a varredura funcional completa do alcance e redija o manual a partir das regras e dos textos comprovados. Articule o texto com as capturas disponíveis; onde faltar um print necessário, insira o aviso padronizado junto à explicação pertinente, com o caminho comprovado no sistema e o contexto para coleta manual. Ao final, apresente as lacunas, os prints pendentes e diferencie a conferência no código da observação na interface.
-```
-
-### Atualizar um manual de uso
-
-**Prompt:**
-
-```text
-Use a skill `manual-creator-scan-codebase` para atualizar o manual em <docs/manuais/nome-do-manual.md> conforme a codebase atual.
-
-Mudança a documentar: <funcionalidades, versão ou commits, se souber>.
-Público ou configuração que mudou: <se houver>.
-Novas capturas ou materiais: <arquivos locais, se houver>.
-
-Revalide o adaptador antes de escrever e altere somente o conteúdo afetado por mudanças comprovadas. Reavalie no alcance as telas, caminhos e posições didáticas dos prints: confira novas capturas antes de substituir os avisos correspondentes e sinalize prints necessários ainda ausentes pelo padrão da skill. Preserve as seções ainda corretas, os nomes de imagens e as âncoras válidas; relate necessidades fora do alcance sem editá-las. Informe limitações do verificador em Markdown legado e pendências funcionais ou visuais.
-```
-
-### Verificar um manual sem escrita
-
-**Prompt:**
-
-```text
-Use a skill `manual-creator-scan-codebase` para verificar o manual em <docs/manuais/nome-do-manual.md> contra a codebase atual e as convenções da skill.
-
-Confira cobertura de tarefas e personas, campos, regras, mensagens, imagens e navegação. Confronte as telas encontradas no código com as posições dos prints no manual, os avisos de captura pendente e a fidelidade dos caminhos no sistema. Para cada print necessário ausente, reporte a seção, o ponto de inserção, o aviso sugerido e o contexto para coleta manual. Não altere nenhum arquivo, inclusive manual, imagens, adaptador e registro. Reporte os critérios verificados, as evidências e o que não puder confirmar.
-```
-
----
-
-## Testes unitários
-
-A skill `configuracao-de-testes-unitarios` lê o projeto e devolve um plano para configurar os testes unitários e a cobertura, sem meta. A skill só lê: quem executa o plano é você, com o agente, depois de aprovar.
+Lê o projeto e devolve um plano para configurar os testes unitários e a cobertura, sem meta de cobertura. A skill só lê: quem executa o plano é você, com o agente, depois de aprovar.
 
 Os prompts de situação, com ou sem testes, e os de ambiente, com ou sem Docker, se combinam: junte em um só pedido as linhas que descrevem o seu projeto.
 
@@ -1001,6 +843,277 @@ Use a skill `configuracao-de-testes-unitarios` para analisar este repositório e
 Depois de entregar o plano, traga uma análise com:
 - Testável sem refatoração: as unidades que já podem ser testadas isoladamente, sem mexer no código, com o caminho de cada uma
 - Partes críticas: as que merecem prioridade nos primeiros testes, com o caminho e o motivo de cada uma; considere crítica a unidade com regra de negócio, cálculo ou validação, priorizando as que mais mudaram no histórico do versionamento
+```
+
+---
+
+## manual-creator-scan-codebase
+
+Prepara adaptadores de sistemas ou módulos e cria, atualiza ou verifica manuais de uso em Markdown a partir da codebase. O adaptador registra convenções, contexto, idiomas e recursos; a skill investiga antes de perguntar pelas lacunas. Informe o caso de uso, o alvo e o que já souber nos campos abaixo. Informações previamente fornecidas são aproveitadas na entrevista.
+
+Na criação e atualização, a skill prepara ou revalida o adaptador, investiga as tarefas do público escolhido, aplica as Regras de Escrita e articula o texto com capturas disponíveis ou avisos para coleta manual dos prints. O destino padrão é `docs/manuais/<slug_do_manual>.md`, com imagens em `docs/manuais/imagens-<slug_do_manual>/`, salvo destino diferente registrado no adaptador.
+
+A criação, atualização e verificação exigem adaptador existente e atualizado frente à codebase do alvo; a skill avalia e executa sua preparação prévia quando necessário. A atualização preserva conhecimento prévio e inclui somente melhorias editoriais necessárias, com conferências próprias e revisão adversarial de necessidade e equivalência. Mudança de mérito exige decisão específica. Depois da preparação do adaptador, a verificação entrega somente o relatório, sem alterar manual e imagens. Código disponível não comprova versão implantada ou conteúdo dinâmico; lacunas e prints pendentes são reportados no chat.
+
+### Preparar o adaptador do sistema/módulo
+
+Use para criar ou atualizar somente o adaptador, sem gerar manuais. A escolha dos destinatários e do alcance de cada futuro manual fica para sua criação.
+
+```text
+Use a skill `manual-creator-scan-codebase` para **criar ou atualizar somente o adaptador** do <sistema ou módulo> neste repositório.
+
+- Versão: <se souber>.
+- Logo: <arquivo, anexo ou local onde encontrá-la, se houver>.
+- Idioma da interface: <idioma da interface do sistema/módulo>.
+- Idioma para o Manual: <idioma de redação dos futuros manuais>.
+- Contexto do sistema/módulo: <o que faz e quem o usa, se souber>.
+- Materiais complementares para o adaptador: <arquivos, anexos ou links de referência, se houver>.
+```
+
+### Criar um manual de uso
+
+```text
+Use a skill `manual-creator-scan-codebase` para **criar o manual** de uso do <sistema ou módulo> neste repositório.
+
+- Público-alvo: <persona ou grupo de personas e seus objetivos - p. ex. Administração, Usuário Interno e Usuário Externo>.
+- Materiais complementares: <arquivos, anexos ou links de referência, se houver>.
+```
+
+### Atualizar um manual de uso
+
+```text
+Use a skill `manual-creator-scan-codebase` para **atualizar o manual** em <docs/manuais/nome-do-manual.md> referente ao <sistema ou módulo> neste repositório.
+
+- Público-alvo: <persona ou grupo de personas e seus objetivos - p. ex. Administração, Usuário Interno e Usuário Externo>.
+- Materiais complementares: <arquivos, anexos ou links de referência, se houver>.
+```
+
+### Verificar um manual de uso sem escrita
+
+```text
+Use a skill `manual-creator-scan-codebase` para **verificar o manual** em <docs/manuais/nome-do-manual.md> referente ao <sistema ou módulo> neste repositório, sem alterar o manual nem suas imagens.
+
+- Materiais complementares: <arquivos, anexos ou links de referência, se houver>.
+```
+
+---
+
+## dicionario-dados-db-scan-codebase-docs
+
+Investiga o código do sistema, os arquivos que criam e alteram o banco e a documentação disponível para gerar e manter dicionários de dados. Além do dicionário, ela mantém o changelog estrutural, que é o histórico das mudanças na estrutura do banco. Ela nasceu de um documento conceitual apoiado na família de normas ISO/IEC de qualidade de dados e metadados (ISO 8000-1, ISO/IEC 25012/25024 e ISO/IEC 11179), guardado em `references/` dentro da própria skill. O alvo pode ser o sistema, um módulo, uma base corporativa ou um data warehouse.
+
+Todo alvo reconhecido precisa de um adaptador registrado. O adaptador é o arquivo que ensina a skill a localizar, investigar e versionar esse alvo: onde fica a fonte estrutural, qual fonte tem precedência quando houver mais de uma, como a versão é identificada e onde buscar no código. Ele fica em `adapters/<família>/<caminho-do-adaptador>.md`, listado em `registro-adaptadores.md`, ambos na raiz da skill. Sem ele registrado, a skill se recusa a gerar o dicionário e aponta a lacuna.
+
+A skill gera três artefatos de saída: `dicionario_tabelas.md` e `dicionario_colunas.md`, com as descrições semânticas, e `CHANGELOG.md`, com o changelog estrutural.
+
+A ordem das seções abaixo é a ordem recomendada de uso. Crie o adaptador do alvo primeiro, em um pedido só dele. Depois, ao criar ou atualizar o dicionário, anexe os materiais complementares que você tiver (manuais, prints de tela, dicionário anterior, planilhas). Eles ajudam a confirmar a semântica de tabelas e colunas. Se ainda não tiver prints mas houver um ambiente de teste disponível, gere-os primeiro com "Gerar prints de tela como insumo complementar".
+
+Não é preciso citar o adaptador do alvo: uma vez criado e registrado, a skill já sabe localizá-lo sozinha. Também não é preciso citar critérios de qualidade ou comandos de verificação internos à skill.
+
+**Pré-requisito da seção:** acesso às fontes que definem a estrutura do banco, que podem ser o código do sistema, os arquivos de instalação e de migração ou o esquema do banco.
+
+### Criar o adaptador
+
+Use este prompt no primeiro contato com um alvo que a skill ainda não reconhece, seja o sistema, um módulo ou uma base de dados corporativa. Ele cria só o adaptador. Gere o dicionário depois, em um pedido separado, com o prompt "Criar o dicionário de dados" a seguir. Informe as convenções que você já souber, para reduzir as perguntas que a skill vai precisar fazer. O que você não souber, ela tenta inferir da codebase antes de perguntar.
+
+A skill pode concluir que um adaptador já registrado cobre o alvo e apenas registrar o alvo nele, em vez de criar um arquivo novo. Isso não é falha do pedido.
+
+**Prompt:**
+
+```text
+Use a skill `dicionario-dados-db-scan-codebase-docs` para criar o adaptador do alvo abaixo. Investigue a codebase, crie o adaptador completo e registre-o. Não gere o dicionário de dados nem o changelog nesta etapa.
+
+Alvo: <sistema ou módulo>.
+
+O que eu já sei sobre ele:
+- pistas que identificam este sistema ou módulo (nome, caminhos, prefixo de tabela, pasta de documentação, ou a própria codebase, se for o sistema inteiro): <se souber, ex.: "prefixo pedidos_, models em app/Models/Pedido.php, migrations em database/migrations/">
+- fonte estrutural e convenção de versionamento: <scripts de instalação, migrations, schema ou DDL, se souber, ex.: "migrations em migrations/Version20240115120000.php">
+- precedência entre fontes, se houver mais de uma fonte estrutural para a mesma informação: <qual prevalece, se souber, ex.: "migration mais recente prevalece sobre o schema.sql legado">
+- codificação, camadas e onde buscar no código: <se souber, ex.: "camadas Entity/Repository/Controller">
+- títulos e pasta de destino dos dicionários: <se souber, ex.: "docs/dicionario_dados/pedidos/">
+- particularidades ou exceções conhecidas: <se houver, ex.: "módulo tem tabela compartilhada com outro módulo, não duplicar no dicionário">
+
+Confira no código cada item que informei acima e me avise se encontrar divergência.
+
+Pergunte objetivamente só sobre o que não puder ser inferido nem tiver sido informado acima.
+```
+
+### Criar o dicionário de dados
+
+**Pré-requisito:** o adaptador do alvo criado e registrado, com o prompt anterior.
+
+Use este prompt na primeira vez que for gerar o dicionário de um sistema ou módulo. Anexar material complementar aumenta o contexto negocial disponível para a skill e tende a melhorar a qualidade do resultado. Pode ser qualquer formato: esquema de banco em outra ferramenta, dicionário anterior, prints de tela, manuais, vídeos ou transcrições. Cite os materiais que tiver e, se houver mais de um, indique qual é o material prioritário. A skill sempre confere as informações com base nas fontes estruturais disponíveis (codebase, esquema de banco ou DDL) antes de publicar qualquer descrição, com ou sem material complementar.
+
+**Prompt:**
+
+```text
+Use a skill `dicionario-dados-db-scan-codebase-docs` para criar o dicionário de dados e o changelog estrutural do alvo abaixo.
+
+Alvo: <sistema ou módulo>.
+
+Investigue as fontes estruturais disponíveis (codebase, scripts de instalação, migrations, schemas ou DDLs) para identificar a convenção de versionamento e, quando houver codebase, onde ficam as regras de negócio. Aproveite também qualquer documentação já existente. Só publique uma descrição quando as evidências encontradas sustentarem a semântica dela; sem essa sustentação, marque a descrição como não confirmada.
+
+Materiais complementares: <arquivos anexados, esquema em outro formato, dicionário anterior, capturas de tela, manuais, vídeos ou transcrições, se houver>.
+Material prioritário: <arquivo ou material ao qual dar mais atenção, opcional>.
+
+Confira as informações dos materiais com base na fonte estrutural disponível (código, esquema de banco ou DDL) antes de publicar qualquer descrição.
+
+Ao final, informe explicitamente: 1) as tabelas ou colunas cuja semântica você não conseguiu confirmar nas fontes disponíveis; 2) o que faltou para confirmá-las; 3) os pontos em que algum material complementar divergiu da fonte estrutural, com a fonte que você adotou.
+```
+
+### Atualizar o dicionário
+
+**Pré-requisito:** dicionário e changelog já publicados para esse alvo.
+
+Use quando quiser sincronizá-los com as mudanças estruturais do sistema ou do módulo (novas tabelas, colunas ou regras de negócio), inclusive depois de uma nova versão. Também serve para corrigir uma descrição anterior, mas só quando houver divergência estrutural ou domínio incompleto já confirmado, nunca por ajuste de estilo.
+
+**Prompt:**
+
+```text
+Use a skill `dicionario-dados-db-scan-codebase-docs` para atualizar o dicionário de dados conforme o estado mais recente das fontes disponíveis.
+
+Alvo: <sistema ou módulo>.
+
+Compare o dicionário de dados e o changelog já existentes com a estrutura e as regras de negócio atuais e altere somente o que realmente mudou desde a última atualização, preservando os demais conteúdos.
+
+Referência da atualização: <versão, commits ou scripts de mudança, se souber>. Se eu não indicar a referência, identifique o escopo da diferença pelas próprias fontes estruturais.
+
+Materiais complementares: <arquivos anexados, esquema em outro formato, dicionário anterior, capturas de tela, manuais, vídeos ou transcrições, se houver>.
+Material prioritário: <arquivo ou material ao qual dar mais atenção, opcional>.
+
+Confira as informações dos materiais com base na fonte estrutural disponível (código, esquema de banco ou DDL) antes de publicar qualquer descrição.
+
+Ao final, liste o que foi alterado e o que foi preservado intencionalmente.
+```
+
+### Revisar a qualidade do dicionário
+
+**Pré-requisito:** dicionário já publicado para esse alvo.
+
+Use quando quiser avaliar se ele segue os critérios de qualidade e as convenções da própria skill (completude, consistência, terminologia, distinções documentadas), sem alterar arquivos. A revisão também compara a estrutura documentada com a fonte estrutural e aponta as divergências sem corrigi-las; para incorporar mudanças do código, use "Atualizar o dicionário".
+
+**Prompt:**
+
+```text
+Use a skill `dicionario-dados-db-scan-codebase-docs` para revisar a qualidade e a consistência do dicionário de dados do alvo abaixo.
+
+Alvo: <sistema ou módulo>.
+
+Classifique cada achado como problema de qualidade documental (descrição incompleta, inconsistente, genérica ou fora das convenções da skill), como lacuna (elemento sem descrição) ou como divergência estrutural (tabela ou coluna documentada de forma diferente da fonte estrutural).
+```
+
+### Gerar prints de tela como insumo complementar
+
+**Pré-requisito:** um ambiente de teste do sistema no ar, local ou remoto, uma ferramenta que controle o navegador, como Playwright ou Selenium, que a ferramenta de IA da sua sessão consiga executar, e uma credencial de teste que não seja a de produção. Qualquer ajuste de configuração feito só para habilitar a automação é local e não deve ser comitado.
+
+Os prints gerados aqui podem ser apontados como material complementar em "Criar o dicionário de dados".
+
+**Prompt:**
+
+```text
+Gere os prints de tela do alvo abaixo para servirem de insumo complementar ao dicionário de dados (skill `dicionario-dados-db-scan-codebase-docs`).
+
+Alvo: <sistema ou módulo>.
+
+O ambiente de teste já está disponível em <endereço ou instrução para subir o ambiente>. Para autenticar, leia a credencial na <variável de ambiente ou arquivo local não versionado>; se não houver, pare e me peça para configurá-la nesse local, sem recebê-la pela conversa. Nunca use credencial de produção.
+
+Use <ferramenta de automação de navegador disponível, ex.: Playwright ou Selenium> para rodar um script de automação que:
+
+1. Faça login no ambiente de teste.
+2. Navegue pelas telas que leem ou gravam as tabelas do alvo, criando os dados de teste (seeds) necessários para preencher cada tela. Se o ambiente for remoto ou compartilhado, confirme comigo antes de criar dados.
+3. Capture um print de cada uma dessas telas (listagem, formulário vazio, formulário preenchido, modal, estado intermediário).
+4. Salve os PNGs em <pasta de destino>/screenshots/, organizados por subpasta.
+5. Exporte os seeds e dados de teste usados no passo 2 (SQL de insert ou passo a passo reprodutível) em <pasta de destino>/seeds/, para reaproveitar em futuras implementações sem recriar a massa de teste do zero.
+
+Ao final, liste as telas que não conseguiu capturar e o motivo de cada uma.
+```
+
+---
+
+## gauntlet-loop-forge
+
+A skill `gauntlet-loop-forge` monta um prompt com a técnica de loop de verificação a partir do que você tiver: uma ideia, uma especificação ou um prompt que já existe. Ela só escreve o prompt e para: executar é um pedido separado, em uma janela nova.
+
+Para agregar a técnica, acrescente esta linha ao início ou ao fim de qualquer prompt deste arquivo, antes de enviar:
+
+```text
+Use a skill `gauntlet-loop-forge` para acrescentar a técnica de loop ao prompt <acima/abaixo>.
+```
+
+Antes de acionar o loop, confirme que a tarefa é complexa ou que um erro nela é difícil de reverter. Em tarefa pequena e reversível, o loop custa mais do que resolve.
+
+Onde o loop compensa:
+
+| Demanda | Quando o loop compensa |
+|---|---|
+| Correção de bug | A correção muda comportamento em fluxo crítico, mexe em transação ou migra dado, e precisa preservar o que já funciona. |
+| Pedido inicial e entregáveis do Speckit | O documento de uma fase é insumo de todas as fases seguintes, e o `/speckit-analyze` só roda depois do `/speckit-tasks`. |
+| Revisão técnica e de segurança | O código vai para produção, trata dado pessoal ou já causou incidente. |
+
+**Modelo para executar o prompt com loop:** prefira modelos intermediários e mais baratos. Exemplos em 2026: Luna e Terra (GPT), Haiku e Sonnet (Claude). Eles tendem a gastar menos tokens e, com o loop e os critérios bem definidos no prompt, entregam bom resultado. Modelos de topo, como Opus e Fable (Claude) ou Sol e Astra (GPT), tendem a alongar o loop, porque o mecanismo de execução do próprio modelo já repete e reverifica passos por conta própria, e o gasto de tokens cresce muito.
+
+### Criar o prompt a partir de uma ideia
+
+Use quando o ponto de partida é um objetivo na sua cabeça, sem prompt e sem documento nenhum.
+
+**Prompt:**
+
+```text
+Use a skill `gauntlet-loop-forge` para transformar o objetivo abaixo em um prompt com loop de verificação, pronto para colar.
+
+Objetivo: <o que precisa existir no final, em uma ou duas frases>
+Onde o prompt vai rodar: <Claude Code, Codex, outro agente, ou chat comum>
+Padrão de qualidade que eu já tenho: <se souber, ex.: "a suíte de testes atual precisa continuar passando", "quero no nível do relatório de pedidos que já existe">
+Material que serve de fonte da verdade: <se houver: arquivos, issue, especificação, repositório>
+O que não pode mudar: <se houver: comportamento, formato, compatibilidade>
+O que os agentes podem fazer no ambiente: <ler, rodar teste, editar arquivo, acessar rede, publicar, gastar>
+Ações que exigem minha aprovação: <se houver>
+```
+
+### Criar o prompt a partir de uma especificação
+
+Use quando já existe um documento, uma issue ou um repositório que manda no resultado.
+
+**Pré-requisito:** o arquivo, a issue ou o repositório acessível ao agente dentro da sessão.
+
+**Prompt:**
+
+```text
+Use a skill `gauntlet-loop-forge` para transformar <arquivo, issue ou especificação> em um prompt com loop de verificação, pronto para colar.
+
+Trate <arquivo, issue ou especificação> como fonte da verdade: extraia dali os critérios de aceite, as restrições e o que está fora de escopo antes de me perguntar qualquer coisa. Me avise se encontrar contradição em vez de escolher um lado sozinho.
+
+Me pergunte só o que não estiver no material. Não prescreva arquitetura, divisão de tarefas nem ordem de implementação: isso é decisão do agente líder na hora de executar.
+```
+
+### Otimizar um prompt que já existe
+
+Use quando o prompt já tem bloco de loop e você quer saber onde ele falha. A skill troca só o bloco de loop e preserva o seu texto e as restrições que você já escreveu.
+
+**Prompt:**
+
+```text
+Use a skill `gauntlet-loop-forge` para diagnosticar e reescrever o bloco de loop do prompt abaixo.
+
+<cole aqui o prompt atual, com o bloco de loop>
+
+Aponte onde ele deixa quem constrói aprovar o próprio trabalho, onde o padrão de qualidade não é conferível, onde a repetição não tem limite finito e onde ele manda usar comando ou flag que o meu ambiente não tem. Me diga o que mudou e por quê.
+```
+
+### Executar o prompt criado
+
+Use em uma janela nova, colando o prompt que a skill devolveu. As linhas depois do prompt servem para você conferir logo no começo que os limites e o registro de evidências ficaram claros.
+
+**Pré-requisito:** uma ferramenta de IA que consiga abrir agentes auxiliares em conversa separada. Quem constrói e quem confere são agentes diferentes, e quem confere trabalha em conversa nova, sem ter acompanhado a construção. Sem essa segunda conversa, o mesmo agente faz os dois papéis e acaba aprovando o próprio trabalho. O prompt ainda roda assim, com resultado mais fraco, e o bloco de loop manda o agente avisar você de que a separação não foi real.
+
+**Prompt:**
+
+```text
+<cole aqui o prompt criado>
+
+Antes de começar, confirme em uma linha: quantas rodadas de melhoria e conferência você tem por frente de trabalho, quantos agentes vai abrir ao mesmo tempo e onde vai manter o registro de evidências.
+
+Se algum limite for atingido antes da aprovação, pare e me devolva o estado CAPPED com os achados em aberto e a próxima ação recomendada. Atingir o limite nunca é aprovação, e nenhum limite é ampliado sem eu autorizar.
 ```
 
 ---
@@ -1113,7 +1226,7 @@ Use quando a sessão for gerar texto longo, como a revisão de segurança de um 
 
 A skill tem seis níveis, e três servem para o trabalho do dia a dia. O `lite` mantém frase completa e tira só o excesso. O `full` é o padrão e usa frase fragmentada. O `ultra` abrevia palavra de prosa (DB, config, req) e nunca abrevia nome de função, símbolo de código ou mensagem de erro. Os outros três (`wenyan-lite`, `wenyan-full` e `wenyan-ultra`) escrevem em chinês clássico e não têm uso aqui.
 
-Na sequência, na mesma janela, envie o prompt real. Exemplo: envie `/caveman full` e depois o prompt de "Auditoria completa do repositório" deste arquivo, para receber o mesmo relatório sem o texto de apoio. Para voltar ao normal, envie `stop caveman`.
+Na sequência, na mesma janela, envie o prompt real. Exemplo: envie `/caveman full` e depois o prompt de "Revisar uma pasta ou um arquivo" deste arquivo, para receber o mesmo relatório sem o texto de apoio. Para voltar ao normal, envie `stop caveman`.
 
 O bloco abaixo não tem campo para preencher, então já é o texto final para copiar.
 
