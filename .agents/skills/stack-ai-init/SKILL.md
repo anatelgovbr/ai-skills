@@ -65,7 +65,7 @@ O plugin chama-se sempre `stack-ai`, entao a invocacao e `/stack-ai:<skill>` em 
 
 O Claude Code guarda os marketplaces em um registro da maquina, em `~/.claude/plugins/known_marketplaces.json`, com um caminho so por nome. Dois repositorios com o mesmo nome de marketplace disputam a mesma entrada: o segundo perde, e passa a receber as skills do primeiro sem aviso nenhum. Como a chave de plugin e `<plugin>@<marketplace>`, basta o marketplace ser unico.
 
-**Destino que ainda nao tem nome.** Os dois arquivos da carga trazem `{{MARKETPLACE}}` no lugar do nome, e a instalacao troca pelo nome do diretorio de destino reduzido a `[a-z0-9-]`, com o prefixo `stack-ai-`. Um destino em `sdta` recebe `stack-ai-sdta`. Nenhum parametro a informar.
+**Destino que ainda nao tem nome.** Os dois arquivos da carga trazem `{{MARKETPLACE}}` no lugar do nome, e a instalacao troca pelo nome do diretorio de destino reduzido a `[a-z0-9-]`, com o prefixo `stack-ai-`. Um destino em `meu-projeto` recebe `stack-ai-meu-projeto`. Nenhum parametro a informar.
 
 **Destino que ja tem nome.** O nome do destino vale, seja ele qual for. A derivacao e so o padrao de criacao, nao um formato a impor: o que o nome precisa e ser unico entre repositorios, e um que ja existe e funciona ja cumpre isso. A instalacao le o nome em `.claude-plugin/marketplace.json`, cai para a chave `stack-ai@<marketplace>` de `enabledPlugins` quando aquele arquivo falta, e usa o que achar nos dois arquivos. Nada e acrescentado ao lado do que ja esta la, e o `verificar` nao acusa divergencia por causa do nome.
 
